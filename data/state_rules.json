@@ -1,0 +1,173 @@
+[
+  {
+    "id": "tx-top10",
+    "state": "Texas",
+    "name": "Texas Uniform Admission Policy (Top 10% Rule)",
+    "statute": "Texas Education Code § 51.803",
+    "description": "Guarantees admission to all Texas public universities (except UT Austin) for Texas high school seniors graduating in the top 10% of their class.",
+    "applicable_universities": [
+      "Texas A&M University (College Station)",
+      "University of Houston",
+      "Texas Tech University",
+      "University of Texas at Dallas",
+      "Texas State University",
+      "University of North Texas",
+      "All Texas Public 4-Year Institutions"
+    ],
+    "criteria": [
+      {
+        "id": "residency",
+        "label": "Texas Resident attending accredited Texas High School",
+        "field": "residency",
+        "operator": "equals",
+        "value": "TX",
+        "fix": "Student must graduate from an accredited high school in Texas or qualify as a Texas resident."
+      },
+      {
+        "id": "rank",
+        "label": "Class rank in the Top 10.0%",
+        "field": "class_percentile",
+        "operator": "lte",
+        "value": 10.0,
+        "fix": "Raise class rank into the top 10% of your graduating class (weighted GPA cutoffs determined by your high school)."
+      },
+      {
+        "id": "diploma_or_scores",
+        "label": "Distinguished Level of Achievement Diploma OR SAT/ACT Benchmark",
+        "subcriteria_type": "any",
+        "subcriteria": [
+          {
+            "id": "distinguished",
+            "label": "Distinguished Level of Achievement (4 Math incl. Algebra II, 4 Science, 1 Endorsement)",
+            "fields": ["math_years_algebra2", "science_years", "has_endorsement"],
+            "operator": "all_true"
+          },
+          {
+            "id": "sat_benchmark",
+            "label": "SAT Readiness Benchmark: 480 Reading/Writing AND 530 Math",
+            "fields": ["sat_rw", "sat_m"],
+            "operator": "sat_benchmark_check"
+          },
+          {
+            "id": "act_benchmark",
+            "label": "ACT Readiness Benchmark: 18 English, 22 Reading, 22 Math, 23 Science",
+            "fields": ["act_composite"],
+            "operator": "act_benchmark_check"
+          }
+        ],
+        "fix": "Complete 4 Math credits (including Algebra II) + 4 Science credits + an Endorsement, OR meet SAT college readiness benchmarks (480 ERW + 530 Math)."
+      }
+    ],
+    "source_url": "https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803"
+  },
+  {
+    "id": "tx-ut-austin",
+    "state": "Texas",
+    "name": "UT Austin Automatic Admission Cap",
+    "statute": "Texas Senate Bill 175 / TEC § 51.803(a-1)",
+    "description": "Under Texas law allowing UT Austin to cap automatic admits to 75% of incoming in-state freshmen, UT Austin sets an individual cutoff (Top 6% for 2024–2026; moving to Top 5% for Fall 2027 entry).",
+    "applicable_universities": [
+      "University of Texas at Austin"
+    ],
+    "criteria": [
+      {
+        "id": "residency",
+        "label": "Texas Resident attending accredited Texas High School",
+        "field": "residency",
+        "operator": "equals",
+        "value": "TX",
+        "fix": "Student must graduate from an accredited high school in Texas."
+      },
+      {
+        "id": "rank",
+        "label": "Class rank in Top 6.0% (Current) / Top 5.0% (Class of 2027+)",
+        "field": "class_percentile",
+        "operator": "lte",
+        "value": 6.0,
+        "fix": "Raise class rank into the top 6.0% (or top 5.0% for fall 2027 onwards) of your high school class."
+      },
+      {
+        "id": "distinguished",
+        "label": "Distinguished Level of Achievement Curriculum",
+        "fields": ["math_years_algebra2", "science_years", "has_endorsement"],
+        "operator": "all_true",
+        "fix": "Complete 4 math courses including Algebra II, 4 science courses, and earn an endorsement on your Foundation High School Program."
+      }
+    ],
+    "source_url": "https://admissions.utexas.edu/apply/freshman/automatic-admission/"
+  },
+  {
+    "id": "ca-elc",
+    "state": "California",
+    "name": "University of California: Eligibility in the Local Context (ELC)",
+    "statute": "University of California Board of Regents Policy 2102",
+    "description": "California residents who rank in the top 9% of their participating California high school graduating class or top 9% statewide are guaranteed admission to a UC campus with available space (typically UC Merced if not admitted to chosen campus).",
+    "applicable_universities": [
+      "University of California (Guaranteed at least one campus with capacity)"
+    ],
+    "criteria": [
+      {
+        "id": "residency",
+        "label": "California Resident attending participating California High School",
+        "field": "residency",
+        "operator": "equals",
+        "value": "CA",
+        "fix": "Must attend a participating California high school and meet California residency requirements."
+      },
+      {
+        "id": "rank",
+        "label": "Class rank in the Top 9.0%",
+        "field": "class_percentile",
+        "operator": "lte",
+        "value": 9.0,
+        "fix": "Reach the top 9% of your California high school class (based on UC-calculated GPA in 10th and 11th grade A-G courses)."
+      },
+      {
+        "id": "gpa",
+        "label": "Minimum 3.00 UC Unweighted A-G GPA",
+        "field": "gpa_unweighted",
+        "operator": "gte",
+        "value": 3.0,
+        "fix": "Maintain at least a 3.00 GPA in certified A-G coursework with no grade below a C."
+      }
+    ],
+    "source_url": "https://admission.universityofcalifornia.edu/admission-requirements/freshman-requirements/california-residents/local-guarantee-elc.html"
+  },
+  {
+    "id": "fl-talented-twenty",
+    "state": "Florida",
+    "name": "Florida Talented Twenty Program",
+    "statute": "Florida Board of Governors Regulation 6.002",
+    "description": "Guarantees admission to at least one of the 12 State University System of Florida (SUS) institutions for students in the top 20% of their Florida public high school class who complete required college-prep coursework.",
+    "applicable_universities": [
+      "State University System of Florida (12 Public Campuses)"
+    ],
+    "criteria": [
+      {
+        "id": "residency",
+        "label": "Florida Resident at a Florida Public High School",
+        "field": "residency",
+        "operator": "equals",
+        "value": "FL",
+        "fix": "Must graduate from a Florida public high school."
+      },
+      {
+        "id": "rank",
+        "label": "Class rank in the Top 20.0%",
+        "field": "class_percentile",
+        "operator": "lte",
+        "value": 20.0,
+        "fix": "Achieve a class rank in the top 20% of your public high school class by the end of 7th semester."
+      },
+      {
+        "id": "coursework",
+        "label": "Complete 18 core college-prep credits with no grade below C",
+        "field": "fl_prep_complete",
+        "operator": "equals",
+        "value": true,
+        "fix": "Complete 4 English, 4 Math (Algebra I & higher), 3 Natural Science, 3 Social Science, 2 World Languages, and 2 Electives without grades below C."
+      }
+    ],
+    "source_url": "https://www.fldoe.org/schools/family-community/activities-programs/talented-twenty-program/"
+  }
+]

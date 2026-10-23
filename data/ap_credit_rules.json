@@ -1,0 +1,173 @@
+{
+  "exams": [
+    { "id": "calc_ab", "name": "AP Calculus AB", "category": "Math" },
+    { "id": "calc_bc", "name": "AP Calculus BC", "category": "Math" },
+    { "id": "eng_lang", "name": "AP English Language & Composition", "category": "English" },
+    { "id": "eng_lit", "name": "AP English Literature & Composition", "category": "English" },
+    { "id": "chem", "name": "AP Chemistry", "category": "Science" },
+    { "id": "bio", "name": "AP Biology", "category": "Science" },
+    { "id": "phys_c_mech", "name": "AP Physics C: Mechanics", "category": "Science" },
+    { "id": "ushist", "name": "AP United States History", "category": "Social Science" },
+    { "id": "psych", "name": "AP Psychology", "category": "Social Science" },
+    { "id": "csa", "name": "AP Computer Science A", "category": "Computer Science" },
+    { "id": "stats", "name": "AP Statistics", "category": "Math" }
+  ],
+  "policies": {
+    "ut-austin": {
+      "college_id": "ut-austin",
+      "college_name": "University of Texas at Austin",
+      "source_url": "https://testingservices.utexas.edu/search-undergraduate-exams",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 3, "course_code": "M 408K", "credit_hours": 4, "notes": "Satisfies first-semester differential calculus." },
+        { "exam_id": "calc_bc", "min_score": 3, "course_code": "M 408C", "credit_hours": 4, "notes": "Satisfies standard differential & integral calculus. Score of 5 awards M 408C + M 408D (8 credits)." },
+        { "exam_id": "calc_bc", "min_score": 5, "course_code": "M 408C & M 408D", "credit_hours": 8, "notes": "Full calculus sequence satisfied." },
+        { "exam_id": "eng_lang", "min_score": 3, "course_code": "RHE 306", "credit_hours": 3, "notes": "Fulfills core Rhetoric & Writing requirement." },
+        { "exam_id": "eng_lit", "min_score": 3, "course_code": "E 316L or 316M", "credit_hours": 3, "notes": "Fulfills core Humanities literature requirement." },
+        { "exam_id": "chem", "min_score": 3, "course_code": "CH 301", "credit_hours": 3, "notes": "Score of 3 gives Principles of Chemistry I." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CH 301 & CH 302", "credit_hours": 6, "notes": "General Chemistry I and II sequence satisfied." },
+        { "exam_id": "bio", "min_score": 3, "course_code": "BIO 311C", "credit_hours": 3, "notes": "Introductory Biology I." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "BIO 311C & BIO 311D", "credit_hours": 6, "notes": "Full Introductory Biology sequence satisfied." },
+        { "exam_id": "phys_c_mech", "min_score": 4, "course_code": "PHY 303K & 103M", "credit_hours": 4, "notes": "Engineering Physics I with lab." },
+        { "exam_id": "ushist", "min_score": 3, "course_code": "HIS 315K", "credit_hours": 3, "notes": "Fulfills first half of legislative American History requirement." },
+        { "exam_id": "ushist", "min_score": 4, "course_code": "HIS 315K & HIS 315L", "credit_hours": 6, "notes": "Fulfills full 6-hour legislative American History requirement." },
+        { "exam_id": "psych", "min_score": 3, "course_code": "PSY 301", "credit_hours": 3, "notes": "Introduction to Psychology." },
+        { "exam_id": "csa", "min_score": 4, "course_code": "C S 312", "credit_hours": 3, "notes": "Introduction to Programming." },
+        { "exam_id": "stats", "min_score": 3, "course_code": "SDS 301", "credit_hours": 3, "notes": "Elementary Statistical Methods." }
+      ]
+    },
+    "tamu": {
+      "college_id": "tamu",
+      "college_name": "Texas A&M University (College Station)",
+      "source_url": "https://testing.tamu.edu/ap-credit",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 3, "course_code": "MATH 151", "credit_hours": 4, "notes": "Engineering Mathematics I." },
+        { "exam_id": "calc_bc", "min_score": 3, "course_code": "MATH 151", "credit_hours": 4, "notes": "Engineering Math I with score of 3." },
+        { "exam_id": "calc_bc", "min_score": 4, "course_code": "MATH 151 & MATH 152", "credit_hours": 8, "notes": "Engineering Mathematics I and II complete." },
+        { "exam_id": "eng_lang", "min_score": 3, "course_code": "ENGL 104", "credit_hours": 3, "notes": "Composition and Rhetoric." },
+        { "exam_id": "eng_lit", "min_score": 3, "course_code": "ENGL 210", "credit_hours": 3, "notes": "Technical and Business Writing or Literature." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CHEM 107 & 117", "credit_hours": 4, "notes": "General Chemistry for Engineering Students." },
+        { "exam_id": "bio", "min_score": 3, "course_code": "BIOL 111", "credit_hours": 4, "notes": "Introductory Biology I with Lab." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "BIOL 111 & BIOL 112", "credit_hours": 8, "notes": "Full Introductory Biology sequence (8 credits)." },
+        { "exam_id": "phys_c_mech", "min_score": 4, "course_code": "PHYS 206", "credit_hours": 4, "notes": "Newtonian Mechanics for Engineering." },
+        { "exam_id": "ushist", "min_score": 3, "course_code": "HIST 105", "credit_hours": 3, "notes": "History of the United States to 1877." },
+        { "exam_id": "ushist", "min_score": 4, "course_code": "HIST 105 & HIST 106", "credit_hours": 6, "notes": "Full US History core requirement satisfied." },
+        { "exam_id": "psych", "min_score": 3, "course_code": "PSYC 107", "credit_hours": 3, "notes": "Introduction to Psychology." },
+        { "exam_id": "csa", "min_score": 4, "course_code": "CSCE 110", "credit_hours": 4, "notes": "Programming I." },
+        { "exam_id": "stats", "min_score": 3, "course_code": "STAT 201", "credit_hours": 3, "notes": "Elementary Statistical Inference." }
+      ]
+    },
+    "uc-berkeley": {
+      "college_id": "uc-berkeley",
+      "college_name": "University of California, Berkeley",
+      "source_url": "https://admission.universityofcalifornia.edu/admission-requirements/ap-exam-credits/ap-credits/berkeley.html",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 3, "course_code": "MATH 16A", "credit_hours": 3, "notes": "Calculus for social/life sciences. Score of 4+ awards MATH 1A in L&S." },
+        { "exam_id": "calc_bc", "min_score": 3, "course_code": "MATH 1A", "credit_hours": 4, "notes": "Calculus I equivalent." },
+        { "exam_id": "calc_bc", "min_score": 5, "course_code": "MATH 1A & MATH 1B", "credit_hours": 8, "notes": "Full first-year Calculus sequence satisfied." },
+        { "exam_id": "eng_lang", "min_score": 4, "course_code": "COLWRIT R1A", "credit_hours": 4, "notes": "Fulfills first half of Reading and Composition requirement." },
+        { "exam_id": "eng_lit", "min_score": 4, "course_code": "ENGLISH R1A", "credit_hours": 4, "notes": "Fulfills first half of Reading and Composition (R&C Part A)." },
+        { "exam_id": "eng_lit", "min_score": 5, "course_code": "ENGLISH R1A & R1B", "credit_hours": 8, "notes": "Fulfills FULL college Reading and Composition requirement." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CHEM 1A & 1AL", "credit_hours": 5, "notes": "General Chemistry with lab in College of Letters & Science." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "BIOLOGY 1A", "credit_hours": 4, "notes": "General Biology prerequisite credit." },
+        { "exam_id": "phys_c_mech", "min_score": 5, "course_code": "PHYSICS 7A", "credit_hours": 4, "notes": "Physics for Scientists and Engineers I." },
+        { "exam_id": "ushist", "min_score": 3, "course_code": "HISTORY ELEC", "credit_hours": 6, "notes": "Satisfies American History and Institutions requirement." },
+        { "exam_id": "psych", "min_score": 4, "course_code": "PSYCH 1", "credit_hours": 3, "notes": "General Psychology." },
+        { "exam_id": "stats", "min_score": 3, "course_code": "STAT 2", "credit_hours": 4, "notes": "Introduction to Statistics." }
+      ]
+    },
+    "uf": {
+      "college_id": "uf",
+      "college_name": "University of Florida",
+      "source_url": "https://catalog.ufl.edu/UGRD/academic-advising/credit-examination/#apcredittext",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 3, "course_code": "MAC 2311", "credit_hours": 4, "notes": "Analytic Geometry and Calculus 1." },
+        { "exam_id": "calc_bc", "min_score": 3, "course_code": "MAC 2311", "credit_hours": 4, "notes": "Calculus 1." },
+        { "exam_id": "calc_bc", "min_score": 4, "course_code": "MAC 2311 & MAC 2312", "credit_hours": 8, "notes": "Calculus 1 & 2 sequence satisfied." },
+        { "exam_id": "eng_lang", "min_score": 3, "course_code": "ENC 1101", "credit_hours": 3, "notes": "Expository and Argumentative Writing." },
+        { "exam_id": "eng_lit", "min_score": 3, "course_code": "AML 2070", "credit_hours": 3, "notes": "Survey of American Literature." },
+        { "exam_id": "chem", "min_score": 3, "course_code": "CHM 1020", "credit_hours": 3, "notes": "Chemistry for the Liberal Arts." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CHM 2045 & 2045L", "credit_hours": 4, "notes": "General Chemistry 1 with Lab." },
+        { "exam_id": "bio", "min_score": 3, "course_code": "BSC 2005 & 2005L", "credit_hours": 4, "notes": "Biological Sciences." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "BSC 2010 & 2011", "credit_hours": 6, "notes": "Integrated Principles of Biology 1 and 2." },
+        { "exam_id": "phys_c_mech", "min_score": 4, "course_code": "PHY 2048 & 2048L", "credit_hours": 4, "notes": "Physics with Calculus 1 and Lab." },
+        { "exam_id": "ushist", "min_score": 3, "course_code": "AMH 2010 & 2020", "credit_hours": 6, "notes": "United States History to and since 1877." },
+        { "exam_id": "psych", "min_score": 3, "course_code": "PSY 2012", "credit_hours": 3, "notes": "General Psychology." },
+        { "exam_id": "csa", "min_score": 3, "course_code": "COP 2500", "credit_hours": 3, "notes": "Concepts in Computer Science." },
+        { "exam_id": "stats", "min_score": 3, "course_code": "STA 2023", "credit_hours": 3, "notes": "Introduction to Statistics 1." }
+      ]
+    },
+    "umich": {
+      "college_id": "umich",
+      "college_name": "University of Michigan, Ann Arbor",
+      "source_url": "https://admissions.umich.edu/apply/first-year-applicants/ap-ib-credit",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 4, "course_code": "MATH 120", "credit_hours": 4, "notes": "Calculus I." },
+        { "exam_id": "calc_bc", "min_score": 4, "course_code": "MATH 120 & 121", "credit_hours": 8, "notes": "Calculus I and II." },
+        { "exam_id": "eng_lang", "min_score": 4, "course_code": "ENGLISH 125", "credit_hours": 4, "notes": "First-Year Writing Requirement satisfied." },
+        { "exam_id": "eng_lit", "min_score": 4, "course_code": "ENGLISH 124", "credit_hours": 4, "notes": "College Writing: Literature and Ideas." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CHEM 130", "credit_hours": 3, "notes": "General Chemistry: Macroscopic." },
+        { "exam_id": "chem", "min_score": 5, "course_code": "CHEM 130 & 210", "credit_hours": 6, "notes": "General Chemistry and Structure & Reactivity." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "BIOLOGY 171 & 172", "credit_hours": 5, "notes": "Introductory Biology: Molecular and Organismal." },
+        { "exam_id": "phys_c_mech", "min_score": 5, "course_code": "PHYSICS 140 & 141", "credit_hours": 5, "notes": "General Physics I and Elementary Lab." },
+        { "exam_id": "ushist", "min_score": 4, "course_code": "HISTORY 260", "credit_hours": 4, "notes": "United States to 1865." },
+        { "exam_id": "psych", "min_score": 4, "course_code": "PSYCH 111", "credit_hours": 4, "notes": "Introduction to Psychology." },
+        { "exam_id": "csa", "min_score": 5, "course_code": "EECS 183", "credit_hours": 4, "notes": "Elementary Programming Concepts." },
+        { "exam_id": "stats", "min_score": 4, "course_code": "STATS 250", "credit_hours": 4, "notes": "Introduction to Statistics and Data Analysis." }
+      ]
+    },
+    "purdue": {
+      "college_id": "purdue",
+      "college_name": "Purdue University",
+      "source_url": "https://www.purdue.edu/admissions/how-to-apply/apply/college-credit/ap-credit.php",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 4, "course_code": "MA 16500", "credit_hours": 4, "notes": "Analytic Geometry and Calculus I." },
+        { "exam_id": "calc_bc", "min_score": 4, "course_code": "MA 16500 & 16600", "credit_hours": 8, "notes": "Calculus I and II complete." },
+        { "exam_id": "eng_lang", "min_score": 4, "course_code": "ENGL 10600", "credit_hours": 4, "notes": "First-Year Composition." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CHM 11500", "credit_hours": 4, "notes": "General Chemistry I." },
+        { "exam_id": "chem", "min_score": 5, "course_code": "CHM 11500 & 11600", "credit_hours": 8, "notes": "General Chemistry I and II sequence." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "BIOL 11000", "credit_hours": 4, "notes": "Fundamentals of Biology I." },
+        { "exam_id": "phys_c_mech", "min_score": 4, "course_code": "PHYS 17200", "credit_hours": 4, "notes": "Modern Mechanics for Engineering." },
+        { "exam_id": "ushist", "min_score": 4, "course_code": "HIST 15100 & 15200", "credit_hours": 6, "notes": "American History to 1877 and Since 1877." },
+        { "exam_id": "psych", "min_score": 4, "course_code": "PSY 12000", "credit_hours": 3, "notes": "Elementary Psychology." },
+        { "exam_id": "csa", "min_score": 4, "course_code": "CS 18000", "credit_hours": 4, "notes": "Problem Solving and Object-Oriented Programming." },
+        { "exam_id": "stats", "min_score": 4, "course_code": "STAT 30100", "credit_hours": 3, "notes": "Elementary Statistical Methods." }
+      ]
+    },
+    "gatech": {
+      "college_id": "gatech",
+      "college_name": "Georgia Institute of Technology",
+      "source_url": "https://catalog.gatech.edu/academics/undergraduate/credit-tests-scores/advanced-placement-exams/",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 4, "course_code": "MATH 1551", "credit_hours": 2, "notes": "Differential Calculus." },
+        { "exam_id": "calc_bc", "min_score": 4, "course_code": "MATH 1551 & 1552", "credit_hours": 6, "notes": "Differential and Integral Calculus." },
+        { "exam_id": "eng_lang", "min_score": 4, "course_code": "ENGL 1101", "credit_hours": 3, "notes": "English Composition I." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CHEM 1310", "credit_hours": 4, "notes": "General Chemistry for Engineers." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "BIOS 1107 & 1107L", "credit_hours": 4, "notes": "Biological Principles and Lab." },
+        { "exam_id": "phys_c_mech", "min_score": 5, "course_code": "PHYS 2211", "credit_hours": 4, "notes": "Introductory Physics I." },
+        { "exam_id": "ushist", "min_score": 4, "course_code": "HIST 2111 or 2112", "credit_hours": 3, "notes": "United States History." },
+        { "exam_id": "psych", "min_score": 4, "course_code": "PSYC 1101", "credit_hours": 3, "notes": "General Psychology." },
+        { "exam_id": "csa", "min_score": 4, "course_code": "CS 1301", "credit_hours": 3, "notes": "Introduction to Computing." },
+        { "exam_id": "stats", "min_score": 4, "course_code": "MATH 3215", "credit_hours": 3, "notes": "Probability and Statistics." }
+      ]
+    },
+    "uiuc": {
+      "college_id": "uiuc",
+      "college_name": "University of Illinois Urbana-Champaign",
+      "source_url": "https://citl.illinois.edu/citl-101/measurement-evaluation/placement-proficiency/cutoff-scores/ap-program",
+      "rules": [
+        { "exam_id": "calc_ab", "min_score": 4, "course_code": "MATH 220", "credit_hours": 5, "notes": "Calculus." },
+        { "exam_id": "calc_bc", "min_score": 4, "course_code": "MATH 220 & 231", "credit_hours": 8, "notes": "Calculus I and II." },
+        { "exam_id": "eng_lang", "min_score": 4, "course_code": "RHET 105", "credit_hours": 4, "notes": "Writing and Research." },
+        { "exam_id": "chem", "min_score": 4, "course_code": "CHEM 102 & 103", "credit_hours": 4, "notes": "General Chemistry I with Lab." },
+        { "exam_id": "chem", "min_score": 5, "course_code": "CHEM 102, 103, 104, 105", "credit_hours": 8, "notes": "Full General Chemistry sequence (8 credits)." },
+        { "exam_id": "bio", "min_score": 4, "course_code": "IB 100", "credit_hours": 3, "notes": "Biology in View." },
+        { "exam_id": "bio", "min_score": 5, "course_code": "IB 150 & MCB 150", "credit_hours": 8, "notes": "Organismal & Molecular Biology majors sequence." },
+        { "exam_id": "phys_c_mech", "min_score": 5, "course_code": "PHYS 211", "credit_hours": 4, "notes": "University Physics: Mechanics." },
+        { "exam_id": "ushist", "min_score": 4, "course_code": "HIST 171 & 172", "credit_hours": 6, "notes": "US History to and since 1877." },
+        { "exam_id": "psych", "min_score": 4, "course_code": "PSYC 100", "credit_hours": 4, "notes": "Introductory Psychology." },
+        { "exam_id": "csa", "min_score": 4, "course_code": "CS 101", "credit_hours": 3, "notes": "Intro Computing: Engineering & Science." },
+        { "exam_id": "stats", "min_score": 4, "course_code": "STAT 100", "credit_hours": 3, "notes": "Statistics." }
+      ]
+    }
+  }
+}

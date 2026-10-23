@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admit — Fact-Based College Standing & AP Credit ROI</title>
+  <meta name="description" content="Enter your scores once to see published college score ranges, state statutory admission rules, and AP/IB credit tuition savings without speculative predictions.">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- Top App Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-logo">A</div>
+        <div class="brand-text">
+          <h1>
+            Admit
+            <span class="brand-badge">2026 Edition</span>
+          </h1>
+          <p>Fact-based college standing, published score ranges & AP credit ROI</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Interactive Profile Quick Pill -->
+        <div class="profile-pill" id="header-profile-pill" onclick="App.openProfileModal()" title="Click to view and edit student profile">
+          <span class="dot"></span>
+          <span>Loading Profile...</span>
+        </div>
+
+        <button class="btn-secondary" onclick="App.openDisclosureModal()" title="View technical architecture, official data citations and AI disclosure">
+          <span>ℹ Sources & Disclosure</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs-wrapper" aria-label="Main Navigation">
+    <div class="nav-tabs">
+      <button class="tab-btn active" data-tab="status" onclick="App.switchTab('status')">
+        <span>1. Status</span>
+        <span class="tab-badge">Where do I stand?</span>
+      </button>
+
+      <button class="tab-btn" data-tab="colleges" onclick="App.switchTab('colleges')">
+        <span>2. Colleges</span>
+        <span class="tab-badge">What should I aim for?</span>
+      </button>
+
+      <button class="tab-btn" data-tab="credits" onclick="App.switchTab('credits')">
+        <span>3. AP/IB Credit</span>
+        <span class="tab-badge">What are my exams worth?</span>
+      </button>
+
+      <button class="tab-btn" data-tab="roadmap" onclick="App.switchTab('roadmap')">
+        <span>4. Roadmap</span>
+        <span class="tab-badge">What do I do next?</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Areas -->
+  <main class="app-main">
+    <!-- Tab 1: Status -->
+    <section id="status-tab-content" class="tab-content active" aria-label="Status & Admission Rules"></section>
+
+    <!-- Tab 2: Colleges -->
+    <section id="colleges-tab-content" class="tab-content" aria-label="Colleges & Score Ranges"></section>
+
+    <!-- Tab 3: AP/IB Credits -->
+    <section id="credits-tab-content" class="tab-content" aria-label="AP and IB Credit Conversion"></section>
+
+    <!-- Tab 4: Roadmap -->
+    <section id="roadmap-tab-content" class="tab-content" aria-label="Personalized Action Roadmap"></section>
+  </main>
+
+  <!-- Footer with Legal & Data Transparency -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div>
+        <strong>Admit</strong> — Built for the 2026 Congressional App Challenge. Zero speculative percentages; 100% verified public data.
+      </div>
+      <div class="footer-links">
+        <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
+        <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">TEC § 51.803</a>
+        <a href="#" onclick="App.openDisclosureModal(); return false;">Contest AI Disclosure</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal: Student Profile Editor -->
+  <div class="modal-overlay" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-profile">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-title-profile">Student Academic Profile</h2>
+        <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Quick Preset Switcher for Judges -->
+        <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-md); padding: 0.75rem; margin-bottom: 1.25rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; color: #93C5FD; text-transform: uppercase; margin-bottom: 0.35rem; letter-spacing: 0.04em;">
+            ⚡ Quick Demo Presets for Testing & Judging:
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('texas_junior')">
+              Texas Junior (Top 4%, SAT 1420)
+            </button>
+            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('california_senior')">
+              California Senior (Top 7.7%, SAT 1450)
+            </button>
+            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('florida_senior')">
+              Florida Senior (Top 14%, SAT 1330)
+            </button>
+            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('blank_slate')">
+              Freshman / Reset
+            </button>
+          </div>
+        </div>
+
+        <form id="profile-form" onsubmit="event.preventDefault(); App.saveProfileFromModal();">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="input-grade">Grade Level</label>
+              <select id="input-grade" class="select-control">
+                <option value="9">9th Grade (Freshman)</option>
+                <option value="10">10th Grade (Sophomore)</option>
+                <option value="11">11th Grade (Junior)</option>
+                <option value="12">12th Grade (Senior)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input-residency">State Residency</label>
+              <select id="input-residency" class="select-control">
+                <option value="TX">Texas (In-State)</option>
+                <option value="CA">California (In-State)</option>
+                <option value="FL">Florida (In-State)</option>
+                <option value="OTHER">Other US State / International</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="input-gpa-unweighted">Unweighted GPA <span class="hint">Max 4.0</span></label>
+              <input type="number" step="0.01" min="0" max="4.0" id="input-gpa-unweighted" class="input-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="input-gpa-weighted">Weighted GPA</label>
+              <input type="number" step="0.01" min="0" max="6.0" id="input-gpa-weighted" class="input-control">
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="input-class-rank">Class Rank <span class="hint">e.g. 24</span></label>
+              <input type="number" min="1" id="input-class-rank" class="input-control">
+            </div>
+
+            <div class="form-group">
+              <label for="input-class-size">Graduating Class Size <span class="hint">e.g. 600</span></label>
+              <input type="number" min="1" id="input-class-size" class="input-control">
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="input-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
+              <input type="number" min="200" max="800" step="10" id="input-sat-rw" class="input-control">
+            </div>
+
+            <div class="form-group">
+              <label for="input-sat-m">SAT Math <span class="hint">200–800</span></label>
+              <input type="number" min="200" max="800" step="10" id="input-sat-m" class="input-control">
+            </div>
+
+            <div class="form-group">
+              <label for="input-act">ACT Composite <span class="hint">1–36</span></label>
+              <input type="number" min="1" max="36" id="input-act" class="input-control">
+            </div>
+          </div>
+
+          <!-- Coursework Requirements Checklist -->
+          <div style="margin: 1.25rem 0 0.5rem 0;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">
+              Coursework & Statutory Prerequisites:
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <label class="checkbox-group">
+                <input type="checkbox" id="check-math-algebra2">
+                <div class="checkbox-label">
+                  <strong>Completed Algebra II and 4 Mathematics Credits</strong>
+                  <span class="checkbox-sub">Mandatory for Texas Distinguished Level of Achievement and STEM programs.</span>
+                </div>
+              </label>
+
+              <div class="form-group" style="margin-top: 0.25rem;">
+                <label for="input-science-years">Total Lab Science Courses Completed or In Progress</label>
+                <input type="number" min="0" max="6" id="input-science-years" class="input-control" value="4">
+              </div>
+
+              <label class="checkbox-group">
+                <input type="checkbox" id="check-endorsement">
+                <div class="checkbox-label">
+                  <strong>Foundation High School Program Endorsement Earned</strong>
+                  <span class="checkbox-sub">Specialized track in STEM, Business & Industry, Arts, or Multidisciplinary.</span>
+                </div>
+              </label>
+
+              <label class="checkbox-group">
+                <input type="checkbox" id="check-fl-prep">
+                <div class="checkbox-label">
+                  <strong>Florida 18 Core College-Prep Credits Completed</strong>
+                  <span class="checkbox-sub">Required for Florida Talented Twenty statutory guarantee.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- AP Exams Section -->
+          <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="font-size: 0.9rem; color: #FFFFFF;">Advanced Placement (AP) Exams</strong>
+                <p style="font-size: 0.75rem; color: var(--text-muted);">Include completed scores (3–5) or mark as Planned for future credit estimation.</p>
+              </div>
+            </div>
+
+            <div id="modal-ap-list">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="App.closeAllModals()">Cancel</button>
+        <button type="button" class="btn-primary" onclick="App.saveProfileFromModal()">Save & Update App</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: College Side-by-Side Comparison -->
+  <div class="modal-overlay" id="comparison-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-compare">
+    <div class="modal-card" style="max-width: 960px;">
+      <div class="modal-header">
+        <h2 id="modal-title-compare">⚖ Side-by-Side College Comparison</h2>
+        <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="comparison-modal-body">
+        <!-- Rendered by CollegesEngine -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="App.closeAllModals()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Sources, Architecture & CAC AI Disclosure -->
+  <div class="modal-overlay" id="disclosure-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-disclosure">
+    <div class="modal-card" style="max-width: 760px;">
+      <div class="modal-header">
+        <h2 id="modal-title-disclosure">Data Sources & Congressional App Challenge Disclosure</h2>
+        <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" style="font-size: 0.88rem; line-height: 1.6; color: var(--text-muted);">
+        <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 0.4rem;">1. Official Public Data Sources</h3>
+        <p style="margin-bottom: 1rem;">
+          Every numerical value and policy cutoff in <strong>Admit</strong> is backed by authoritative, public-domain sources:
+        </p>
+        <ul style="padding-left: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+          <li><strong>U.S. Department of Education College Scorecard:</strong> Official federal database for 25th/75th percentile SAT/ACT ranges, graduation rates, net price, and average tuition.</li>
+          <li><strong>Texas Education Code § 51.803 & SB 175:</strong> Official Texas statutory code establishing the Uniform Admission Policy (Top 10% auto-admit) and UT Austin's capped auto-admit percentage.</li>
+          <li><strong>Texas HB 1992 (TEC § 51.968):</strong> Texas state law capping the minimum AP exam score public universities may require at 3.</li>
+          <li><strong>University Testing Services Registrars:</strong> Directly curated from official institutional credit equivalency catalogs for UT Austin, Texas A&M, UC Berkeley, University of Florida, University of Michigan, Purdue, Georgia Tech, and UIUC.</li>
+        </ul>
+
+        <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 0.4rem;">2. The Anti-Hallucination Core Principle</h3>
+        <p style="margin-bottom: 1.25rem;">
+          Commercial platforms use proprietary machine-learning formulas to output speculative "chance percentages" (e.g. <em>"You have a 34% chance"</em>). Because university admissions involve holistic qualitative factors (essays, interviews, recommendation letters, institutional priorities), mathematical chance calculations are unverifiable and often dangerously misleading. <strong>Admit strictly outputs verifiable facts:</strong> published score distributions, exact course waivers, and statutory rules.
+        </p>
+
+        <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 0.4rem;">3. Congressional App Challenge AI Tool Disclosure</h3>
+        <p style="margin-bottom: 0.75rem;">
+          In accordance with the 2026 Congressional App Challenge rules regarding artificial intelligence:
+        </p>
+        <div style="background: rgba(255,255,255,0.03); border-left: 3px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.82rem;">
+          <em>"AI tools were used as a pair programming mentor for syntax debugging, CSS flexbox layout troubleshooting, and JavaScript DOM manipulation patterns. All application architecture, deterministic state-rule logic, JSON data schemas, AP credit mappings, and UX workflows were designed, verified, and authored with full personal human comprehension of every underlying function."</em>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-primary" onclick="App.closeAllModals()">Understood</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/profile.js"></script>
+  <script src="js/status.js"></script>
+  <script src="js/colleges.js"></script>
+  <script src="js/credits.js"></script>
+  <script src="js/roadmap.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
