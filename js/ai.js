@@ -230,7 +230,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         </button>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+      <div class="ai-layout-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
         <!-- Strengths -->
         <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md); padding: 1rem;">
           <h4 style="font-size: 0.88rem; color: #34D399; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
@@ -271,7 +271,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
     </div>
 
     <!-- Interactive AI Assistant Split View -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+    <div class="ai-layout-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.25rem;">
       <!-- Column 1: Detailed Qualification Breakdown Cards -->
       <div style="display: flex; flex-direction: column; gap: 1.25rem;">
         <!-- Qualifications Card -->
@@ -350,7 +350,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       </div>
 
       <!-- Column 2: Interactive AI Advisor Chat Interface -->
-      <div class="card" style="display: flex; flex-direction: column; height: 680px; padding: 1.25rem;">
+      <div class="card" style="display: flex; flex-direction: column; height: 600px; max-height: 80vh; padding: 1.15rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
           <div>
             <h3 style="font-size: 1.05rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 0.4rem;">
