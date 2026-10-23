@@ -16,11 +16,12 @@ const AdmitAI = {
     const studentPercentile = profile.class_percentile || 10.0;
     const residency = profile.residency || "TX";
 
-    // 1. Evaluate Statutory Qualifications
+    // 1. Evaluate Statutory Qualifications (Home State + National Standards)
     const qualifications = [];
     const disqualifications = [];
+    const relevantRules = (rulesData || []).filter(r => r.state_code === residency || r.state_code === "ALL");
 
-    (rulesData || []).forEach(rule => {
+    relevantRules.forEach(rule => {
       const evaluation = StatusEngine.evaluateRule(rule, profile);
       if (evaluation.isQualified) {
         qualifications.push({

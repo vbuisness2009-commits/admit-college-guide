@@ -1,6 +1,7 @@
 /**
  * Tab 1: Status & Automatic Admission Engine
- * Evaluates published state admission statutes (Texas Top 10%/UT Top 5%, UC ELC, FL Talented Twenty)
+ * Evaluates published state admission statutes (California UC ELC, Washington GAP, Georgia Match,
+ * Florida Talented 20, Texas Top 10%, and National College Readiness Placement)
  * against the student's verified profile data.
  */
 
@@ -24,11 +25,10 @@ const StatusEngine = {
       let isMet = false;
 
       if (criterion.subcriteria_type === "any") {
-        // Any subcriteria can be satisfied
         for (const sub of criterion.subcriteria) {
           if (sub.operator === "all_true") {
             const pass = sub.fields.every(f => {
-              if (f === "science_years") return (profile[f] || 0) >= 4;
+              if (f === "science_years") return (profile[f] || 0) >= 3;
               return !!profile[f];
             });
             if (pass) { isMet = true; break; }
@@ -37,7 +37,7 @@ const StatusEngine = {
             const m = profile.sat_m || 0;
             if (rw >= 480 && m >= 530) { isMet = true; break; }
           } else if (sub.operator === "act_benchmark_check") {
-            if ((profile.act_composite || 0) >= 23) { isMet = true; break; }
+            if ((profile.act_composite || 0) >= 22) { isMet = true; break; }
           }
         }
       } else if (criterion.operator === "equals") {
@@ -48,7 +48,7 @@ const StatusEngine = {
         isMet = (profile[criterion.field] !== undefined && profile[criterion.field] !== null) && profile[criterion.field] >= criterion.value;
       } else if (criterion.operator === "all_true") {
         isMet = criterion.fields.every(f => {
-          if (f === "science_years") return (profile[f] || 0) >= 4;
+          if (f === "science_years") return (profile[f] || 0) >= 3;
           return !!profile[f];
         });
       }
@@ -78,10 +78,8 @@ const StatusEngine = {
       return;
     }
 
-    // Filter rules relevant to student state or show all
-    const relevantRules = this.rulesData.filter(r => r.state === (profile.residency === "TX" ? "Texas" : profile.residency === "CA" ? "California" : profile.residency === "FL" ? "Florida" : "Texas"));
+    const studentState = profile.residency || "CA";
 
-    // Render HTML
     container.innerHTML = `
       <!-- AI Quick Callout Banner -->
       <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(30, 41, 59, 0.6) 100%); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
@@ -90,9 +88,9 @@ const StatusEngine = {
             🤖
           </div>
           <div>
-            <strong style="color: #FFFFFF; font-size: 0.95rem;">Admit AI Diagnostic Scanner Active</strong>
+            <strong style="color: #FFFFFF; font-size: 0.95rem;">Admit AI Nationwide Eligibility Scanner Active</strong>
             <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">
-              Multi-vector AI analysis of your GPA, test scores, coursework, and credit savings against official state statutes.
+              Multi-vector analysis of your GPA, test scores, and coursework against official state public university admission laws.
             </p>
           </div>
         </div>
@@ -116,50 +114,61 @@ const StatusEngine = {
 
           <div class="stat-row">
             <span class="stat-label">Class Rank</span>
-            <span class="stat-value">${profile.class_rank ? `${profile.class_rank} / ${profile.class_size}` : "Unranked"} <span style="font-size: 0.8rem; color: #60A5FA;">(Top ${profile.class_percentile}%)</span></span>
+            <span class="stat-value">
+              ${profile.class_rank ? `${profile.class_rank} / ${profile.class_size}` : "Unranked"} 
+              ${profile.class_percentile ? `<span style="font-size: 0.8rem; color: #60A5FA;">(Top ${profile.class_percentile}%)</span>` : ''}
+            </span>
           </div>
 
           <div class="stat-row">
             <span class="stat-label">Unweighted GPA</span>
-            <span class="stat-value">${profile.gpa_unweighted ? profile.gpa_unweighted.toFixed(2) : "N/A"} <span style="font-size: 0.75rem; color: var(--text-dim);">/ 4.0</span></span>
+            <span class="stat-value">${profile.gpa_unweighted ? profile.gpa_unweighted.toFixed(2) : "Not entered"} <span style="font-size: 0.75rem; color: var(--text-dim);">${profile.gpa_unweighted ? '/ 4.0' : ''}</span></span>
           </div>
 
           <div class="stat-row">
             <span class="stat-label">Weighted GPA</span>
-            <span class="stat-value">${profile.gpa_weighted ? profile.gpa_weighted.toFixed(2) : "N/A"}</span>
+            <span class="stat-value">${profile.gpa_weighted ? profile.gpa_weighted.toFixed(2) : "Not entered"}</span>
           </div>
 
           <div class="stat-row">
             <span class="stat-label">SAT Score</span>
-            <span class="stat-value">${profile.sat_total || "N/A"} <span style="font-size: 0.75rem; color: var(--text-dim);">(ERW ${profile.sat_rw || 0} / M ${profile.sat_m || 0})</span></span>
+            <span class="stat-value">
+              ${profile.sat_total ? `${profile.sat_total} <span style="font-size: 0.75rem; color: var(--text-dim);">(ERW ${profile.sat_rw || 0} / M ${profile.sat_m || 0})</span>` : 'No test score'}
+            </span>
           </div>
 
           <div class="stat-row">
             <span class="stat-label">ACT Composite</span>
-            <span class="stat-value">${profile.act_composite || "N/A"}</span>
+            <span class="stat-value">${profile.act_composite || "Not entered"}</span>
           </div>
 
           <div class="stat-row">
-            <span class="stat-label">Distinguished Diploma Track</span>
-            <span class="stat-value" style="color: ${profile.math_years_algebra2 && profile.science_years >= 4 && profile.has_endorsement ? 'var(--success)' : 'var(--warning)'}; font-size: 0.85rem;">
-              ${profile.math_years_algebra2 && profile.science_years >= 4 && profile.has_endorsement ? '✓ On Track (4 Math + 4 Sci)' : '⚠ Missing Coursework'}
+            <span class="stat-label">Core College Prep Curriculum</span>
+            <span class="stat-value" style="color: ${profile.math_years_algebra2 && (profile.science_years || 0) >= 3 ? 'var(--success)' : 'var(--warning)'}; font-size: 0.85rem;">
+              ${profile.math_years_algebra2 && (profile.science_years || 0) >= 3 ? '✓ On Track (Math + Science)' : '⚠ Incomplete'}
             </span>
           </div>
 
           <div class="stat-row">
             <span class="stat-label">AP/IB Exams</span>
-            <span class="stat-value" style="font-size: 0.85rem;">${(profile.ap_exams || []).filter(e => e.status === 'completed').length} completed, ${(profile.ap_exams || []).filter(e => e.status === 'planned').length} planned</span>
+            <span class="stat-value" style="font-size: 0.85rem;">
+              ${(profile.ap_exams || []).filter(e => e.status === 'completed').length} completed, ${(profile.ap_exams || []).filter(e => e.status === 'planned').length} planned
+            </span>
           </div>
 
           <div style="margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08);">
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">Target College List (${profile.saved_colleges ? profile.saved_colleges.length : 0})</div>
             <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-              ${(profile.saved_colleges || []).map(id => {
+              ${(profile.saved_colleges || []).length === 0 ? `
+                <div style="font-size: 0.75rem; color: var(--text-dim); padding: 0.4rem; background: rgba(255,255,255,0.02); border-radius: 4px;">
+                  No colleges saved yet. Click the Colleges tab to browse and add schools.
+                </div>
+              ` : (profile.saved_colleges || []).map(id => {
                 const c = (collegesData || []).find(col => col.id === id);
                 if (!c) return '';
                 return `
                   <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.8rem;">
-                    <span>${c.short_name}</span>
+                    <span>${c.short_name} (${c.state})</span>
                     <span style="font-family: monospace; font-size: 0.75rem; color: var(--text-dim);">${(c.admit_rate * 100).toFixed(0)}% admit</span>
                   </div>
                 `;
@@ -171,18 +180,21 @@ const StatusEngine = {
         <!-- Rules & Automatic Admission Column -->
         <div class="rules-container">
           <div style="margin-bottom: 0.25rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
               <div>
                 <h3 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF;">State Statutory Automatic Admission Status</h3>
                 <p style="font-size: 0.82rem; color: var(--text-muted);">
-                  Official, legally mandated guaranteed admission policies based on state statutes. No speculative chances.
+                  Legally mandated guaranteed public university admission programs and national direct placement criteria.
                 </p>
               </div>
               <select id="state-rules-selector" class="select-control" style="width: auto; font-size: 0.8rem; padding: 0.4rem 0.75rem;" onchange="StatusEngine.onStateFilterChange(this.value)">
-                <option value="TX" ${profile.residency === 'TX' ? 'selected' : ''}>Texas Rules</option>
-                <option value="CA" ${profile.residency === 'CA' ? 'selected' : ''}>California Rules</option>
-                <option value="FL" ${profile.residency === 'FL' ? 'selected' : ''}>Florida Rules</option>
-                <option value="ALL">Show All States</option>
+                <option value="AUTO" selected>My State (${profile.residency || 'Home'})</option>
+                <option value="ALL">All U.S. State Programs</option>
+                <option value="CA">California (UC ELC)</option>
+                <option value="WA">Washington (GAP)</option>
+                <option value="GA">Georgia (Match)</option>
+                <option value="FL">Florida (Talented 20)</option>
+                <option value="TX">Texas (Top 10%)</option>
               </select>
             </div>
           </div>
@@ -203,14 +215,16 @@ const StatusEngine = {
   },
 
   renderEvaluatedRules(profile, overrideState = null) {
-    const filterState = overrideState || (profile.residency === "TX" ? "TX" : profile.residency === "CA" ? "CA" : profile.residency === "FL" ? "FL" : "ALL");
-    
+    const filterState = overrideState || "AUTO";
+    const userState = profile.residency || "OTHER";
+
     const rulesToDisplay = this.rulesData.filter(r => {
       if (filterState === "ALL") return true;
-      if (filterState === "TX") return r.state === "Texas";
-      if (filterState === "CA") return r.state === "California";
-      if (filterState === "FL") return r.state === "Florida";
-      return true;
+      if (filterState === "AUTO") {
+        // Show rules matching user state OR national rules
+        return r.state_code === userState || r.state_code === "ALL";
+      }
+      return r.state_code === filterState || r.state_code === "ALL";
     });
 
     return rulesToDisplay.map(rule => {
@@ -222,7 +236,7 @@ const StatusEngine = {
           <div class="rule-header">
             <div class="rule-title">
               <h3>${rule.name}</h3>
-              <div class="statute">Statute: ${rule.statute}</div>
+              <div class="statute">Authority: ${rule.statute}</div>
             </div>
             <div class="rule-status-badge ${isQualified ? 'qualified' : 'not-qualified'}">
               ${isQualified ? '✓ STATUTORILY QUALIFIED' : '⚠ CRITERIA MISSING'}
@@ -232,7 +246,7 @@ const StatusEngine = {
             <p class="rule-desc">${rule.description}</p>
 
             <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-dim); margin-bottom: 0.5rem; letter-spacing: 0.04em;">
-              Statutory Qualification Checklist:
+              Statutory Criteria Checklist:
             </div>
 
             <div class="criteria-list">

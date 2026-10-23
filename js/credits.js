@@ -259,10 +259,10 @@ const CreditsEngine = {
       <!-- Legal Context Box -->
       <div class="card" style="margin-top: 2rem; background: rgba(30, 41, 59, 0.4); border-left: 4px solid #60A5FA;">
         <div style="font-size: 0.82rem; font-weight: 700; color: #93C5FD; margin-bottom: 0.25rem;">
-          ⚖ State Law & Institution Credit Mandates
+          ⚖ Nationwide State Higher Education Credit Statutes
         </div>
         <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
-          <strong>Texas Public Institutions (Texas HB 1992):</strong> Under Texas Education Code § 51.968, public higher education institutions in Texas may not require a score higher than 3 on an AP exam to grant undergraduate credit, unless the chief academic officer determines that higher performance is required by professional accreditation standards.
+          <strong>Over 30 States Nationwide:</strong> State legislation across the U.S. (including California AB 1985, Illinois Public Act 099-0358, Ohio ORC 3333.163, Florida Title XLVIII, and Texas HB 1992) mandates that public colleges and universities award undergraduate course credit for AP exam scores of 3 or higher, preventing arbitrary departmental denials and guaranteeing student tuition savings.
         </p>
       </div>
     `;

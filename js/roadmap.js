@@ -39,10 +39,10 @@ const RoadmapEngine = {
       });
     }
 
-    if (!profile.has_endorsement && profile.residency === "TX") {
+    if (!profile.has_endorsement) {
       gaps.coursework.push({
-        title: "Declare and Complete Foundation Endorsement",
-        desc: "State law requires at least one specialized endorsement (STEM, Business, Arts & Humanities, Public Services, or Multidisciplinary) to graduate with the Distinguished diploma.",
+        title: "Complete Advanced College-Prep Diploma Sequence",
+        desc: "Ensure completion of your high school's advanced honors curriculum, state diploma endorsements, or foreign language requirements.",
         urgency: "gap-fix"
       });
     }
@@ -99,8 +99,8 @@ const RoadmapEngine = {
     });
 
     gaps.application.push({
-      title: "Prepare Early Action / Priority Deadlines (Nov 1 & Nov 30)",
-      desc: "Submit Texas ApplyTexas/Common App priority applications by November 1 and California UC applications by November 30.",
+      title: "Prepare Early Action & Priority Deadlines (Nov 1 – Nov 30)",
+      desc: "Submit Common App, Coalition App, and state public university portals prior to priority deadlines (Nov 1 for EA/Priority, Nov 30 for University of California).",
       urgency: "application"
     });
 

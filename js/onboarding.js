@@ -201,18 +201,66 @@ const Onboarding = {
               </div>
 
               <div class="form-group">
-                <label for="ob-residency">State Residency</label>
+                <label for="ob-residency">State of Legal Residency</label>
                 <select id="ob-residency" class="select-control">
-                  <option value="TX" ${this.wizardData.residency === 'TX' ? 'selected' : ''}>Texas (In-State)</option>
-                  <option value="CA" ${this.wizardData.residency === 'CA' ? 'selected' : ''}>California (In-State)</option>
-                  <option value="FL" ${this.wizardData.residency === 'FL' ? 'selected' : ''}>Florida (In-State)</option>
-                  <option value="OTHER" ${this.wizardData.residency === 'OTHER' ? 'selected' : ''}>Other US State / International</option>
+                  <option value="AL">Alabama (AL)</option>
+                  <option value="AK">Alaska (AK)</option>
+                  <option value="AZ">Arizona (AZ)</option>
+                  <option value="AR">Arkansas (AR)</option>
+                  <option value="CA" ${this.wizardData.residency === 'CA' ? 'selected' : ''}>California (CA)</option>
+                  <option value="CO">Colorado (CO)</option>
+                  <option value="CT">Connecticut (CT)</option>
+                  <option value="DE">Delaware (DE)</option>
+                  <option value="DC">District of Columbia (DC)</option>
+                  <option value="FL" ${this.wizardData.residency === 'FL' ? 'selected' : ''}>Florida (FL)</option>
+                  <option value="GA" ${this.wizardData.residency === 'GA' ? 'selected' : ''}>Georgia (GA)</option>
+                  <option value="HI">Hawaii (HI)</option>
+                  <option value="ID">Idaho (ID)</option>
+                  <option value="IL">Illinois (IL)</option>
+                  <option value="IN">Indiana (IN)</option>
+                  <option value="IA">Iowa (IA)</option>
+                  <option value="KS">Kansas (KS)</option>
+                  <option value="KY">Kentucky (KY)</option>
+                  <option value="LA">Louisiana (LA)</option>
+                  <option value="ME">Maine (ME)</option>
+                  <option value="MD">Maryland (MD)</option>
+                  <option value="MA">Massachusetts (MA)</option>
+                  <option value="MI">Michigan (MI)</option>
+                  <option value="MN">Minnesota (MN)</option>
+                  <option value="MS">Mississippi (MS)</option>
+                  <option value="MO">Missouri (MO)</option>
+                  <option value="MT">Montana (MT)</option>
+                  <option value="NE">Nebraska (NE)</option>
+                  <option value="NV">Nevada (NV)</option>
+                  <option value="NH">New Hampshire (NH)</option>
+                  <option value="NJ">New Jersey (NJ)</option>
+                  <option value="NM">New Mexico (NM)</option>
+                  <option value="NY">New York (NY)</option>
+                  <option value="NC">North Carolina (NC)</option>
+                  <option value="ND">North Dakota (ND)</option>
+                  <option value="OH">Ohio (OH)</option>
+                  <option value="OK">Oklahoma (OK)</option>
+                  <option value="OR">Oregon (OR)</option>
+                  <option value="PA">Pennsylvania (PA)</option>
+                  <option value="RI">Rhode Island (RI)</option>
+                  <option value="SC">South Carolina (SC)</option>
+                  <option value="SD">South Dakota (SD)</option>
+                  <option value="TN">Tennessee (TN)</option>
+                  <option value="TX" ${this.wizardData.residency === 'TX' ? 'selected' : ''}>Texas (TX)</option>
+                  <option value="UT">Utah (UT)</option>
+                  <option value="VT">Vermont (VT)</option>
+                  <option value="VA">Virginia (VA)</option>
+                  <option value="WA" ${this.wizardData.residency === 'WA' ? 'selected' : ''}>Washington (WA)</option>
+                  <option value="WV">West Virginia (WV)</option>
+                  <option value="WI">Wisconsin (WI)</option>
+                  <option value="WY">Wyoming (WY)</option>
+                  <option value="OTHER" ${this.wizardData.residency === 'OTHER' ? 'selected' : ''}>U.S. Territory / International</option>
                 </select>
               </div>
             </div>
 
             <div style="background: rgba(37, 99, 235, 0.08); border-left: 3px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
-              ℹ <strong>Why state residency matters:</strong> Texas (TEC § 51.803), California (UC Regents Policy 2102), and Florida (BOG Reg 6.002) have official laws guaranteeing admission for top high school percentile ranks.
+              ℹ <strong>Why state residency matters:</strong> Public universities across all 50 states evaluate in-state tuition qualifications and state-mandated automatic/direct admissions criteria.
             </div>
           </div>
         `;
@@ -308,37 +356,37 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>Curriculum & Coursework Check</h3>
-              <p>State statutory admissions require specific foundational prerequisites.</p>
+              <h3>National College-Prep Curriculum Check</h3>
+              <p>Public universities nationwide evaluate foundational high school course rigor.</p>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
               <label class="checkbox-group">
                 <input type="checkbox" id="ob-alg2" ${this.wizardData.math_years_algebra2 ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Completed Algebra II + 4 Total Math Credits</strong>
-                  <span class="checkbox-sub">Required for the Texas Distinguished Level of Achievement (TEC § 51.803).</span>
+                  <strong>Completed Algebra II and 4 Mathematics Credits</strong>
+                  <span class="checkbox-sub">Core prerequisite across all 50 states for credit-bearing college math and STEM degrees.</span>
                 </div>
               </label>
 
               <div class="form-group" style="margin-top: 0.25rem;">
-                <label for="ob-sci">Total Lab Science Courses (Completed or Enrolled)</label>
+                <label for="ob-sci">Total Laboratory Science Courses (Completed or Enrolled)</label>
                 <input type="number" min="0" max="6" id="ob-sci" class="input-control" value="${this.wizardData.science_years || 4}">
               </div>
 
               <label class="checkbox-group">
                 <input type="checkbox" id="ob-end" ${this.wizardData.has_endorsement ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Earned High School Endorsement Track</strong>
-                  <span class="checkbox-sub">STEM, Business & Industry, Arts & Humanities, or Multidisciplinary.</span>
+                  <strong>Completed 2+ Years of the Same World / Foreign Language</strong>
+                  <span class="checkbox-sub">Standard freshman admission prerequisite for 4-year public university flagships.</span>
                 </div>
               </label>
 
               <label class="checkbox-group">
                 <input type="checkbox" id="ob-fl" ${this.wizardData.fl_prep_complete ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Florida 18 Core College-Prep Credits Completed</strong>
-                  <span class="checkbox-sub">Required for Florida Talented Twenty statutory placement.</span>
+                  <strong>Advanced / Honors College-Prep Diploma Track</strong>
+                  <span class="checkbox-sub">Enrolled in state advanced diploma, IB diploma, or AP capstone sequence.</span>
                 </div>
               </label>
             </div>
