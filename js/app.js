@@ -1,6 +1,6 @@
 /**
  * Main Application Orchestrator for Admit
- * Coordinates tabs, modals, profile syncing, and UI lifecycle.
+ * Coordinates authentication, onboarding wizard, tabs, modals, and reactive state.
  */
 
 const App = {
@@ -8,7 +8,8 @@ const App = {
   collegesData: [],
 
   async init() {
-    // 1. Initialize Profile Manager
+    // 1. Initialize Auth and Profile
+    Auth.init();
     ProfileManager.init();
 
     // 2. Initialize Engines
@@ -18,20 +19,30 @@ const App = {
 
     this.collegesData = CollegesEngine.getAll();
 
-    // 3. Setup Listeners
+    // 3. Setup Global Listeners
     this.setupEventListeners();
 
-    // 4. Update Header Profile Pill
-    this.updateHeaderPill();
+    // 4. Check Authentication & Onboarding Status
+    this.checkInitialUserExperience();
 
-    // 5. Render Active Tab
+    // 5. Update Header UI
+    this.updateHeaderUI();
+
+    // 6. Render Active Tab
     this.renderActiveTab();
   },
 
   setupEventListeners() {
     // Global profile change event
     window.addEventListener("admit:profile-updated", (e) => {
-      this.updateHeaderPill();
+      this.updateHeaderUI();
+      this.renderActiveTab();
+    });
+
+    // Auth state changed event
+    window.addEventListener("admit:auth-changed", (e) => {
+      this.updateHeaderUI();
+      this.checkInitialUserExperience();
       this.renderActiveTab();
     });
 
@@ -44,11 +55,27 @@ const App = {
 
     document.querySelectorAll(".modal-overlay").forEach(overlay => {
       overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) {
+        if (e.target === overlay && overlay.id !== "auth-modal") {
           this.closeAllModals();
         }
       });
     });
+  },
+
+  checkInitialUserExperience() {
+    const user = Auth.getCurrentUser();
+
+    if (!user) {
+      // Not logged in -> Show Auth Modal
+      this.openAuthModal("login");
+    } else if (!user.onboarding_completed) {
+      // Logged in for first time -> Show 5-step Onboarding Wizard
+      this.closeModal("auth-modal");
+      Onboarding.open();
+    } else {
+      // Logged in and onboarding done
+      this.closeModal("auth-modal");
+    }
   },
 
   switchTab(tabId) {
@@ -100,11 +127,14 @@ const App = {
     this.switchTab("credits");
   },
 
-  updateHeaderPill() {
+  updateHeaderUI() {
+    const user = Auth.getCurrentUser();
     const profile = ProfileManager.get();
+    
     const rankText = profile.class_percentile ? `Top ${profile.class_percentile}%` : (profile.class_rank ? `Rank ${profile.class_rank}` : 'Unranked');
     const satText = profile.sat_total ? `SAT ${profile.sat_total}` : (profile.act_composite ? `ACT ${profile.act_composite}` : 'No Test');
     
+    // Profile Pill
     const pill = document.getElementById("header-profile-pill");
     if (pill) {
       pill.innerHTML = `
@@ -113,9 +143,135 @@ const App = {
         <span style="font-size: 0.72rem; color: var(--text-dim); margin-left: 2px;">✏ Edit</span>
       `;
     }
+
+    // User Account Widget
+    const userContainer = document.getElementById("header-user-widget");
+    if (userContainer) {
+      if (user) {
+        const initials = user.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "ST";
+        userContainer.innerHTML = `
+          <div class="user-avatar-btn" onclick="App.toggleUserDropdown()" title="${user.name} (${user.email})">
+            <div class="avatar-circle">${initials}</div>
+            <span style="font-weight: 600;">${user.name.split(" ")[0]}</span>
+            <span style="font-size: 0.7rem; color: var(--text-dim);">▾</span>
+          </div>
+
+          <!-- Dropdown menu -->
+          <div id="user-dropdown-menu" style="display: none; position: absolute; right: 1.5rem; top: 3.5rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 60;">
+            <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 0.4rem;">
+              <strong style="color: #FFFFFF; font-size: 0.85rem; display: block;">${user.name}</strong>
+              <span style="font-size: 0.72rem; color: var(--text-dim);">${user.email}</span>
+            </div>
+            <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="Onboarding.open(); App.toggleUserDropdown();">
+              ⚡ Re-run Stats Wizard
+            </button>
+            <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="App.openProfileModal(); App.toggleUserDropdown();">
+              ✏ Edit Stats Manually
+            </button>
+            <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; color: #F87171;" onclick="App.handleLogout()">
+              🚪 Sign Out
+            </button>
+          </div>
+        `;
+      } else {
+        userContainer.innerHTML = `
+          <button class="btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;" onclick="App.openAuthModal('login')">
+            Log In / Sign Up
+          </button>
+        `;
+      }
+    }
   },
 
-  // Modal Handlers
+  toggleUserDropdown() {
+    const menu = document.getElementById("user-dropdown-menu");
+    if (menu) {
+      menu.style.display = menu.style.display === "none" ? "block" : "none";
+    }
+  },
+
+  // Auth Modal & Form Logic
+  openAuthModal(mode = "login") {
+    const modal = document.getElementById("auth-modal");
+    if (!modal) return;
+    this.switchAuthTab(mode);
+    modal.classList.add("open");
+  },
+
+  switchAuthTab(mode) {
+    const loginTab = document.getElementById("auth-tab-login");
+    const signupTab = document.getElementById("auth-tab-signup");
+    const loginForm = document.getElementById("auth-form-login");
+    const signupForm = document.getElementById("auth-form-signup");
+    const errBox = document.getElementById("auth-error-msg");
+
+    if (errBox) errBox.style.display = "none";
+
+    if (mode === "login") {
+      if (loginTab) loginTab.classList.add("active");
+      if (signupTab) signupTab.classList.remove("active");
+      if (loginForm) loginForm.style.display = "block";
+      if (signupForm) signupForm.style.display = "none";
+    } else {
+      if (signupTab) signupTab.classList.add("active");
+      if (loginTab) loginTab.classList.remove("active");
+      if (signupForm) signupForm.style.display = "block";
+      if (loginForm) loginForm.style.display = "none";
+    }
+  },
+
+  handleLoginSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value;
+    const pass = document.getElementById("login-password").value;
+    const res = Auth.login(email, pass);
+
+    if (res.success) {
+      this.closeModal("auth-modal");
+      this.showToast(`Welcome back, ${res.user.name.split(" ")[0]}!`, "success");
+    } else {
+      this.showAuthError(res.error);
+    }
+  },
+
+  handleSignupSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById("signup-name").value;
+    const email = document.getElementById("signup-email").value;
+    const pass = document.getElementById("signup-password").value;
+    const res = Auth.signup(name, email, pass);
+
+    if (res.success) {
+      this.closeModal("auth-modal");
+      this.showToast(`Account created! Let's set up your profile.`, "success");
+      // Trigger 5-step onboarding wizard
+      Onboarding.open();
+    } else {
+      this.showAuthError(res.error);
+    }
+  },
+
+  handleQuickDemoLogin(presetKey) {
+    const user = Auth.demoLogin(presetKey);
+    this.closeModal("auth-modal");
+    this.showToast(`Logged in as demo student: ${user.name}`, "success");
+  },
+
+  handleLogout() {
+    Auth.logout();
+    this.showToast("Logged out successfully.", "info");
+    this.openAuthModal("login");
+  },
+
+  showAuthError(msg) {
+    const errBox = document.getElementById("auth-error-msg");
+    if (errBox) {
+      errBox.innerText = msg;
+      errBox.style.display = "block";
+    }
+  },
+
+  // Profile Modal Logic
   openProfileModal() {
     const profile = ProfileManager.get();
     const modal = document.getElementById("profile-modal");
@@ -219,7 +375,6 @@ const App = {
     const [id, name] = select.value.split("|");
     const profile = ProfileManager.get();
     
-    // Check if already present
     if (profile.ap_exams.some(e => e.id === id)) {
       this.showToast("This exam is already in your profile.", "warning");
       return;
@@ -255,7 +410,7 @@ const App = {
     };
 
     ProfileManager.save(updated);
-    this.closeAllModals();
+    this.closeModal("profile-modal");
     this.showToast("Profile updated successfully!", "success");
   },
 
@@ -270,8 +425,17 @@ const App = {
     if (modal) modal.classList.add("open");
   },
 
+  closeModal(modalId) {
+    const m = document.getElementById(modalId);
+    if (m) m.classList.remove("open");
+  },
+
   closeAllModals() {
-    document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("open"));
+    document.querySelectorAll(".modal-overlay").forEach(m => {
+      // Don't close auth modal if user is not logged in
+      if (m.id === "auth-modal" && !Auth.isLoggedIn()) return;
+      m.classList.remove("open");
+    });
   },
 
   showToast(message, type = "info") {

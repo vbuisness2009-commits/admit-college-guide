@@ -31,6 +31,9 @@
           <span>Loading Profile...</span>
         </div>
 
+        <!-- User Account / Log Out Widget -->
+        <div id="header-user-widget" style="position: relative;"></div>
+
         <button class="btn-secondary" onclick="App.openDisclosureModal()" title="View technical architecture, official data citations and AI disclosure">
           <span>ℹ Sources & Disclosure</span>
         </button>
@@ -92,7 +95,103 @@
     </div>
   </footer>
 
-  <!-- Modal: Student Profile Editor -->
+  <!-- Modal: Authentication (Login / Signup) -->
+  <div class="modal-overlay" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-auth">
+    <div class="modal-card auth-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <div class="brand-logo" style="width: 28px; height: 28px; font-size: 0.95rem;">A</div>
+          <h2 id="modal-title-auth">Welcome to Admit</h2>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Quick Judge / Demo Accounts -->
+        <div class="demo-account-box">
+          <h4>⚡ 1-Click Judge & Demo Logins:</h4>
+          <div class="demo-pills-row">
+            <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;" onclick="App.handleQuickDemoLogin('texas_junior')">
+              Texas Junior (Top 4%)
+            </button>
+            <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;" onclick="App.handleQuickDemoLogin('california_senior')">
+              California Senior (Top 7.7%)
+            </button>
+          </div>
+        </div>
+
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab-btn active" id="auth-tab-login" onclick="App.switchAuthTab('login')">Sign In</button>
+          <button type="button" class="auth-tab-btn" id="auth-tab-signup" onclick="App.switchAuthTab('signup')">Create Account</button>
+        </div>
+
+        <div id="auth-error-msg" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 0.6rem 0.8rem; border-radius: 6px; font-size: 0.8rem; margin-bottom: 1rem;"></div>
+
+        <!-- Login Form -->
+        <form id="auth-form-login" onsubmit="App.handleLoginSubmit(event)">
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" class="input-control" placeholder="name@example.com" value="alex.texas@demo.com" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="input-control" placeholder="••••••••" value="password123" required>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
+            Sign In to Dashboard →
+          </button>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="auth-form-signup" style="display: none;" onsubmit="App.handleSignupSubmit(event)">
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" class="input-control" placeholder="Alex Rivera" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" class="input-control" placeholder="name@example.com" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="signup-password">Create Password</label>
+            <input type="password" id="signup-password" class="input-control" placeholder="At least 6 characters" minlength="6" required>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
+            Create Account & Enter Stats →
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 5-Step Guided Onboarding Wizard -->
+  <div class="modal-overlay" id="onboarding-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-onboarding">
+    <div class="modal-card onboarding-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-title-onboarding" style="font-size: 1.15rem;">Student Academic Setup</h2>
+          <span id="onboarding-step-label" style="font-size: 0.75rem; color: #60A5FA; font-weight: 600;">Step 1 of 5</span>
+        </div>
+        <button class="modal-close" onclick="Onboarding.close()" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Step Progress Bar -->
+      <div class="onboarding-progress-bar">
+        <div class="onboarding-progress-fill" id="onboarding-progress-fill"></div>
+      </div>
+
+      <div class="modal-body" id="onboarding-step-container">
+        <!-- Injected dynamically by Onboarding.renderStep() -->
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between;">
+        <button type="button" class="btn-secondary" id="ob-prev-btn" onclick="Onboarding.prevStep()">← Previous</button>
+        <button type="button" class="btn-primary" id="ob-next-btn" onclick="Onboarding.nextStep()">Next Step →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Student Profile Editor (Manual Edit) -->
   <div class="modal-overlay" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-profile">
     <div class="modal-card">
       <div class="modal-header">
@@ -104,7 +203,7 @@
         <!-- Quick Preset Switcher for Judges -->
         <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-md); padding: 0.75rem; margin-bottom: 1.25rem;">
           <div style="font-size: 0.75rem; font-weight: 700; color: #93C5FD; text-transform: uppercase; margin-bottom: 0.35rem; letter-spacing: 0.04em;">
-            ⚡ Quick Demo Presets for Testing & Judging:
+            ⚡ Quick Demo Presets:
           </div>
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('texas_junior')">
@@ -112,12 +211,6 @@
             </button>
             <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('california_senior')">
               California Senior (Top 7.7%, SAT 1450)
-            </button>
-            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('florida_senior')">
-              Florida Senior (Top 14%, SAT 1330)
-            </button>
-            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('blank_slate')">
-              Freshman / Reset
             </button>
           </div>
         </div>
@@ -305,6 +398,8 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/onboarding.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/status.js"></script>
   <script src="js/colleges.js"></script>
