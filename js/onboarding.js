@@ -13,41 +13,48 @@ const Onboarding = {
     const user = Auth.getCurrentUser();
     if (user && user.profile) {
       this.wizardData = JSON.parse(JSON.stringify(user.profile));
-      if (!this.wizardData.name) this.wizardData.name = user.name;
+      if (!this.wizardData.name && user.name) this.wizardData.name = user.name;
     } else {
       this.wizardData = {
-        name: "",
+        name: user ? user.name : "",
         grade_level: 11,
         residency: "TX",
         high_school: "",
-        gpa_unweighted: 3.85,
-        gpa_weighted: 4.5,
-        class_rank: 25,
-        class_size: 500,
-        class_percentile: 5.0,
-        sat_rw: 680,
-        sat_m: 710,
-        sat_total: 1390,
-        act_composite: 31,
+        gpa_unweighted: 3.8,
+        gpa_weighted: 4.2,
+        class_rank: null,
+        class_size: null,
+        class_percentile: null,
+        sat_rw: null,
+        sat_m: null,
+        sat_total: null,
+        act_composite: null,
         math_years_algebra2: true,
         science_years: 4,
         has_endorsement: true,
-        fl_prep_complete: true,
-        saved_colleges: ["ut-austin", "tamu", "rice"],
-        ap_exams: [
-          { id: "calc_ab", name: "AP Calculus AB", score: 4, status: "completed" },
-          { id: "eng_lang", name: "AP English Language & Composition", score: 4, status: "completed" }
-        ]
+        fl_prep_complete: false,
+        saved_colleges: ["ut-austin", "tamu"],
+        ap_exams: []
       };
     }
+  },
+
+  start() {
+    this.init();
+    this.renderStep(1);
+    const obContainer = document.getElementById("view-onboarding");
+    if (obContainer) obContainer.style.display = "block";
   },
 
   open() {
     this.init();
     const modal = document.getElementById("onboarding-modal");
-    if (!modal) return;
-    this.renderStep(1);
-    modal.classList.add("open");
+    if (modal) {
+      this.renderStep(1);
+      modal.classList.add("open");
+    } else {
+      this.start();
+    }
   },
 
   close() {
@@ -56,10 +63,10 @@ const Onboarding = {
   },
 
   goToStep(step) {
-    // Save current step data before moving
     this.harvestCurrentStepData();
     this.currentStep = Math.max(1, Math.min(this.totalSteps, step));
     this.renderStep(this.currentStep);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
   nextStep() {
@@ -77,8 +84,8 @@ const Onboarding = {
         const hsInput = document.getElementById("ob-hs");
         const gradeInput = document.getElementById("ob-grade");
         const resInput = document.getElementById("ob-residency");
-        if (nameInput) this.wizardData.name = nameInput.value;
-        if (hsInput) this.wizardData.high_school = hsInput.value;
+        if (nameInput) this.wizardData.name = nameInput.value.trim();
+        if (hsInput) this.wizardData.high_school = hsInput.value.trim();
         if (gradeInput) this.wizardData.grade_level = parseInt(gradeInput.value, 10);
         if (resInput) this.wizardData.residency = resInput.value;
         break;
@@ -90,21 +97,33 @@ const Onboarding = {
         const size = document.getElementById("ob-size");
         if (gpaUw) this.wizardData.gpa_unweighted = parseFloat(gpaUw.value) || 3.8;
         if (gpaW) this.wizardData.gpa_weighted = parseFloat(gpaW.value) || 4.2;
-        if (rank) this.wizardData.class_rank = parseInt(rank.value, 10) || 1;
-        if (size) this.wizardData.class_size = parseInt(size.value, 10) || 100;
-        if (this.wizardData.class_rank && this.wizardData.class_size) {
+        if (rank) this.wizardData.class_rank = parseInt(rank.value, 10) || null;
+        if (size) this.wizardData.class_size = parseInt(size.value, 10) || null;
+        if (this.wizardData.class_rank && this.wizardData.class_size && this.wizardData.class_size > 0) {
           this.wizardData.class_percentile = parseFloat(((this.wizardData.class_rank / this.wizardData.class_size) * 100).toFixed(1));
+        } else {
+          this.wizardData.class_percentile = null;
         }
         break;
       }
       case 3: {
-        const rw = document.getElementById("ob-sat-rw");
-        const m = document.getElementById("ob-sat-m");
-        const act = document.getElementById("ob-act");
-        if (rw) this.wizardData.sat_rw = parseInt(rw.value, 10) || 0;
-        if (m) this.wizardData.sat_m = parseInt(m.value, 10) || 0;
-        this.wizardData.sat_total = (this.wizardData.sat_rw || 0) + (this.wizardData.sat_m || 0);
-        if (act) this.wizardData.act_composite = parseInt(act.value, 10) || null;
+        const noTest = document.getElementById("ob-no-test");
+        if (noTest && noTest.checked) {
+          this.wizardData.sat_rw = null;
+          this.wizardData.sat_m = null;
+          this.wizardData.sat_total = null;
+          this.wizardData.act_composite = null;
+        } else {
+          const rw = document.getElementById("ob-sat-rw");
+          const m = document.getElementById("ob-sat-m");
+          const act = document.getElementById("ob-act");
+          const rwVal = rw && rw.value ? parseInt(rw.value, 10) : null;
+          const mVal = m && m.value ? parseInt(m.value, 10) : null;
+          this.wizardData.sat_rw = rwVal;
+          this.wizardData.sat_m = mVal;
+          this.wizardData.sat_total = (rwVal && mVal) ? (rwVal + mVal) : null;
+          this.wizardData.act_composite = (act && act.value) ? parseInt(act.value, 10) : null;
+        }
         break;
       }
       case 4: {
@@ -116,10 +135,6 @@ const Onboarding = {
         if (sci) this.wizardData.science_years = parseInt(sci.value, 10) || 4;
         if (end) this.wizardData.has_endorsement = end.checked;
         if (fl) this.wizardData.fl_prep_complete = fl.checked;
-        break;
-      }
-      case 5: {
-        // Handled directly via interactive selections
         break;
       }
     }
@@ -134,7 +149,6 @@ const Onboarding = {
 
     if (!container) return;
 
-    // Update Progress
     const percent = ((step - 1) / (this.totalSteps - 1)) * 100;
     if (progressFill) progressFill.style.width = `${percent}%`;
     if (stepLabel) stepLabel.innerText = `Step ${step} of ${this.totalSteps}`;
@@ -152,7 +166,6 @@ const Onboarding = {
       }
     }
 
-    // Step contents
     let html = "";
 
     switch (step) {
@@ -160,19 +173,19 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>Let's start with the basics</h3>
-              <p>Where are you applying from, and what grade are you in?</p>
+              <h3>Let's start with your location & grade</h3>
+              <p>Where are you attending high school, and what year are you graduating?</p>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
                 <label for="ob-name">Full Name</label>
-                <input type="text" id="ob-name" class="input-control" value="${this.wizardData.name || ''}" placeholder="e.g. Alex Rivera">
+                <input type="text" id="ob-name" class="input-control" value="${this.wizardData.name || ''}" placeholder="e.g. John Doe" required>
               </div>
 
               <div class="form-group">
                 <label for="ob-hs">High School Name <span class="hint">(optional)</span></label>
-                <input type="text" id="ob-hs" class="input-control" value="${this.wizardData.high_school || ''}" placeholder="e.g. Katy High School">
+                <input type="text" id="ob-hs" class="input-control" value="${this.wizardData.high_school || ''}" placeholder="e.g. Westlake High School">
               </div>
             </div>
 
@@ -190,91 +203,102 @@ const Onboarding = {
               <div class="form-group">
                 <label for="ob-residency">State Residency</label>
                 <select id="ob-residency" class="select-control">
-                  <option value="TX" ${this.wizardData.residency === 'TX' ? 'selected' : ''}>Texas (TX)</option>
-                  <option value="CA" ${this.wizardData.residency === 'CA' ? 'selected' : ''}>California (CA)</option>
-                  <option value="FL" ${this.wizardData.residency === 'FL' ? 'selected' : ''}>Florida (FL)</option>
+                  <option value="TX" ${this.wizardData.residency === 'TX' ? 'selected' : ''}>Texas (In-State)</option>
+                  <option value="CA" ${this.wizardData.residency === 'CA' ? 'selected' : ''}>California (In-State)</option>
+                  <option value="FL" ${this.wizardData.residency === 'FL' ? 'selected' : ''}>Florida (In-State)</option>
                   <option value="OTHER" ${this.wizardData.residency === 'OTHER' ? 'selected' : ''}>Other US State / International</option>
                 </select>
               </div>
             </div>
 
-            <div style="background: rgba(59, 130, 246, 0.08); border-left: 3px solid #3B82F6; padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
-              ℹ <strong>Why state matters:</strong> Texas, California, and Florida have official state laws guaranteeing admission for top high school percentiles.
+            <div style="background: rgba(37, 99, 235, 0.08); border-left: 3px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
+              ℹ <strong>Why state residency matters:</strong> Texas (TEC § 51.803), California (UC Regents Policy 2102), and Florida (BOG Reg 6.002) have official laws guaranteeing admission for top high school percentile ranks.
             </div>
           </div>
         `;
         break;
 
       case 2:
-        const pct = this.wizardData.class_rank && this.wizardData.class_size ? ((this.wizardData.class_rank / this.wizardData.class_size) * 100).toFixed(1) : "5.0";
+        const pct = (this.wizardData.class_rank && this.wizardData.class_size) ? ((this.wizardData.class_rank / this.wizardData.class_size) * 100).toFixed(1) : null;
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>Academic Performance & Standing</h3>
-              <p>Enter your GPA and class rank to check state automatic admission cutoffs.</p>
+              <h3>Academic Performance & Class Standing</h3>
+              <p>Enter your GPA and class rank to evaluate statutory automatic admission programs.</p>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
-                <label for="ob-gpa-uw">Unweighted GPA <span class="hint">Max 4.0</span></label>
-                <input type="number" step="0.01" min="0" max="4.0" id="ob-gpa-uw" class="input-control" value="${this.wizardData.gpa_unweighted || 3.85}">
+                <label for="ob-gpa-uw">Unweighted GPA <span class="hint">0.00 – 4.00</span></label>
+                <input type="number" step="0.01" min="0" max="4.0" id="ob-gpa-uw" class="input-control" value="${this.wizardData.gpa_unweighted || ''}" placeholder="3.85">
               </div>
 
               <div class="form-group">
-                <label for="ob-gpa-w">Weighted GPA</label>
-                <input type="number" step="0.01" min="0" max="6.0" id="ob-gpa-w" class="input-control" value="${this.wizardData.gpa_weighted || 4.5}">
+                <label for="ob-gpa-w">Weighted GPA <span class="hint">e.g. 4.50</span></label>
+                <input type="number" step="0.01" min="0" max="6.0" id="ob-gpa-w" class="input-control" value="${this.wizardData.gpa_weighted || ''}" placeholder="4.40">
               </div>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
-                <label for="ob-rank">Class Rank <span class="hint">e.g. 24</span></label>
-                <input type="number" min="1" id="ob-rank" class="input-control" value="${this.wizardData.class_rank || 25}" oninput="Onboarding.updatePercentileLive()">
+                <label for="ob-rank">Class Rank <span class="hint">Exact position</span></label>
+                <input type="number" min="1" id="ob-rank" class="input-control" value="${this.wizardData.class_rank || ''}" placeholder="e.g. 24" oninput="Onboarding.updatePercentileLive()">
               </div>
 
               <div class="form-group">
-                <label for="ob-size">Graduating Class Size <span class="hint">e.g. 500</span></label>
-                <input type="number" min="1" id="ob-size" class="input-control" value="${this.wizardData.class_size || 500}" oninput="Onboarding.updatePercentileLive()">
+                <label for="ob-size">Graduating Class Size <span class="hint">Total seniors</span></label>
+                <input type="number" min="1" id="ob-size" class="input-control" value="${this.wizardData.class_size || ''}" placeholder="e.g. 600" oninput="Onboarding.updatePercentileLive()">
               </div>
             </div>
 
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
-              <span style="font-size: 0.85rem; color: var(--text-muted);">Calculated Class Percentile:</span>
-              <strong style="color: #60A5FA; font-size: 1.1rem;" id="ob-percentile-live">Top ${pct}%</strong>
+              <span style="font-size: 0.84rem; color: var(--text-muted);">Calculated Class Percentile:</span>
+              <strong style="color: #60A5FA; font-size: 1.05rem;" id="ob-percentile-live">${pct ? `Top ${pct}%` : 'Enter rank & size above'}</strong>
             </div>
           </div>
         `;
         break;
 
       case 3:
-        const totalSat = (this.wizardData.sat_rw || 680) + (this.wizardData.sat_m || 710);
+        const hasScores = this.wizardData.sat_rw && this.wizardData.sat_m;
+        const totalSat = hasScores ? (this.wizardData.sat_rw + this.wizardData.sat_m) : "N/A";
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
               <h3>Standardized Test Scores</h3>
-              <p>Used to plot your dot on official middle-50% university percentile bars.</p>
+              <p>Compare your scores against published middle-50% ranges from the U.S. Dept. of Education.</p>
             </div>
 
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="ob-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
-                <input type="number" min="200" max="800" step="10" id="ob-sat-rw" class="input-control" value="${this.wizardData.sat_rw || 680}" oninput="Onboarding.updateSatTotalLive()">
+            <label class="checkbox-group" style="margin-bottom: 1rem;">
+              <input type="checkbox" id="ob-no-test" onchange="Onboarding.toggleTestInputs(this.checked)" ${!hasScores && !this.wizardData.act_composite ? '' : ''}>
+              <div class="checkbox-label">
+                <strong>I haven't taken the SAT or ACT yet</strong>
+                <span class="checkbox-sub">You can add test scores anytime later from your profile.</span>
+              </div>
+            </label>
+
+            <div id="ob-test-fields">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="ob-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
+                  <input type="number" min="200" max="800" step="10" id="ob-sat-rw" class="input-control" value="${this.wizardData.sat_rw || ''}" placeholder="680" oninput="Onboarding.updateSatTotalLive()">
+                </div>
+
+                <div class="form-group">
+                  <label for="ob-sat-m">SAT Math <span class="hint">200–800</span></label>
+                  <input type="number" min="200" max="800" step="10" id="ob-sat-m" class="input-control" value="${this.wizardData.sat_m || ''}" placeholder="720" oninput="Onboarding.updateSatTotalLive()">
+                </div>
+
+                <div class="form-group">
+                  <label for="ob-act">ACT Composite <span class="hint">1–36</span></label>
+                  <input type="number" min="1" max="36" id="ob-act" class="input-control" value="${this.wizardData.act_composite || ''}" placeholder="31">
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="ob-sat-m">SAT Math <span class="hint">200–800</span></label>
-                <input type="number" min="200" max="800" step="10" id="ob-sat-m" class="input-control" value="${this.wizardData.sat_m || 710}" oninput="Onboarding.updateSatTotalLive()">
+              <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+                <span style="font-size: 0.84rem; color: var(--text-muted);">Combined Total SAT Score:</span>
+                <strong style="color: #34D399; font-size: 1.15rem;" id="ob-sat-total-live">${totalSat}</strong>
               </div>
-
-              <div class="form-group">
-                <label for="ob-act">ACT Composite <span class="hint">(optional, 1–36)</span></label>
-                <input type="number" min="1" max="36" id="ob-act" class="input-control" value="${this.wizardData.act_composite || 31}">
-              </div>
-            </div>
-
-            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
-              <span style="font-size: 0.85rem; color: var(--text-muted);">Combined Total SAT Score:</span>
-              <strong style="color: #34D399; font-size: 1.15rem;" id="ob-sat-total-live">${totalSat}</strong>
             </div>
           </div>
         `;
@@ -285,7 +309,7 @@ const Onboarding = {
           <div class="onboarding-step-body">
             <div class="step-title-group">
               <h3>Curriculum & Coursework Check</h3>
-              <p>Statutory automatic admissions require specific coursework prerequisites.</p>
+              <p>State statutory admissions require specific foundational prerequisites.</p>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
@@ -293,11 +317,11 @@ const Onboarding = {
                 <input type="checkbox" id="ob-alg2" ${this.wizardData.math_years_algebra2 ? 'checked' : ''}>
                 <div class="checkbox-label">
                   <strong>Completed Algebra II + 4 Total Math Credits</strong>
-                  <span class="checkbox-sub">Mandatory for Texas Distinguished Level of Achievement (TEC § 51.803).</span>
+                  <span class="checkbox-sub">Required for the Texas Distinguished Level of Achievement (TEC § 51.803).</span>
                 </div>
               </label>
 
-              <div class="form-group">
+              <div class="form-group" style="margin-top: 0.25rem;">
                 <label for="ob-sci">Total Lab Science Courses (Completed or Enrolled)</label>
                 <input type="number" min="0" max="6" id="ob-sci" class="input-control" value="${this.wizardData.science_years || 4}">
               </div>
@@ -345,7 +369,7 @@ const Onboarding = {
           <div class="onboarding-step-body">
             <div class="step-title-group">
               <h3>AP/IB Exams & Target Universities</h3>
-              <p>Add the exams you've taken or plan to take, and pick a few colleges to track.</p>
+              <p>Add completed or planned exams, and select colleges to track in your dashboard.</p>
             </div>
 
             <!-- AP Exams Section -->
@@ -355,7 +379,11 @@ const Onboarding = {
               </label>
 
               <div id="ob-exam-list" style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem;">
-                ${currentExams.map((e, idx) => `
+                ${currentExams.length === 0 ? `
+                  <div style="font-size: 0.8rem; color: var(--text-dim); padding: 0.5rem; background: rgba(255,255,255,0.02); border-radius: 6px;">
+                    No AP exams added yet. Select an exam below and click '+ Add'.
+                  </div>
+                ` : currentExams.map((e, idx) => `
                   <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.82rem;">
                     <span><strong>${e.name}</strong> (${e.status === 'completed' ? `Score: ${e.score}` : 'Planned'})</span>
                     <button class="btn-secondary" style="padding: 0.15rem 0.4rem; font-size: 0.7rem; color: #F87171;" onclick="Onboarding.removeExam(${idx})">✕</button>
@@ -380,7 +408,7 @@ const Onboarding = {
             <!-- College Selection Checklist -->
             <div>
               <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
-                Select Colleges to Track (${savedColleges.length} selected):
+                Select Target Colleges to Track (${savedColleges.length} selected):
               </label>
               <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.5rem; max-height: 180px; overflow-y: auto; padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
                 ${collegesList.map(c => `
@@ -399,19 +427,31 @@ const Onboarding = {
     container.innerHTML = html;
   },
 
+  toggleTestInputs(isNoTest) {
+    const fields = document.getElementById("ob-test-fields");
+    if (fields) fields.style.opacity = isNoTest ? "0.4" : "1";
+  },
+
   updatePercentileLive() {
-    const rank = parseInt(document.getElementById("ob-rank").value, 10) || 1;
-    const size = parseInt(document.getElementById("ob-size").value, 10) || 100;
-    const pct = ((rank / size) * 100).toFixed(1);
+    const rank = parseInt(document.getElementById("ob-rank").value, 10);
+    const size = parseInt(document.getElementById("ob-size").value, 10);
     const label = document.getElementById("ob-percentile-live");
-    if (label) label.innerText = `Top ${pct}%`;
+    if (label) {
+      if (rank && size && size > 0) {
+        label.innerText = `Top ${((rank / size) * 100).toFixed(1)}%`;
+      } else {
+        label.innerText = "Enter rank & size above";
+      }
+    }
   },
 
   updateSatTotalLive() {
     const rw = parseInt(document.getElementById("ob-sat-rw").value, 10) || 0;
     const m = parseInt(document.getElementById("ob-sat-m").value, 10) || 0;
     const label = document.getElementById("ob-sat-total-live");
-    if (label) label.innerText = rw + m;
+    if (label) {
+      label.innerText = (rw + m > 0) ? (rw + m) : "N/A";
+    }
   },
 
   addExam() {
@@ -459,13 +499,11 @@ const Onboarding = {
 
   finish() {
     this.harvestCurrentStepData();
-    
-    // Save to Auth and ProfileManager
     Auth.updateCurrentUserProfile(this.wizardData, true);
     ProfileManager.save(this.wizardData);
 
     this.close();
-    App.showToast("Onboarding complete! Your personalized dashboard is ready.", "success");
-    App.renderActiveTab();
+    App.updateAppView();
+    App.showToast("Setup complete! Your dashboard is active.", "success");
   }
 };

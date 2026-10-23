@@ -84,7 +84,8 @@ const CollegesEngine = {
     if (!grid) return;
 
     const profile = ProfileManager.get();
-    const studentScore = profile.sat_total || 1200;
+    const hasScore = profile.sat_total !== null && profile.sat_total !== undefined && profile.sat_total > 0;
+    const studentScore = hasScore ? profile.sat_total : null;
 
     // Filter logic
     let filtered = this.collegesData.filter(c => {
@@ -132,14 +133,18 @@ const CollegesEngine = {
 
       const leftPercent = Math.max(0, Math.min(100, ((p25 - scaleMin) / scaleSpan) * 100));
       const widthPercent = Math.max(2, Math.min(100 - leftPercent, ((p75 - p25) / scaleSpan) * 100));
-      const dotPercent = Math.max(0, Math.min(100, ((studentScore - scaleMin) / scaleSpan) * 100));
+      const dotPercent = hasScore ? Math.max(0, Math.min(100, ((studentScore - scaleMin) / scaleSpan) * 100)) : 0;
 
       // Range classification
       let verdictLabel = "In middle-50% range";
       let verdictClass = "in-range";
       let targetText = "";
 
-      if (studentScore < p25) {
+      if (!hasScore) {
+        verdictLabel = "No Test Score";
+        verdictClass = "below-range";
+        targetText = `Enter SAT/ACT in your profile to plot against the ${p25}–${p75} middle-50% range.`;
+      } else if (studentScore < p25) {
         verdictLabel = "Below middle-50% range";
         verdictClass = "below-range";
         const delta = p75 - studentScore;
@@ -180,10 +185,12 @@ const CollegesEngine = {
               <span class="range-tick-25" style="left: ${leftPercent}%;">${p25}</span>
               <span class="range-tick-75" style="left: ${leftPercent + widthPercent}%;">${p75}</span>
 
-              <!-- Student Dot -->
-              <div class="student-dot" style="left: ${dotPercent}%;" title="Your SAT: ${studentScore}">
-                <div class="student-dot-label">You: ${studentScore}</div>
-              </div>
+              <!-- Student Dot (Rendered only if test score exists) -->
+              ${hasScore ? `
+                <div class="student-dot" style="left: ${dotPercent}%;" title="Your SAT: ${studentScore}">
+                  <div class="student-dot-label">You: ${studentScore}</div>
+                </div>
+              ` : ''}
             </div>
 
             <div class="range-target-hint">

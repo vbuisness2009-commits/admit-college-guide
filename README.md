@@ -18,6 +18,17 @@ Most commercial college tools give students a speculative *"X% admission chance"
 
 ## 💻 Features & Architecture
 
+### User Account & Authentication Flow (Production-Grade)
+* **Dedicated Landing & Auth Page (`#view-auth`):** When unauthenticated, visitors see a high-conversion, professional educational landing page modeled after modern SAT prep platforms (Khan Academy / College Board), with feature pillars and a tabbed "Sign In" / "Create Account" card.
+* **Real Account Registration:** Validates student names, unique emails, and secure passwords stored in local client-side storage. Zero pre-seeded fake demo accounts.
+* **5-Step Student Onboarding Wizard (`#view-onboarding`):** New students are seamlessly guided through a focused, multi-step profile configuration:
+  * **Step 1:** Location & Grade Level (Residency, High School, 9th–12th).
+  * **Step 2:** Academic Performance (Unweighted & Weighted GPA, Class Rank & Size with live percentile calculation).
+  * **Step 3:** Standardized Testing (SAT Math/ERW subscores, ACT, or "haven't taken yet" toggle).
+  * **Step 4:** Curriculum & Coursework (Algebra II, lab sciences count, state endorsement).
+  * **Step 5:** AP/IB Exams taken or planned + target university selection.
+* **Persistent Session Management:** Remembering logged-in state across browser sessions with a top-nav user menu dropdown for profile editing, wizard re-running, and sign out.
+
 ### Tab 1 — Status: "Where do I stand?"
 * **Student Academic Snapshot:** Displays GPA (unweighted & weighted), class rank percentile, SAT/ACT splits, and graduation diploma endorsements.
 * **State Statutory Admission Engine:** Evaluates student profile against published state automatic admission laws.

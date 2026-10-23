@@ -6,226 +6,328 @@
   <meta name="theme-color" content="#0B1120">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Admit — Fact-Based College Standing & AP Credit ROI</title>
-  <meta name="description" content="Enter your scores once to see published college score ranges, state statutory admission rules, and AP/IB credit tuition savings without speculative predictions.">
+  <title>Admit — Fact-Based College Standing & AP Credit Engine</title>
+  <meta name="description" content="Enter your academic stats once. Verify state statutory auto-admissions, view published College Scorecard percentiles, and calculate verified AP credit tuition savings.">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
 
-  <!-- Top App Navigation Bar -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="brand-group">
-        <div class="brand-logo">A</div>
-        <div class="brand-text">
-          <h1>
-            Admit
-            <span class="brand-badge">2026 Edition</span>
-          </h1>
-          <p>Fact-based college standing, published score ranges & AP credit ROI</p>
-        </div>
-      </div>
-
-      <div class="header-actions">
-        <!-- Interactive Profile Quick Pill -->
-        <div class="profile-pill" id="header-profile-pill" onclick="App.openProfileModal()" title="Click to view and edit student profile">
-          <span class="dot"></span>
-          <span>Loading Profile...</span>
-        </div>
-
-        <!-- User Account / Log Out Widget -->
-        <div id="header-user-widget" style="position: relative;"></div>
-
-        <button class="btn-secondary" onclick="App.openDisclosureModal()" title="View technical architecture, official data citations and AI disclosure">
-          <span>ℹ Sources & Disclosure</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Navigation Tabs -->
-  <nav class="nav-tabs-wrapper" aria-label="Main Navigation">
-    <div class="nav-tabs">
-      <button class="tab-btn active" data-tab="status" onclick="App.switchTab('status')">
-        <span>1. Status</span>
-        <span class="tab-badge">Where do I stand?</span>
-      </button>
-
-      <button class="tab-btn" data-tab="colleges" onclick="App.switchTab('colleges')">
-        <span>2. Colleges</span>
-        <span class="tab-badge">What should I aim for?</span>
-      </button>
-
-      <button class="tab-btn" data-tab="credits" onclick="App.switchTab('credits')">
-        <span>3. AP/IB Credit</span>
-        <span class="tab-badge">What are my exams worth?</span>
-      </button>
-
-      <button class="tab-btn" data-tab="roadmap" onclick="App.switchTab('roadmap')">
-        <span>4. Roadmap</span>
-        <span class="tab-badge">What do I do next?</span>
-      </button>
-
-      <button class="tab-btn" data-tab="ai" onclick="App.switchTab('ai')">
-        <span>5. AI Audit & Advisor</span>
-        <span class="tab-badge" style="background: rgba(59, 130, 246, 0.25); color: #93C5FD;">Stats Diagnosis</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Main Content Areas -->
-  <main class="app-main">
-    <!-- Tab 1: Status -->
-    <section id="status-tab-content" class="tab-content active" aria-label="Status & Admission Rules"></section>
-
-    <!-- Tab 2: Colleges -->
-    <section id="colleges-tab-content" class="tab-content" aria-label="Colleges & Score Ranges"></section>
-
-    <!-- Tab 3: AP/IB Credits -->
-    <section id="credits-tab-content" class="tab-content" aria-label="AP and IB Credit Conversion"></section>
-
-    <!-- Tab 4: Roadmap -->
-    <section id="roadmap-tab-content" class="tab-content" aria-label="Personalized Action Roadmap"></section>
-
-    <!-- Tab 5: AI Audit & Advisor -->
-    <section id="ai-tab-content" class="tab-content" aria-label="AI Diagnostic Audit & Interactive Advisor"></section>
-  </main>
-
-  <!-- Footer with Legal & Data Transparency -->
-  <footer class="app-footer">
-    <div class="footer-content">
-      <div>
-        <strong>Admit</strong> — Built for the 2026 Congressional App Challenge. Zero speculative percentages; 100% verified public data.
-      </div>
-      <div class="footer-links">
-        <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
-        <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">TEC § 51.803</a>
-        <a href="#" onclick="App.openDisclosureModal(); return false;">Contest AI Disclosure</a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Modal: Authentication (Login / Signup) -->
-  <div class="modal-overlay" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-auth">
-    <div class="modal-card auth-card">
-      <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <div class="brand-logo" style="width: 28px; height: 28px; font-size: 0.95rem;">A</div>
-          <h2 id="modal-title-auth">Welcome to Admit</h2>
-        </div>
-      </div>
-
-      <div class="modal-body">
-        <!-- Quick Judge / Demo Accounts -->
-        <div class="demo-account-box">
-          <h4>⚡ 1-Click Judge & Demo Logins:</h4>
-          <div class="demo-pills-row">
-            <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;" onclick="App.handleQuickDemoLogin('texas_junior')">
-              Texas Junior (Top 4%)
-            </button>
-            <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;" onclick="App.handleQuickDemoLogin('california_senior')">
-              California Senior (Top 7.7%)
-            </button>
+  <!-- ========================================== -->
+  <!-- VIEW 1: LANDING & AUTHENTICATION (Unauthenticated) -->
+  <!-- ========================================== -->
+  <div id="view-auth">
+    <!-- Landing Top Nav -->
+    <header class="landing-nav">
+      <div class="landing-nav-inner">
+        <div class="brand-group">
+          <div class="brand-logo">A</div>
+          <div class="brand-text">
+            <h1>
+              Admit
+              <span class="brand-badge">2026 Edition</span>
+            </h1>
           </div>
         </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <button class="btn-secondary" onclick="App.openDisclosureModal()">
+            ℹ Public Data Sources
+          </button>
+          <button class="btn-primary" onclick="App.switchLandingAuthTab('signin'); document.getElementById('landing-auth-card-anchor').scrollIntoView({ behavior: 'smooth' });">
+            Sign In
+          </button>
+        </div>
+      </div>
+    </header>
 
-        <!-- Auth Tabs -->
+    <!-- Landing Hero & Auth Grid -->
+    <main class="landing-hero">
+      <!-- Left Column: Value Proposition -->
+      <div class="landing-intro">
+        <div class="landing-tagline-badge">
+          <span>🏛 Verified Public Domain Data · Zero Guesswork</span>
+        </div>
+
+        <h2 class="landing-title">
+          Stop Guessing Your Chances.<br>
+          <span class="highlight">Know the Published Facts.</span>
+        </h2>
+
+        <p class="landing-desc">
+          Commercial portals give you a made-up "34% chance" from black-box algorithms. 
+          <strong>Admit</strong> shows only what is legally and mathematically verifiable: state statutory automatic admission laws, published 25th–75th percentile ranges, and official AP/IB credit tuition ROI.
+        </p>
+
+        <div class="landing-pillars-grid">
+          <div class="landing-pillar-item">
+            <div class="pillar-icon">⚖</div>
+            <div class="pillar-text">
+              <h4>State Statutory Automatic Admissions</h4>
+              <p>Evaluates legal guarantees under Texas TEC § 51.803 (Top 10%), UT Austin SB 175, California UC ELC (Top 9%), and Florida Talented Twenty.</p>
+            </div>
+          </div>
+
+          <div class="landing-pillar-item">
+            <div class="pillar-icon">📊</div>
+            <div class="pillar-text">
+              <h4>Official U.S. Dept. of Education Scorecard</h4>
+              <p>Direct middle-50% SAT/ACT percentile distributions and graduation metrics across major public and private universities.</p>
+            </div>
+          </div>
+
+          <div class="landing-pillar-item">
+            <div class="pillar-icon">🎓</div>
+            <div class="pillar-text">
+              <h4>AP/IB Credit & Tuition ROI Engine</h4>
+              <p>Calculates course equivalents replaced, total credits earned, and real tuition dollars saved based on official university catalogs.</p>
+            </div>
+          </div>
+
+          <div class="landing-pillar-item">
+            <div class="pillar-icon">🤖</div>
+            <div class="pillar-text">
+              <h4>Admit AI Multi-Vector Diagnostic Scanner</h4>
+              <p>Instant algorithmic scan that pinpoints exactly what you qualify for, what you don't, and your single highest-leverage academic fix.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Clean Authentication Form Card -->
+      <div class="landing-auth-card" id="landing-auth-card-anchor">
+        <div class="landing-auth-header">
+          <h3>Get Started with Admit</h3>
+          <p>Create your student account to enter your academic stats.</p>
+        </div>
+
+        <!-- Auth Tabs: Sign In / Create Account -->
         <div class="auth-tabs">
-          <button type="button" class="auth-tab-btn active" id="auth-tab-login" onclick="App.switchAuthTab('login')">Sign In</button>
-          <button type="button" class="auth-tab-btn" id="auth-tab-signup" onclick="App.switchAuthTab('signup')">Create Account</button>
+          <button type="button" class="auth-tab-btn active" id="landing-tab-signup" onclick="App.switchLandingAuthTab('signup')">
+            Create Account
+          </button>
+          <button type="button" class="auth-tab-btn" id="landing-tab-signin" onclick="App.switchLandingAuthTab('signin')">
+            Sign In
+          </button>
         </div>
 
-        <div id="auth-error-msg" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 0.6rem 0.8rem; border-radius: 6px; font-size: 0.8rem; margin-bottom: 1rem;"></div>
+        <!-- Error Message Banner -->
+        <div id="landing-auth-error" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #FCA5A5; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.4;"></div>
 
-        <!-- Login Form -->
-        <form id="auth-form-login" onsubmit="App.handleLoginSubmit(event)">
+        <!-- Form: Create Account -->
+        <form id="landing-form-signup" onsubmit="App.handleSignupSubmit(event)">
           <div class="form-group" style="margin-bottom: 0.85rem;">
-            <label for="login-email">Email Address</label>
-            <input type="email" id="login-email" class="input-control" placeholder="name@example.com" value="alex.texas@demo.com" required>
+            <label for="auth-signup-name">Full Name</label>
+            <input type="text" id="auth-signup-name" class="input-control" placeholder="e.g. Maya Lin" required>
           </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="auth-signup-email">Email Address</label>
+            <input type="email" id="auth-signup-email" class="input-control" placeholder="student@example.com" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label for="auth-signup-password">Create Password <span class="hint">Min 6 characters</span></label>
+            <input type="password" id="auth-signup-password" class="input-control" placeholder="••••••••" minlength="6" required>
+          </div>
+
           <div class="form-group" style="margin-bottom: 1.25rem;">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" class="input-control" placeholder="••••••••" value="password123" required>
+            <label for="auth-signup-confirm">Confirm Password</label>
+            <input type="password" id="auth-signup-confirm" class="input-control" placeholder="••••••••" minlength="6" required>
           </div>
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
+
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem;">
+            Create Student Account & Enter Stats →
+          </button>
+        </form>
+
+        <!-- Form: Sign In -->
+        <form id="landing-form-signin" style="display: none;" onsubmit="App.handleLoginSubmit(event)">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="auth-login-email">Email Address</label>
+            <input type="email" id="auth-login-email" class="input-control" placeholder="student@example.com" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="auth-login-password">Password</label>
+            <input type="password" id="auth-login-password" class="input-control" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem;">
             Sign In to Dashboard →
           </button>
         </form>
 
-        <!-- Signup Form -->
-        <form id="auth-form-signup" style="display: none;" onsubmit="App.handleSignupSubmit(event)">
-          <div class="form-group" style="margin-bottom: 0.85rem;">
-            <label for="signup-name">Full Name</label>
-            <input type="text" id="signup-name" class="input-control" placeholder="Alex Rivera" required>
-          </div>
-          <div class="form-group" style="margin-bottom: 0.85rem;">
-            <label for="signup-email">Email Address</label>
-            <input type="email" id="signup-email" class="input-control" placeholder="name@example.com" required>
-          </div>
-          <div class="form-group" style="margin-bottom: 1.25rem;">
-            <label for="signup-password">Create Password</label>
-            <input type="password" id="signup-password" class="input-control" placeholder="At least 6 characters" minlength="6" required>
-          </div>
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
-            Create Account & Enter Stats →
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: 5-Step Guided Onboarding Wizard -->
-  <div class="modal-overlay" id="onboarding-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-onboarding">
-    <div class="modal-card onboarding-card">
-      <div class="modal-header">
-        <div>
-          <h2 id="modal-title-onboarding" style="font-size: 1.15rem;">Student Academic Setup</h2>
-          <span id="onboarding-step-label" style="font-size: 0.75rem; color: #60A5FA; font-weight: 600;">Step 1 of 5</span>
+        <div style="font-size: 0.75rem; color: var(--text-dim); text-align: center; margin-top: 1.25rem; line-height: 1.4;">
+          Your academic data is stored locally in your browser session. Free, private & zero-slop.
         </div>
-        <button class="modal-close" onclick="Onboarding.close()" aria-label="Close modal">&times;</button>
       </div>
+    </main>
 
-      <!-- Step Progress Bar -->
-      <div class="onboarding-progress-bar">
-        <div class="onboarding-progress-fill" id="onboarding-progress-fill"></div>
+    <!-- Landing Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div>
+          <strong>Admit</strong> — Built for the 2026 Congressional App Challenge. Zero speculative percentages; 100% verified public data.
+        </div>
+        <div class="footer-links">
+          <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
+          <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">TEC § 51.803</a>
+          <a href="#" onclick="App.openDisclosureModal(); return false;">Contest AI Disclosure</a>
+        </div>
       </div>
+    </footer>
+  </div>
 
-      <div class="modal-body" id="onboarding-step-container">
-        <!-- Injected dynamically by Onboarding.renderStep() -->
-      </div>
 
-      <div class="modal-footer" style="display: flex; justify-content: space-between;">
-        <button type="button" class="btn-secondary" id="ob-prev-btn" onclick="Onboarding.prevStep()">← Previous</button>
-        <button type="button" class="btn-primary" id="ob-next-btn" onclick="Onboarding.nextStep()">Next Step →</button>
+  <!-- ========================================== -->
+  <!-- VIEW 2: DEDICATED FIRST-TIME ONBOARDING WIZARD -->
+  <!-- ========================================== -->
+  <div id="view-onboarding" style="display: none; min-height: 100vh; padding: 2rem 1rem;">
+    <div class="onboarding-screen-wrapper">
+      <div class="onboarding-screen-card">
+        <div class="onboarding-screen-header">
+          <div class="brand-group">
+            <div class="brand-logo">A</div>
+            <div>
+              <h2 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 700;">Academic Profile Setup</h2>
+              <span id="onboarding-step-label" style="font-size: 0.75rem; color: #60A5FA; font-weight: 600;">Step 1 of 5</span>
+            </div>
+          </div>
+          <button class="btn-secondary" style="font-size: 0.75rem;" onclick="App.handleLogout()">
+            Cancel / Sign Out
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="onboarding-progress-bar">
+          <div class="onboarding-progress-fill" id="onboarding-progress-fill"></div>
+        </div>
+
+        <div class="modal-body" id="onboarding-step-container">
+          <!-- Injected dynamically by Onboarding.renderStep() -->
+        </div>
+
+        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+          <button type="button" class="btn-secondary" id="ob-prev-btn" onclick="Onboarding.prevStep()">← Previous</button>
+          <button type="button" class="btn-primary" id="ob-next-btn" onclick="Onboarding.nextStep()">Next Step →</button>
+        </div>
       </div>
     </div>
   </div>
+
+
+  <!-- ========================================== -->
+  <!-- VIEW 3: MAIN APP DASHBOARD (Authenticated) -->
+  <!-- ========================================== -->
+  <div id="view-app" style="display: none;">
+    <!-- Top App Navigation Bar -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="brand-group">
+          <div class="brand-logo">A</div>
+          <div class="brand-text">
+            <h1>
+              Admit
+              <span class="brand-badge">2026 Edition</span>
+            </h1>
+            <p>Fact-based college standing, published score ranges & AP credit ROI</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Interactive Profile Quick Pill -->
+          <div class="profile-pill" id="header-profile-pill" onclick="App.openProfileModal()" title="Click to view and edit student profile">
+            <span class="dot"></span>
+            <span>Loading Profile...</span>
+          </div>
+
+          <!-- User Account / Log Out Widget -->
+          <div id="header-user-widget" style="position: relative;"></div>
+
+          <button class="btn-secondary" onclick="App.openDisclosureModal()" title="View technical architecture, official data citations and AI disclosure">
+            <span>ℹ Sources & Disclosure</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs-wrapper" aria-label="Main Navigation">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="status" onclick="App.switchTab('status')">
+          <span>1. Status</span>
+          <span class="tab-badge">Where do I stand?</span>
+        </button>
+
+        <button class="tab-btn" data-tab="colleges" onclick="App.switchTab('colleges')">
+          <span>2. Colleges</span>
+          <span class="tab-badge">What should I aim for?</span>
+        </button>
+
+        <button class="tab-btn" data-tab="credits" onclick="App.switchTab('credits')">
+          <span>3. AP/IB Credit</span>
+          <span class="tab-badge">What are my exams worth?</span>
+        </button>
+
+        <button class="tab-btn" data-tab="roadmap" onclick="App.switchTab('roadmap')">
+          <span>4. Roadmap</span>
+          <span class="tab-badge">What do I do next?</span>
+        </button>
+
+        <button class="tab-btn" data-tab="ai" onclick="App.switchTab('ai')">
+          <span>5. AI Audit & Advisor</span>
+          <span class="tab-badge" style="background: rgba(59, 130, 246, 0.25); color: #93C5FD;">Stats Diagnosis</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content Areas -->
+    <main class="app-main">
+      <!-- Tab 1: Status -->
+      <section id="status-tab-content" class="tab-content active" aria-label="Status & Admission Rules"></section>
+
+      <!-- Tab 2: Colleges -->
+      <section id="colleges-tab-content" class="tab-content" aria-label="Colleges & Score Ranges"></section>
+
+      <!-- Tab 3: AP/IB Credits -->
+      <section id="credits-tab-content" class="tab-content" aria-label="AP and IB Credit Conversion"></section>
+
+      <!-- Tab 4: Roadmap -->
+      <section id="roadmap-tab-content" class="tab-content" aria-label="Personalized Action Roadmap"></section>
+
+      <!-- Tab 5: AI Audit & Advisor -->
+      <section id="ai-tab-content" class="tab-content" aria-label="AI Diagnostic Audit & Interactive Advisor"></section>
+    </main>
+
+    <!-- Footer with Legal & Data Transparency -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div>
+          <strong>Admit</strong> — Built for the 2026 Congressional App Challenge. Zero speculative percentages; 100% verified public data.
+        </div>
+        <div class="footer-links">
+          <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
+          <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">TEC § 51.803</a>
+          <a href="#" onclick="App.openDisclosureModal(); return false;">Contest AI Disclosure</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODALS (Profile Editor, Comparison, Sources) -->
+  <!-- ========================================== -->
 
   <!-- Modal: Student Profile Editor (Manual Edit) -->
   <div class="modal-overlay" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-profile">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="modal-title-profile">Student Academic Profile</h2>
+        <h2 id="modal-title-profile">Edit Academic Stats</h2>
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
 
       <div class="modal-body">
-        <!-- Quick Preset Switcher for Judges -->
-        <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-md); padding: 0.75rem; margin-bottom: 1.25rem;">
-          <div style="font-size: 0.75rem; font-weight: 700; color: #93C5FD; text-transform: uppercase; margin-bottom: 0.35rem; letter-spacing: 0.04em;">
-            ⚡ Quick Demo Presets:
-          </div>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('texas_junior')">
-              Texas Junior (Top 4%, SAT 1420)
-            </button>
-            <button class="btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="App.loadPresetProfile('california_senior')">
-              California Senior (Top 7.7%, SAT 1450)
-            </button>
-          </div>
-        </div>
-
         <form id="profile-form" onsubmit="event.preventDefault(); App.saveProfileFromModal();">
           <div class="form-grid">
             <div class="form-group">
@@ -251,42 +353,42 @@
 
           <div class="form-grid">
             <div class="form-group">
-              <label for="input-gpa-unweighted">Unweighted GPA <span class="hint">Max 4.0</span></label>
-              <input type="number" step="0.01" min="0" max="4.0" id="input-gpa-unweighted" class="input-control" required>
+              <label for="input-gpa-unweighted">Unweighted GPA <span class="hint">0.00 – 4.00</span></label>
+              <input type="number" step="0.01" min="0" max="4.0" id="input-gpa-unweighted" class="input-control" placeholder="e.g. 3.85">
             </div>
 
             <div class="form-group">
               <label for="input-gpa-weighted">Weighted GPA</label>
-              <input type="number" step="0.01" min="0" max="6.0" id="input-gpa-weighted" class="input-control">
+              <input type="number" step="0.01" min="0" max="6.0" id="input-gpa-weighted" class="input-control" placeholder="e.g. 4.40">
             </div>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
-              <label for="input-class-rank">Class Rank <span class="hint">e.g. 24</span></label>
-              <input type="number" min="1" id="input-class-rank" class="input-control">
+              <label for="input-class-rank">Class Rank <span class="hint">Exact rank</span></label>
+              <input type="number" min="1" id="input-class-rank" class="input-control" placeholder="e.g. 24">
             </div>
 
             <div class="form-group">
-              <label for="input-class-size">Graduating Class Size <span class="hint">e.g. 600</span></label>
-              <input type="number" min="1" id="input-class-size" class="input-control">
+              <label for="input-class-size">Graduating Class Size</label>
+              <input type="number" min="1" id="input-class-size" class="input-control" placeholder="e.g. 600">
             </div>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
               <label for="input-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
-              <input type="number" min="200" max="800" step="10" id="input-sat-rw" class="input-control">
+              <input type="number" min="200" max="800" step="10" id="input-sat-rw" class="input-control" placeholder="e.g. 680">
             </div>
 
             <div class="form-group">
               <label for="input-sat-m">SAT Math <span class="hint">200–800</span></label>
-              <input type="number" min="200" max="800" step="10" id="input-sat-m" class="input-control">
+              <input type="number" min="200" max="800" step="10" id="input-sat-m" class="input-control" placeholder="e.g. 720">
             </div>
 
             <div class="form-group">
               <label for="input-act">ACT Composite <span class="hint">1–36</span></label>
-              <input type="number" min="1" max="36" id="input-act" class="input-control">
+              <input type="number" min="1" max="36" id="input-act" class="input-control" placeholder="e.g. 31">
             </div>
           </div>
 
@@ -405,10 +507,10 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
+  <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Scripts -->
+  <!-- Application Scripts -->
   <script src="js/auth.js"></script>
   <script src="js/onboarding.js"></script>
   <script src="js/profile.js"></script>

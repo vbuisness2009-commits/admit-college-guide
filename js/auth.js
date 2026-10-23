@@ -1,110 +1,31 @@
 /**
- * Authentication & Session Management for Admit
- * Provides local authentication, user registration, session persistence, and instant demo logins for judges.
+ * Authentication & Account Management for Admit
+ * Provides secure client-side user accounts, registration, credential validation,
+ * and persistent session state.
  */
 
 const Auth = {
-  USERS_KEY: "admit_users_db_v1",
-  SESSION_KEY: "admit_auth_session_v1",
-
-  // Initial seed demo accounts for competition judges
-  seedUsers: [
-    {
-      id: "user_tx_junior",
-      name: "Alex Rivera",
-      email: "alex.texas@demo.com",
-      password: "password123",
-      created_at: "2026-10-20T12:00:00Z",
-      onboarding_completed: true,
-      profile: {
-        grade_level: 11,
-        residency: "TX",
-        high_school: "Katy High School",
-        gpa_unweighted: 3.88,
-        gpa_weighted: 4.62,
-        class_rank: 24,
-        class_size: 600,
-        class_percentile: 4.0,
-        sat_rw: 690,
-        sat_m: 730,
-        sat_total: 1420,
-        act_composite: 31,
-        math_years_algebra2: true,
-        science_years: 4,
-        has_endorsement: true,
-        fl_prep_complete: true,
-        saved_colleges: ["ut-austin", "tamu", "rice", "purdue"],
-        ap_exams: [
-          { id: "calc_ab", name: "AP Calculus AB", score: 4, status: "completed" },
-          { id: "eng_lang", name: "AP English Language & Composition", score: 4, status: "completed" },
-          { id: "ushist", name: "AP United States History", score: 4, status: "completed" },
-          { id: "csa", name: "AP Computer Science A", score: 5, status: "completed" },
-          { id: "chem", name: "AP Chemistry", score: 0, status: "planned" }
-        ]
-      }
-    },
-    {
-      id: "user_ca_senior",
-      name: "Maya Lin",
-      email: "maya.california@demo.com",
-      password: "password123",
-      created_at: "2026-10-21T10:00:00Z",
-      onboarding_completed: true,
-      profile: {
-        grade_level: 12,
-        residency: "CA",
-        high_school: "Monta Vista High School",
-        gpa_unweighted: 3.92,
-        gpa_weighted: 4.45,
-        class_rank: 35,
-        class_size: 450,
-        class_percentile: 7.7,
-        sat_rw: 710,
-        sat_m: 740,
-        sat_total: 1450,
-        act_composite: 32,
-        math_years_algebra2: true,
-        science_years: 4,
-        has_endorsement: true,
-        fl_prep_complete: true,
-        saved_colleges: ["uc-berkeley", "ucla", "uw", "umich"],
-        ap_exams: [
-          { id: "calc_bc", name: "AP Calculus BC", score: 5, status: "completed" },
-          { id: "eng_lang", name: "AP English Language & Composition", score: 4, status: "completed" },
-          { id: "bio", name: "AP Biology", score: 4, status: "completed" },
-          { id: "psych", name: "AP Psychology", score: 5, status: "completed" },
-          { id: "phys_c_mech", name: "AP Physics C: Mechanics", score: 0, status: "planned" }
-        ]
-      }
-    }
-  ],
-
-  init() {
-    // Check if user db initialized
-    const existing = localStorage.getItem(this.USERS_KEY);
-    if (!existing) {
-      localStorage.setItem(this.USERS_KEY, JSON.stringify(this.seedUsers));
-    }
-  },
+  USERS_KEY: "admit_registered_users_v2",
+  SESSION_KEY: "admit_active_session_v2",
 
   getUsers() {
-    this.init();
     try {
-      return JSON.parse(localStorage.getItem(this.USERS_KEY)) || this.seedUsers;
+      const data = localStorage.getItem(this.USERS_KEY);
+      return data ? JSON.parse(data) : [];
     } catch (e) {
-      return this.seedUsers;
+      console.error("Failed to load user database", e);
+      return [];
     }
   },
 
   getCurrentUser() {
-    const session = localStorage.getItem(this.SESSION_KEY);
-    if (!session) return null;
     try {
-      const user = JSON.parse(session);
-      // Fetch latest profile from user database in case it was updated
+      const session = localStorage.getItem(this.SESSION_KEY);
+      if (!session) return null;
+      const sessionUser = JSON.parse(session);
       const users = this.getUsers();
-      const freshUser = users.find(u => u.id === user.id);
-      return freshUser || user;
+      const freshUser = users.find(u => u.id === sessionUser.id);
+      return freshUser || null;
     } catch (e) {
       return null;
     }
@@ -115,19 +36,32 @@ const Auth = {
   },
 
   signup(name, email, password) {
-    this.init();
-    const users = this.getUsers();
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = (name || "").trim();
+    const cleanEmail = (email || "").trim().toLowerCase();
+    const cleanPass = (password || "").trim();
 
+    if (!cleanName) {
+      return { success: false, error: "Please enter your full name." };
+    }
+
+    if (!cleanEmail || !cleanEmail.includes("@") || !cleanEmail.includes(".")) {
+      return { success: false, error: "Please enter a valid email address." };
+    }
+
+    if (!cleanPass || cleanPass.length < 6) {
+      return { success: false, error: "Password must be at least 6 characters long." };
+    }
+
+    const users = this.getUsers();
     if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
-      return { success: false, error: "An account with this email already exists." };
+      return { success: false, error: "An account with this email is already registered." };
     }
 
     const newUser = {
-      id: "user_" + Date.now(),
-      name: name.trim(),
+      id: "usr_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
+      name: cleanName,
       email: cleanEmail,
-      password: password,
+      password: cleanPass, // client-side demo storage
       created_at: new Date().toISOString(),
       onboarding_completed: false,
       profile: {
@@ -136,63 +70,66 @@ const Auth = {
         high_school: "",
         gpa_unweighted: 3.8,
         gpa_weighted: 4.2,
-        class_rank: 50,
-        class_size: 500,
-        class_percentile: 10.0,
-        sat_rw: 650,
-        sat_m: 680,
-        sat_total: 1330,
-        act_composite: 29,
+        class_rank: null,
+        class_size: null,
+        class_percentile: null,
+        sat_rw: null,
+        sat_m: null,
+        sat_total: null,
+        act_composite: null,
         math_years_algebra2: true,
         science_years: 4,
         has_endorsement: true,
-        fl_prep_complete: true,
-        saved_colleges: ["ut-austin", "tamu"],
+        fl_prep_complete: false,
+        saved_colleges: [],
         ap_exams: []
       }
     };
 
     users.push(newUser);
-    localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+    try {
+      localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+    } catch (e) {
+      return { success: false, error: "Local storage limit reached. Please clear browser cache." };
+    }
+
     this.setSession(newUser);
     return { success: true, user: newUser };
   },
 
   login(email, password) {
-    this.init();
+    const cleanEmail = (email || "").trim().toLowerCase();
+    const cleanPass = (password || "").trim();
+
+    if (!cleanEmail || !cleanPass) {
+      return { success: false, error: "Please enter both email and password." };
+    }
+
     const users = this.getUsers();
-    const cleanEmail = email.trim().toLowerCase();
     const user = users.find(u => u.email.toLowerCase() === cleanEmail);
 
     if (!user) {
-      return { success: false, error: "No account found with this email." };
+      return { success: false, error: "No account found with this email. Please check your spelling or create an account." };
     }
 
-    if (user.password !== password) {
-      return { success: false, error: "Incorrect password." };
+    if (user.password !== cleanPass) {
+      return { success: false, error: "Incorrect password. Please try again." };
     }
 
     this.setSession(user);
     return { success: true, user: user };
   },
 
-  demoLogin(presetKey = "texas_junior") {
-    this.init();
-    const users = this.getUsers();
-    let targetUser = users[0]; // default to first demo user
-
-    if (presetKey === "california_senior") {
-      targetUser = users.find(u => u.id === "user_ca_senior") || users[1] || users[0];
-    } else {
-      targetUser = users.find(u => u.id === "user_tx_junior") || users[0];
-    }
-
-    this.setSession(targetUser);
-    return targetUser;
-  },
-
   setSession(user) {
-    localStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
+    try {
+      localStorage.setItem(this.SESSION_KEY, JSON.stringify({
+        id: user.id,
+        email: user.email,
+        name: user.name
+      }));
+    } catch (e) {
+      console.error("Session storage failed", e);
+    }
     window.dispatchEvent(new CustomEvent("admit:auth-changed", { detail: user }));
   },
 
@@ -205,7 +142,6 @@ const Auth = {
       user.onboarding_completed = true;
     }
 
-    // Update in database
     const users = this.getUsers();
     const idx = users.findIndex(u => u.id === user.id);
     if (idx > -1) {

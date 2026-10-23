@@ -1,38 +1,30 @@
 /**
  * Profile State Management for Admit
- * Syncs seamlessly with the current authenticated user session.
+ * Syncs seamlessly with the active student account.
  */
 
 const ProfileManager = {
-  defaultProfile: {
-    grade_level: 11,
-    residency: "TX",
-    high_school: "Katy High School",
-    gpa_unweighted: 3.88,
-    gpa_weighted: 4.62,
-    class_rank: 24,
-    class_size: 600,
-    class_percentile: 4.0,
-    sat_rw: 690,
-    sat_m: 730,
-    sat_total: 1420,
-    act_composite: 31,
-    math_years_algebra2: true,
-    science_years: 4,
-    has_endorsement: true,
-    fl_prep_complete: true,
-    saved_colleges: ["ut-austin", "tamu", "rice", "umich"],
-    ap_exams: [
-      { id: "calc_ab", name: "AP Calculus AB", score: 4, status: "completed" },
-      { id: "eng_lang", name: "AP English Language & Composition", score: 4, status: "completed" },
-      { id: "ushist", name: "AP United States History", score: 4, status: "completed" },
-      { id: "csa", name: "AP Computer Science A", score: 5, status: "completed" },
-      { id: "chem", name: "AP Chemistry", score: 0, status: "planned" }
-    ]
-  },
-
-  init() {
-    // Ensured via Auth
+  getBlankProfile() {
+    return {
+      grade_level: 11,
+      residency: "TX",
+      high_school: "",
+      gpa_unweighted: 3.8,
+      gpa_weighted: 4.2,
+      class_rank: null,
+      class_size: null,
+      class_percentile: null,
+      sat_rw: null,
+      sat_m: null,
+      sat_total: null,
+      act_composite: null,
+      math_years_algebra2: true,
+      science_years: 4,
+      has_endorsement: true,
+      fl_prep_complete: false,
+      saved_colleges: [],
+      ap_exams: []
+    };
   },
 
   get() {
@@ -40,7 +32,7 @@ const ProfileManager = {
     if (user && user.profile) {
       return user.profile;
     }
-    return this.defaultProfile;
+    return this.getBlankProfile();
   },
 
   save(updatedProfile) {
@@ -48,7 +40,7 @@ const ProfileManager = {
     const merged = { ...current, ...updatedProfile };
 
     // Auto-calculate sat_total
-    if (merged.sat_rw && merged.sat_m) {
+    if (merged.sat_rw !== null && merged.sat_m !== null && merged.sat_rw !== "" && merged.sat_m !== "") {
       merged.sat_total = parseInt(merged.sat_rw, 10) + parseInt(merged.sat_m, 10);
     }
 
@@ -62,18 +54,6 @@ const ProfileManager = {
     }
 
     window.dispatchEvent(new CustomEvent("admit:profile-updated", { detail: merged }));
-  },
-
-  loadPreset(key) {
-    if (key === "texas_junior") {
-      Auth.demoLogin("texas_junior");
-    } else if (key === "california_senior") {
-      Auth.demoLogin("california_senior");
-    } else {
-      Auth.demoLogin("texas_junior");
-    }
-    this.save(this.get());
-    return true;
   },
 
   toggleSavedCollege(collegeId) {
