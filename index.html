@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0B1120">
+  <meta name="theme-color" content="#090D16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Admit — Fact-Based College Standing & AP Credit Engine</title>
@@ -29,9 +29,9 @@
             </h1>
           </div>
         </div>
-        <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <div style="display: flex; gap: 0.65rem; align-items: center;">
           <button class="btn-secondary" onclick="App.openDisclosureModal()">
-            ℹ Public Data Sources
+            Public Data Sources
           </button>
           <button class="btn-primary" onclick="App.switchLandingAuthTab('signin'); document.getElementById('landing-auth-card-anchor').scrollIntoView({ behavior: 'smooth' });">
             Sign In
@@ -45,7 +45,7 @@
       <!-- Left Column: Value Proposition -->
       <div class="landing-intro">
         <div class="landing-tagline-badge">
-          <span>🏛 Verified Public Domain Data · Zero Guesswork</span>
+          <span>Nationwide Public Domain Intelligence</span>
         </div>
 
         <h2 class="landing-title">
@@ -54,50 +54,59 @@
         </h2>
 
         <p class="landing-desc">
-          Commercial portals give you a made-up "34% chance" from black-box algorithms. 
-          <strong>Admit</strong> shows only what is legally and mathematically verifiable: state statutory automatic admission laws, published 25th–75th percentile ranges, and official AP/IB credit tuition ROI.
+          Commercial portals output unverifiable chance percentages from closed formulas. 
+          <strong>Admit</strong> calculates strictly what is legally codified and published by the federal government: 
+          state automatic admission statutes, official U.S. Department of Education percentile bands, and verified AP/IB degree credit savings.
         </p>
 
         <div class="landing-pillars-grid">
           <div class="landing-pillar-item">
-            <div class="pillar-icon">⚖</div>
+            <div class="pillar-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
             <div class="pillar-text">
-              <h4>50-State Public University Guarantees & Direct Admissions</h4>
-              <p>Evaluates official legal guarantees and direct admissions nationwide across all 50 U.S. states (California UC ELC, Washington GAP, Georgia Match, Florida Talented 20, Texas Top 10%, and National College Readiness Placement).</p>
+              <h4>State Public University Guarantees & Direct Admissions</h4>
+              <p>Evaluates legal guarantees across all 50 states: California UC ELC (Top 9%), Washington GAP, Georgia Match, Florida Talented 20, Texas Top 10%, and National College Readiness Placement standards.</p>
             </div>
           </div>
 
           <div class="landing-pillar-item">
-            <div class="pillar-icon">📊</div>
+            <div class="pillar-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            </div>
             <div class="pillar-text">
-              <h4>Official U.S. Dept. of Education Scorecard</h4>
-              <p>Direct middle-50% SAT/ACT percentile distributions and graduation metrics across major public and private universities.</p>
+              <h4>Official U.S. Dept. of Education Scorecard Percentiles</h4>
+              <p>Direct middle-50% SAT/ACT percentile distributions and graduation metrics across major public and private universities with exact target points needed.</p>
             </div>
           </div>
 
           <div class="landing-pillar-item">
-            <div class="pillar-icon">🎓</div>
+            <div class="pillar-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
             <div class="pillar-text">
-              <h4>AP/IB Credit & Tuition ROI Engine</h4>
-              <p>Calculates course equivalents replaced, total credits earned, and real tuition dollars saved based on official university catalogs.</p>
+              <h4>AP & IB Credit Tuition Savings Engine</h4>
+              <p>Calculates course equivalents replaced, total credits earned, and real tuition dollars saved based on official university catalogs and statewide higher ed mandates.</p>
             </div>
           </div>
 
           <div class="landing-pillar-item">
-            <div class="pillar-icon">🤖</div>
+            <div class="pillar-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
             <div class="pillar-text">
-              <h4>Admit AI Multi-Vector Diagnostic Scanner</h4>
-              <p>Instant algorithmic scan that pinpoints exactly what you qualify for, what you don't, and your single highest-leverage academic fix.</p>
+              <h4>Multi-Vector Eligibility Diagnostics</h4>
+              <p>Automated scan that isolates confirmed statutory qualifications, score alignment gaps, and immediate high-leverage coursework adjustments.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Clean Authentication Form Card -->
+      <!-- Right Column: Authentication Card -->
       <div class="landing-auth-card" id="landing-auth-card-anchor">
         <div class="landing-auth-header">
-          <h3>Get Started with Admit</h3>
-          <p>Create your student account to enter your academic stats.</p>
+          <h3>Student Portal Access</h3>
+          <p>Create an account or sign in to configure your academic profile.</p>
         </div>
 
         <!-- Auth Tabs: Sign In / Create Account -->
@@ -111,13 +120,13 @@
         </div>
 
         <!-- Error Message Banner -->
-        <div id="landing-auth-error" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #FCA5A5; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); font-size: 0.82rem; margin-bottom: 1rem; line-height: 1.4;"></div>
+        <div id="landing-auth-error" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #FCA5A5; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;"></div>
 
         <!-- Form: Create Account -->
         <form id="landing-form-signup" onsubmit="App.handleSignupSubmit(event)">
           <div class="form-group" style="margin-bottom: 0.85rem;">
             <label for="auth-signup-name">Full Name</label>
-            <input type="text" id="auth-signup-name" class="input-control" placeholder="e.g. Maya Lin" required>
+            <input type="text" id="auth-signup-name" class="input-control" placeholder="Maya Lin" required>
           </div>
 
           <div class="form-group" style="margin-bottom: 0.85rem;">
@@ -126,7 +135,7 @@
           </div>
 
           <div class="form-group" style="margin-bottom: 0.85rem;">
-            <label for="auth-signup-password">Create Password <span class="hint">Min 6 characters</span></label>
+            <label for="auth-signup-password">Password <span class="hint">Min 6 characters</span></label>
             <input type="password" id="auth-signup-password" class="input-control" placeholder="••••••••" minlength="6" required>
           </div>
 
@@ -135,30 +144,30 @@
             <input type="password" id="auth-signup-confirm" class="input-control" placeholder="••••••••" minlength="6" required>
           </div>
 
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem;">
-            Create Student Account & Enter Stats →
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.7rem; font-size: 0.88rem;">
+            Create Account & Configure Stats →
           </button>
         </form>
 
         <!-- Form: Sign In -->
         <form id="landing-form-signin" style="display: none;" onsubmit="App.handleLoginSubmit(event)">
-          <div class="form-group" style="margin-bottom: 1rem;">
+          <div class="form-group" style="margin-bottom: 0.85rem;">
             <label for="auth-login-email">Email Address</label>
             <input type="email" id="auth-login-email" class="input-control" placeholder="student@example.com" required>
           </div>
 
-          <div class="form-group" style="margin-bottom: 1.5rem;">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
             <label for="auth-login-password">Password</label>
             <input type="password" id="auth-login-password" class="input-control" placeholder="••••••••" required>
           </div>
 
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem;">
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.7rem; font-size: 0.88rem;">
             Sign In to Dashboard →
           </button>
         </form>
 
-        <div style="font-size: 0.75rem; color: var(--text-dim); text-align: center; margin-top: 1.25rem; line-height: 1.4;">
-          Your academic data is stored locally in your browser session. Free, private & zero-slop.
+        <div style="font-size: 0.72rem; color: var(--text-dim); text-align: center; margin-top: 1rem; line-height: 1.4;">
+          All student academic records are stored locally in your client session.
         </div>
       </div>
     </main>
@@ -167,11 +176,11 @@
     <footer class="app-footer">
       <div class="footer-content">
         <div>
-          <strong>Admit</strong> — Built for the 2026 Congressional App Challenge. Zero speculative percentages; 100% verified public data.
+          <strong>Admit</strong> — Congressional App Challenge Submission. Fact-based higher education analytics.
         </div>
         <div class="footer-links">
           <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
-          <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">TEC § 51.803</a>
+          <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">Statutory Citations</a>
           <a href="#" onclick="App.openDisclosureModal(); return false;">Contest AI Disclosure</a>
         </div>
       </div>
@@ -180,7 +189,7 @@
 
 
   <!-- ========================================== -->
-  <!-- VIEW 2: DEDICATED FIRST-TIME ONBOARDING WIZARD -->
+  <!-- VIEW 2: DEDICATED ONBOARDING WIZARD -->
   <!-- ========================================== -->
   <div id="view-onboarding" style="display: none; min-height: 100vh; padding: 2rem 1rem;">
     <div class="onboarding-screen-wrapper">
@@ -189,12 +198,12 @@
           <div class="brand-group">
             <div class="brand-logo">A</div>
             <div>
-              <h2 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 700;">Academic Profile Setup</h2>
-              <span id="onboarding-step-label" style="font-size: 0.75rem; color: #60A5FA; font-weight: 600;">Step 1 of 5</span>
+              <h2 style="font-size: 1.05rem; color: #FFFFFF; font-weight: 700;">Academic Profile Configuration</h2>
+              <span id="onboarding-step-label" style="font-size: 0.72rem; color: #93C5FD; font-weight: 600;">Step 1 of 5</span>
             </div>
           </div>
-          <button class="btn-secondary" style="font-size: 0.75rem;" onclick="App.handleLogout()">
-            Cancel / Sign Out
+          <button class="btn-secondary" style="font-size: 0.72rem;" onclick="App.handleLogout()">
+            Sign Out
           </button>
         </div>
 
@@ -208,7 +217,7 @@
         </div>
 
         <div class="modal-footer" style="display: flex; justify-content: space-between;">
-          <button type="button" class="btn-secondary" id="ob-prev-btn" onclick="Onboarding.prevStep()">← Previous</button>
+          <button type="button" class="btn-secondary" id="ob-prev-btn" onclick="Onboarding.prevStep()">Previous</button>
           <button type="button" class="btn-primary" id="ob-next-btn" onclick="Onboarding.nextStep()">Next Step →</button>
         </div>
       </div>
@@ -241,11 +250,11 @@
             <span>Loading Profile...</span>
           </div>
 
-          <!-- User Account / Log Out Widget -->
+          <!-- User Account Widget -->
           <div id="header-user-widget" style="position: relative;"></div>
 
           <button class="btn-secondary" onclick="App.openDisclosureModal()" title="View technical architecture, official data citations and AI disclosure">
-            <span>ℹ Sources & Disclosure</span>
+            <span>Sources & Disclosure</span>
           </button>
         </div>
       </div>
@@ -255,28 +264,28 @@
     <nav class="nav-tabs-wrapper" aria-label="Main Navigation">
       <div class="nav-tabs">
         <button class="tab-btn active" data-tab="status" onclick="App.switchTab('status')">
-          <span>1. Status</span>
-          <span class="tab-badge">Where do I stand?</span>
+          <span>Status</span>
+          <span class="tab-badge">Admission Rules</span>
         </button>
 
         <button class="tab-btn" data-tab="colleges" onclick="App.switchTab('colleges')">
-          <span>2. Colleges</span>
-          <span class="tab-badge">What should I aim for?</span>
+          <span>Colleges</span>
+          <span class="tab-badge">Score Ranges</span>
         </button>
 
         <button class="tab-btn" data-tab="credits" onclick="App.switchTab('credits')">
-          <span>3. AP/IB Credit</span>
-          <span class="tab-badge">What are my exams worth?</span>
+          <span>AP & IB Credit</span>
+          <span class="tab-badge">Tuition ROI</span>
         </button>
 
         <button class="tab-btn" data-tab="roadmap" onclick="App.switchTab('roadmap')">
-          <span>4. Roadmap</span>
-          <span class="tab-badge">What do I do next?</span>
+          <span>Timeline</span>
+          <span class="tab-badge">Action Plan</span>
         </button>
 
         <button class="tab-btn" data-tab="ai" onclick="App.switchTab('ai')">
-          <span>5. AI Audit & Advisor</span>
-          <span class="tab-badge" style="background: rgba(59, 130, 246, 0.25); color: #93C5FD;">Stats Diagnosis</span>
+          <span>Diagnostic Audit</span>
+          <span class="tab-badge" style="background: rgba(37, 99, 235, 0.18); color: #93C5FD;">Admissions AI</span>
         </button>
       </div>
     </nav>
@@ -299,15 +308,15 @@
       <section id="ai-tab-content" class="tab-content" aria-label="AI Diagnostic Audit & Interactive Advisor"></section>
     </main>
 
-    <!-- Footer with Legal & Data Transparency -->
+    <!-- Footer -->
     <footer class="app-footer">
       <div class="footer-content">
         <div>
-          <strong>Admit</strong> — Built for the 2026 Congressional App Challenge. Zero speculative percentages; 100% verified public data.
+          <strong>Admit</strong> — Congressional App Challenge Submission. Fact-based higher education analytics.
         </div>
         <div class="footer-links">
           <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
-          <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">TEC § 51.803</a>
+          <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">Statutory Citations</a>
           <a href="#" onclick="App.openDisclosureModal(); return false;">Contest AI Disclosure</a>
         </div>
       </div>
@@ -319,7 +328,7 @@
   <!-- MODALS (Profile Editor, Comparison, Sources) -->
   <!-- ========================================== -->
 
-  <!-- Modal: Student Profile Editor (Manual Edit) -->
+  <!-- Modal: Student Profile Editor -->
   <div class="modal-overlay" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-profile">
     <div class="modal-card">
       <div class="modal-header">
@@ -402,47 +411,47 @@
           <div class="form-grid">
             <div class="form-group">
               <label for="input-gpa-unweighted">Unweighted GPA <span class="hint">0.00 – 4.00</span></label>
-              <input type="number" step="0.01" min="0" max="4.0" id="input-gpa-unweighted" class="input-control" placeholder="e.g. 3.85">
+              <input type="number" step="0.01" min="0" max="4.0" id="input-gpa-unweighted" class="input-control" placeholder="3.85">
             </div>
 
             <div class="form-group">
               <label for="input-gpa-weighted">Weighted GPA</label>
-              <input type="number" step="0.01" min="0" max="6.0" id="input-gpa-weighted" class="input-control" placeholder="e.g. 4.40">
+              <input type="number" step="0.01" min="0" max="6.0" id="input-gpa-weighted" class="input-control" placeholder="4.40">
             </div>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
               <label for="input-class-rank">Class Rank <span class="hint">Exact rank</span></label>
-              <input type="number" min="1" id="input-class-rank" class="input-control" placeholder="e.g. 24">
+              <input type="number" min="1" id="input-class-rank" class="input-control" placeholder="24">
             </div>
 
             <div class="form-group">
               <label for="input-class-size">Graduating Class Size</label>
-              <input type="number" min="1" id="input-class-size" class="input-control" placeholder="e.g. 600">
+              <input type="number" min="1" id="input-class-size" class="input-control" placeholder="600">
             </div>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
               <label for="input-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
-              <input type="number" min="200" max="800" step="10" id="input-sat-rw" class="input-control" placeholder="e.g. 680">
+              <input type="number" min="200" max="800" step="10" id="input-sat-rw" class="input-control" placeholder="680">
             </div>
 
             <div class="form-group">
               <label for="input-sat-m">SAT Math <span class="hint">200–800</span></label>
-              <input type="number" min="200" max="800" step="10" id="input-sat-m" class="input-control" placeholder="e.g. 720">
+              <input type="number" min="200" max="800" step="10" id="input-sat-m" class="input-control" placeholder="720">
             </div>
 
             <div class="form-group">
               <label for="input-act">ACT Composite <span class="hint">1–36</span></label>
-              <input type="number" min="1" max="36" id="input-act" class="input-control" placeholder="e.g. 31">
+              <input type="number" min="1" max="36" id="input-act" class="input-control" placeholder="31">
             </div>
           </div>
 
           <!-- Coursework Requirements Checklist -->
-          <div style="margin: 1.25rem 0 0.5rem 0;">
-            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">
+          <div style="margin: 1rem 0 0.5rem 0;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">
               National College-Prep Curriculum Standards:
             </div>
 
@@ -456,7 +465,7 @@
               </label>
 
               <div class="form-group" style="margin-top: 0.25rem;">
-                <label for="input-science-years">Total Laboratory Science Courses (Completed or Enrolled)</label>
+                <label for="input-science-years">Total Laboratory Science Courses</label>
                 <input type="number" min="0" max="6" id="input-science-years" class="input-control" value="4">
               </div>
 
@@ -471,7 +480,7 @@
               <label class="checkbox-group">
                 <input type="checkbox" id="check-fl-prep">
                 <div class="checkbox-label">
-                  <strong>Advanced / Honors College-Prep Diploma Track</strong>
+                  <strong>Advanced / Honors College-Prep Track</strong>
                   <span class="checkbox-sub">Enrolled in state advanced diploma, IB diploma, or AP capstone sequence.</span>
                 </div>
               </label>
@@ -479,11 +488,11 @@
           </div>
 
           <!-- AP Exams Section -->
-          <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <div style="margin-top: 1.25rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong style="font-size: 0.9rem; color: #FFFFFF;">Advanced Placement (AP) Exams</strong>
-                <p style="font-size: 0.75rem; color: var(--text-muted);">Include completed scores (3–5) or mark as Planned for future credit estimation.</p>
+                <strong style="font-size: 0.88rem; color: #FFFFFF;">Advanced Placement (AP) Exams</strong>
+                <p style="font-size: 0.72rem; color: var(--text-dim);">Include completed scores (3–5) or mark as Planned for future credit estimation.</p>
               </div>
             </div>
 
@@ -496,7 +505,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-secondary" onclick="App.closeAllModals()">Cancel</button>
-        <button type="button" class="btn-primary" onclick="App.saveProfileFromModal()">Save & Update App</button>
+        <button type="button" class="btn-primary" onclick="App.saveProfileFromModal()">Save Changes</button>
       </div>
     </div>
   </div>
@@ -505,7 +514,7 @@
   <div class="modal-overlay" id="comparison-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-compare">
     <div class="modal-card" style="max-width: 960px;">
       <div class="modal-header">
-        <h2 id="modal-title-compare">⚖ Side-by-Side College Comparison</h2>
+        <h2 id="modal-title-compare">Side-by-Side Institutional Comparison</h2>
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body" id="comparison-modal-body">
@@ -519,34 +528,34 @@
 
   <!-- Modal: Sources, Architecture & CAC AI Disclosure -->
   <div class="modal-overlay" id="disclosure-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-disclosure">
-    <div class="modal-card" style="max-width: 760px;">
+    <div class="modal-card" style="max-width: 720px;">
       <div class="modal-header">
-        <h2 id="modal-title-disclosure">Data Sources & Congressional App Challenge Disclosure</h2>
+        <h2 id="modal-title-disclosure">Official Data Sources & AI Tool Disclosure</h2>
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
-      <div class="modal-body" style="font-size: 0.88rem; line-height: 1.6; color: var(--text-muted);">
-        <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 0.4rem;">1. Official Public Data Sources</h3>
-        <p style="margin-bottom: 1rem;">
-          Every numerical value and policy cutoff in <strong>Admit</strong> is backed by authoritative, public-domain sources:
+      <div class="modal-body" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted);">
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">1. Official Public Data Sources</h3>
+        <p style="margin-bottom: 0.85rem;">
+          Every numerical distribution and policy cutoff in <strong>Admit</strong> is backed by authoritative public-domain sources:
         </p>
-        <ul style="padding-left: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+        <ul style="padding-left: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
           <li><strong>U.S. Department of Education College Scorecard:</strong> Official federal database for 25th/75th percentile SAT/ACT ranges, graduation rates, net price, and average tuition.</li>
-          <li><strong>Texas Education Code § 51.803 & SB 175:</strong> Official Texas statutory code establishing the Uniform Admission Policy (Top 10% auto-admit) and UT Austin's capped auto-admit percentage.</li>
-          <li><strong>Texas HB 1992 (TEC § 51.968):</strong> Texas state law capping the minimum AP exam score public universities may require at 3.</li>
-          <li><strong>University Testing Services Registrars:</strong> Directly curated from official institutional credit equivalency catalogs for UT Austin, Texas A&M, UC Berkeley, University of Florida, University of Michigan, Purdue, Georgia Tech, and UIUC.</li>
+          <li><strong>State Automatic Admission Statutes:</strong> California UC Regents Policy 2102, Washington RCW 28B.77.020, Georgia USG Policy 4.2, Florida BOG Reg 6.002, and Texas Education Code § 51.803.</li>
+          <li><strong>State AP Credit Legislation:</strong> California AB 1985, Illinois Public Act 099-0358, Ohio ORC 3333.163, Florida Title XLVIII, and Texas Education Code § 51.968.</li>
+          <li><strong>University Registrar Catalogs:</strong> Direct credit equivalency tables curated from university testing service offices.</li>
         </ul>
 
-        <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 0.4rem;">2. The Anti-Hallucination Core Principle</h3>
-        <p style="margin-bottom: 1.25rem;">
-          Commercial platforms use proprietary machine-learning formulas to output speculative "chance percentages" (e.g. <em>"You have a 34% chance"</em>). Because university admissions involve holistic qualitative factors (essays, interviews, recommendation letters, institutional priorities), mathematical chance calculations are unverifiable and often dangerously misleading. <strong>Admit strictly outputs verifiable facts:</strong> published score distributions, exact course waivers, and statutory rules.
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">2. The Anti-Hallucination Core Principle</h3>
+        <p style="margin-bottom: 1rem;">
+          Commercial admissions platforms use proprietary statistical formulas to output speculative "chance percentages". Because university admissions involve qualitative, holistic evaluations, chance estimates are mathematically unverifiable. <strong>Admit strictly outputs verifiable facts:</strong> published score distributions, exact course waivers, and statutory rules.
         </p>
 
-        <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 0.4rem;">3. Congressional App Challenge AI Tool Disclosure</h3>
-        <p style="margin-bottom: 0.75rem;">
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">3. Congressional App Challenge AI Tool Disclosure</h3>
+        <p style="margin-bottom: 0.5rem;">
           In accordance with the 2026 Congressional App Challenge rules regarding artificial intelligence:
         </p>
-        <div style="background: rgba(255,255,255,0.03); border-left: 3px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.82rem;">
-          <em>"AI tools were used as a pair programming mentor for syntax debugging, CSS flexbox layout troubleshooting, and JavaScript DOM manipulation patterns. All application architecture, deterministic state-rule logic, JSON data schemas, AP credit mappings, and UX workflows were designed, verified, and authored with full personal human comprehension of every underlying function."</em>
+        <div style="background: rgba(255,255,255,0.03); border-left: 2px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8rem;">
+          <em>"AI tools were used as a pair programming mentor for syntax debugging, CSS layout troubleshooting, and JavaScript DOM manipulation patterns. All application architecture, deterministic state-rule logic, JSON data schemas, AP credit mappings, and UX workflows were designed, verified, and authored with full personal human comprehension of every underlying function."</em>
         </div>
       </div>
       <div class="modal-footer">

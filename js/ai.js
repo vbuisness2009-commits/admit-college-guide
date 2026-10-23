@@ -153,9 +153,9 @@ const AdmitAI = {
     // 1. "Do I qualify?" / "What do I qualify for?"
     if (q.includes("qualify") || q.includes("eligible") || q.includes("guarantee") || q.includes("auto")) {
       if (audit.qualifications.length === 0) {
-        return `### ⚠ Statutory Qualification Status\n\nBased on your current profile, **you do NOT currently qualify for automatic statutory admission**.\n\n**Key Missing Criteria:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.reason}\n  * *Immediate Fix:* ${d.fix}`).join("\n\n")}\n\n*Note: Holistic admission is still possible, but you are not statutorily guaranteed admission.*`;
+        return `### Statutory Qualification Status\n\nBased on your current profile, **you do NOT currently qualify for automatic statutory admission**.\n\n**Key Missing Criteria:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.reason}\n  * *Immediate Fix:* ${d.fix}`).join("\n\n")}\n\n*Note: Holistic admission is still possible, but you are not statutorily guaranteed admission.*`;
       } else {
-        return `### ✓ Official Statutory Qualifications Confirmed\n\nGood news! You meet all legal requirements for:\n\n${audit.qualifications.map(q => `* **${q.title}** (${q.statute}):\n  * Status: **${q.impact}**\n  * Reason: Class rank (Top ${pct}%) and coursework prerequisites satisfy published criteria.`).join("\n\n")}\n\n${audit.disqualifications.length > 0 ? `\n\n**Where you are currently disqualified:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.fix}`).join("\n")}` : ""}`;
+        return `### Official Statutory Qualifications Confirmed\n\nGood news! You meet all legal requirements for:\n\n${audit.qualifications.map(q => `* **${q.title}** (${q.statute}):\n  * Status: **${q.impact}**\n  * Reason: Class rank (Top ${pct}%) and coursework prerequisites satisfy published criteria.`).join("\n\n")}\n\n${audit.disqualifications.length > 0 ? `\n\n**Where you are currently disqualified:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.fix}`).join("\n")}` : ""}`;
       }
     }
 
@@ -165,7 +165,7 @@ const AdmitAI = {
       const targets = audit.middleTarget.map(t => `* **${t.college.short_name}**: Inside median band (${t.college.sat_total_25}–${t.college.sat_total_75}). You need **+${t.delta75} pts** to reach the 75th percentile.`).join("\n");
       const anchors = audit.strongAnchor.map(a => `* **${a.college.short_name}**: In the top 25% of admitted freshmen (Above 75th percentile: ${a.college.sat_total_75}).`).join("\n");
 
-      return `### 📊 AI Test Score Analysis (SAT: ${studentSat})\n\nHere is how your standardized test score matches against your saved colleges:\n\n${anchors ? `**Academically Strong (>75th Percentile):**\n${anchors}\n\n` : ""}${targets ? `**Inside Middle-50% Admitted Range:**\n${targets}\n\n` : ""}${reaches ? `**Test Score Deficit (<25th Percentile):**\n${reaches}\n\n` : ""}\n**AI Recommendation:** If you retake the SAT, focus primarily on Math/ERW subscores to gain **+${audit.competitiveReach.length > 0 ? audit.competitiveReach[0].delta + 30 : 50} points**, which places you safely into the median band across your entire list.`;
+      return `### Test Score Analysis (SAT: ${studentSat})\n\nHere is how your standardized test score matches against your saved colleges:\n\n${anchors ? `**Academically Strong (>75th Percentile):**\n${anchors}\n\n` : ""}${targets ? `**Inside Middle-50% Admitted Range:**\n${targets}\n\n` : ""}${reaches ? `**Test Score Deficit (<25th Percentile):**\n${reaches}\n\n` : ""}\n**AI Recommendation:** If you retake the SAT, focus primarily on Math/ERW subscores to gain **+${audit.competitiveReach.length > 0 ? audit.competitiveReach[0].delta + 30 : 50} points**, which places you safely into the median band across your entire list.`;
     }
 
     // 3. Questions about AP / IB / College Credits
@@ -173,16 +173,16 @@ const AdmitAI = {
       const completed = (profile.ap_exams || []).filter(e => e.status === "completed");
       const planned = (profile.ap_exams || []).filter(e => e.status === "planned");
       
-      return `### 🎓 AP/IB Credit & Tuition ROI Assessment\n\n* **Completed AP Exams:** ${completed.length} logged (${completed.map(e => `${e.name}: ${e.score}`).join(", ") || "None"}).\n* **Maximum Estimated Tuition Saved:** **$${audit.maxTuitionSaved.toLocaleString()}** (representing approx. **${audit.maxCreditsSaved} college credits** at ${audit.bestSchoolForCredits ? audit.bestSchoolForCredits.short_name : "your saved schools"}).\n* **Planned Exams:** ${planned.length} upcoming (${planned.map(e => e.name).join(", ") || "None"}).\n\n**High-Value Advice:** Under state law (such as Texas HB 1992 / TEC § 51.968), public universities cannot require more than a score of 3 for credit unless special exemptions apply. Scoring a 4 or 5 in planned exams like Calculus BC or Chemistry directly waives up to 8 credits per subject, bypassing introductory lab weed-out courses.`;
+      return `### AP/IB Credit & Tuition ROI Assessment\n\n* **Completed AP Exams:** ${completed.length} logged (${completed.map(e => `${e.name}: ${e.score}`).join(", ") || "None"}).\n* **Maximum Estimated Tuition Saved:** **$${audit.maxTuitionSaved.toLocaleString()}** (representing approx. **${audit.maxCreditsSaved} college credits** at ${audit.bestSchoolForCredits ? audit.bestSchoolForCredits.short_name : "your saved schools"}).\n* **Planned Exams:** ${planned.length} upcoming (${planned.map(e => e.name).join(", ") || "None"}).\n\n**High-Value Advice:** Under state law (such as Texas HB 1992 / TEC § 51.968), public universities cannot require more than a score of 3 for credit unless special exemptions apply. Scoring a 4 or 5 in planned exams like Calculus BC or Chemistry directly waives up to 8 credits per subject, bypassing introductory lab weed-out courses.`;
     }
 
     // 4. Questions about single biggest fix / next steps
     if (q.includes("fix") || q.includes("do next") || q.includes("roadmap") || q.includes("priority") || q.includes("improve")) {
-      return `### 🎯 AI Priority Diagnostic: Your #1 Action Item\n\n**Primary Focus:**\n> **${audit.executiveSummary.immediateActionItem}**\n\n**Secondary Priorities:**\n${audit.executiveSummary.criticalVulnerabilities.slice(0, 3).map((v, i) => `${i + 1}. ${v}`).join("\n")}\n\nThis sequence addresses hard statutory barriers first, followed by score competitive positioning.`;
+      return `### Priority Diagnostic: Your #1 Action Item\n\n**Primary Focus:**\n> **${audit.executiveSummary.immediateActionItem}**\n\n**Secondary Priorities:**\n${audit.executiveSummary.criticalVulnerabilities.slice(0, 3).map((v, i) => `${i + 1}. ${v}`).join("\n")}\n\nThis sequence addresses hard statutory barriers first, followed by score competitive positioning.`;
     }
 
     // 5. Default Comprehensive Response
-    return `### 🤖 Comprehensive Academic Profile Diagnostics\n\n**Executive Health Rating:** ${audit.executiveSummary.overallHealth}\n\n**Top Strengths:**\n${audit.executiveSummary.keyStrengths.map(s => `* ${s}`).join("\n")}\n\n**Identified Deficits & Disqualifications:**\n${audit.executiveSummary.criticalVulnerabilities.length > 0 ? audit.executiveSummary.criticalVulnerabilities.map(v => `* ${v}`).join("\n") : "* No critical disqualifications detected."}\n\n**Recommended Immediate Action:**\n> ${audit.executiveSummary.immediateActionItem}\n\n*Tip: You can ask me specific questions like: "Do I qualify for Texas Top 10%?", "How do my SAT scores compare?", or "How much money do my APs save me?"*`;
+    return `### Academic Profile Diagnostics\n\n**Executive Health Rating:** ${audit.executiveSummary.overallHealth}\n\n**Top Strengths:**\n${audit.executiveSummary.keyStrengths.map(s => `* ${s}`).join("\n")}\n\n**Identified Deficits & Disqualifications:**\n${audit.executiveSummary.criticalVulnerabilities.length > 0 ? audit.executiveSummary.criticalVulnerabilities.map(v => `* ${v}`).join("\n") : "* No critical disqualifications detected."}\n\n**Recommended Immediate Action:**\n> ${audit.executiveSummary.immediateActionItem}\n\n*Tip: You can ask me specific questions like: "Do I qualify for Texas Top 10%?", "How do my SAT scores compare?", or "How much money do my APs save me?"*`;
   }
 };
 
@@ -202,7 +202,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
     <div class="section-header">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
         <div>
-          <h2>🤖 Admit AI Diagnostic Audit & Interactive Advisor</h2>
+          <h2>Admit AI Diagnostic Audit & Interactive Advisor</h2>
           <p>Multi-vector algorithmic analysis of your academic profile against official state laws, published score percentiles, and university credit matrices.</p>
         </div>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
@@ -215,15 +215,15 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
     </div>
 
     <!-- AI Executive Verdict Card -->
-    <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 28, 45, 0.95) 100%); border: 1px solid rgba(59, 130, 246, 0.4);">
+    <div class="card" style="margin-bottom: 1.5rem; background: var(--bg-card); border: 1px solid var(--border-subtle);">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div style="width: 36px; height: 36px; border-radius: 8px; background: #3B82F6; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800;">
+          <div style="width: 32px; height: 32px; border-radius: 6px; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.05em;">
             AI
           </div>
           <div>
             <h3 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 700;">Executive Diagnostic Brief for ${userName}</h3>
-            <span style="font-size: 0.75rem; color: #60A5FA;">Generated from verified profile parameters & official statutes</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Generated from verified profile parameters & official statutes</span>
           </div>
         </div>
         <button class="btn-secondary" style="font-size: 0.78rem;" onclick="App.openProfileModal()">
@@ -235,7 +235,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         <!-- Strengths -->
         <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md); padding: 1rem;">
           <h4 style="font-size: 0.88rem; color: #34D399; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
-            <span>✓</span> Key Strategic Strengths:
+            Key Strategic Strengths:
           </h4>
           <ul style="font-size: 0.82rem; color: var(--text-main); display: flex; flex-direction: column; gap: 0.4rem; padding-left: 1.1rem;">
             ${audit.executiveSummary.keyStrengths.map(s => `<li>${s}</li>`).join('')}
@@ -245,7 +245,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         <!-- Vulnerabilities -->
         <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-md); padding: 1rem;">
           <h4 style="font-size: 0.88rem; color: #F87171; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
-            <span>⚠</span> Identified Deficits & Disqualifications:
+            Identified Deficits & Disqualifications:
           </h4>
           <ul style="font-size: 0.82rem; color: var(--text-main); display: flex; flex-direction: column; gap: 0.4rem; padding-left: 1.1rem;">
             ${audit.executiveSummary.criticalVulnerabilities.length > 0 
@@ -277,8 +277,8 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       <div style="display: flex; flex-direction: column; gap: 1.25rem;">
         <!-- Qualifications Card -->
         <div class="card">
-          <h3 style="font-size: 1.05rem; font-weight: 700; color: #34D399; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span>✓</span> Confirmed Qualifications (${audit.qualifications.length})
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: #34D399; margin-bottom: 0.75rem;">
+            Confirmed Qualifications (${audit.qualifications.length})
           </h3>
           ${audit.qualifications.length === 0 ? `
             <p style="font-size: 0.84rem; color: var(--text-dim); padding: 0.5rem 0;">No guaranteed statutory admissions confirmed based on current inputs.</p>
@@ -317,8 +317,8 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
         <!-- Disqualifications Card -->
         <div class="card">
-          <h3 style="font-size: 1.05rem; font-weight: 700; color: #F87171; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span>⚠</span> Current Disqualifications & Gaps (${audit.disqualifications.length + audit.competitiveReach.length})
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: #F87171; margin-bottom: 0.75rem;">
+            Current Disqualifications & Gaps (${audit.disqualifications.length + audit.competitiveReach.length})
           </h3>
           ${audit.disqualifications.length === 0 && audit.competitiveReach.length === 0 ? `
             <p style="font-size: 0.84rem; color: var(--text-dim); padding: 0.5rem 0;">No active disqualifications detected across saved schools.</p>
@@ -354,8 +354,8 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       <div class="card" style="display: flex; flex-direction: column; height: 600px; max-height: 80vh; padding: 1.15rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
           <div>
-            <h3 style="font-size: 1.05rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 0.4rem;">
-              <span>💬</span> Interactive Admissions Advisor
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: #FFFFFF;">
+              Interactive Admissions Advisor
             </h3>
             <span style="font-size: 0.74rem; color: var(--text-muted);">Instant responses grounded in your active stats</span>
           </div>
@@ -384,7 +384,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         <div id="ai-chat-messages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: 0.75rem;">
           <!-- Default welcome message -->
           <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.45; color: var(--text-main);">
-            <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">🤖 Admit AI Advisor:</strong>
+            <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">Admit AI Advisor:</strong>
             Hello ${userName}! I've completed a full diagnostic scan of your academic profile. Ask me any question about your statutory eligibility, test score percentile standing, or AP course equivalencies.
           </div>
         </div>
@@ -421,47 +421,36 @@ AdmitAI.postUserMessage = function(text) {
 
   // Append user bubble
   const userBubble = document.createElement("div");
-  userBubble.style.cssText = "align-self: flex-end; background: var(--primary); color: #FFFFFF; border-radius: var(--radius-md); padding: 0.6rem 0.85rem; font-size: 0.84rem; max-width: 85%; box-shadow: 0 2px 4px rgba(0,0,0,0.3);";
+  userBubble.style.cssText = "align-self: flex-end; background: var(--primary); color: #FFFFFF; border-radius: var(--radius-md); padding: 0.6rem 0.85rem; font-size: 0.84rem; max-width: 85%;";
   userBubble.innerText = text;
   container.appendChild(userBubble);
+
+  // Generate response instantly (no artificial wait slop)
+  const profile = ProfileManager.get();
+  const colleges = CollegesEngine.getAll();
+  const rules = StatusEngine.rulesData;
+  const apData = CreditsEngine.apData;
+
+  const answerMarkdown = AdmitAI.respondToQuery(text, profile, colleges, rules, apData);
+
+  const botBubble = document.createElement("div");
+  botBubble.style.cssText = "background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.5; color: var(--text-main); max-width: 95%;";
+  
+  // Format simple markdown headings and lists
+  const formattedHtml = answerMarkdown
+    .replace(/### (.*?)\n/g, '<h4 style="color: #60A5FA; font-size: 0.95rem; margin-bottom: 0.4rem;">$1</h4>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\* (.*?)/g, '<li style="margin-left: 1.25rem;">$1</li>')
+    .replace(/\n\n/g, '<div style="margin-bottom: 0.6rem;"></div>');
+
+  botBubble.innerHTML = `
+    <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">Admit AI Advisor:</strong>
+    <div>${formattedHtml}</div>
+  `;
+
+  container.appendChild(botBubble);
   container.scrollTop = container.scrollHeight;
-
-  // Thinking indicator
-  const thinkingBubble = document.createElement("div");
-  thinkingBubble.style.cssText = "background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.6rem 0.85rem; font-size: 0.82rem; color: var(--text-dim); max-width: 85%;";
-  thinkingBubble.innerHTML = `<em>Admit AI is scanning statutory criteria & score data...</em>`;
-  container.appendChild(thinkingBubble);
-  container.scrollTop = container.scrollHeight;
-
-  // Generate response
-  setTimeout(() => {
-    thinkingBubble.remove();
-    const profile = ProfileManager.get();
-    const colleges = CollegesEngine.getAll();
-    const rules = StatusEngine.rulesData;
-    const apData = CreditsEngine.apData;
-
-    const answerMarkdown = AdmitAI.respondToQuery(text, profile, colleges, rules, apData);
-
-    const botBubble = document.createElement("div");
-    botBubble.style.cssText = "background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.5; color: var(--text-main); max-width: 95%;";
-    
-    // Quick format simple markdown headings and lists
-    const formattedHtml = answerMarkdown
-      .replace(/### (.*?)\n/g, '<h4 style="color: #60A5FA; font-size: 0.95rem; margin-bottom: 0.4rem;">$1</h4>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\n\* (.*?)/g, '<li style="margin-left: 1.25rem;">$1</li>')
-      .replace(/\n\n/g, '<div style="margin-bottom: 0.6rem;"></div>');
-
-    botBubble.innerHTML = `
-      <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">🤖 Admit AI Advisor:</strong>
-      <div>${formattedHtml}</div>
-    `;
-
-    container.appendChild(botBubble);
-    container.scrollTop = container.scrollHeight;
-  }, 400);
 };
 
 AdmitAI.clearChat = function() {
@@ -471,7 +460,7 @@ AdmitAI.clearChat = function() {
   const userName = user ? user.name.split(" ")[0] : "Student";
   container.innerHTML = `
     <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.45; color: var(--text-main);">
-      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">🤖 Admit AI Advisor:</strong>
+      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">Admit AI Advisor:</strong>
       Chat cleared. Ask me any question about your statutory admission standing, score percentiles, or AP credit conversions.
     </div>
   `;

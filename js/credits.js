@@ -165,7 +165,7 @@ const CreditsEngine = {
                       <span class="score-badge score-${row.exam.score}">${row.exam.score}</span>
                     </td>
                     <td>
-                      <span style="color: var(--success); font-weight: 700; font-size: 0.8rem;">✓ Credit Granted</span>
+                      <span style="color: var(--success); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.03em;">CREDIT GRANTED</span>
                     </td>
                     <td>
                       <span class="course-code-tag">${row.rule.course_code}</span>
@@ -191,7 +191,7 @@ const CreditsEngine = {
                       <span class="score-badge score-${row.exam.score}">${row.exam.score}</span>
                     </td>
                     <td>
-                      <span style="color: var(--warning); font-weight: 600; font-size: 0.8rem;">⚠ Score Below Cutoff</span>
+                      <span style="color: var(--warning); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.03em;">BELOW CUTOFF</span>
                     </td>
                     <td style="color: var(--text-dim); font-size: 0.85rem;">
                       None (Requires score of ${row.minRequired}+)
@@ -259,7 +259,7 @@ const CreditsEngine = {
       <!-- Legal Context Box -->
       <div class="card" style="margin-top: 2rem; background: rgba(30, 41, 59, 0.4); border-left: 4px solid #60A5FA;">
         <div style="font-size: 0.82rem; font-weight: 700; color: #93C5FD; margin-bottom: 0.25rem;">
-          ⚖ Nationwide State Higher Education Credit Statutes
+          Nationwide State Higher Education Credit Statutes
         </div>
         <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
           <strong>Over 30 States Nationwide:</strong> State legislation across the U.S. (including California AB 1985, Illinois Public Act 099-0358, Ohio ORC 3333.163, Florida Title XLVIII, and Texas HB 1992) mandates that public colleges and universities award undergraduate course credit for AP exam scores of 3 or higher, preventing arbitrary departmental denials and guaranteeing student tuition savings.

@@ -82,13 +82,13 @@ const StatusEngine = {
 
     container.innerHTML = `
       <!-- AI Quick Callout Banner -->
-      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(30, 41, 59, 0.6) 100%); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div style="width: 32px; height: 32px; border-radius: 8px; background: #2563EB; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800;">
-            🤖
+          <div style="width: 28px; height: 28px; border-radius: 6px; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
+            AI
           </div>
           <div>
-            <strong style="color: #FFFFFF; font-size: 0.95rem;">Admit AI Nationwide Eligibility Scanner Active</strong>
+            <strong style="color: #FFFFFF; font-size: 0.92rem;">Admit AI Nationwide Eligibility Scanner Active</strong>
             <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">
               Multi-vector analysis of your GPA, test scores, and coursework against official state public university admission laws.
             </p>
@@ -145,7 +145,7 @@ const StatusEngine = {
           <div class="stat-row">
             <span class="stat-label">Core College Prep Curriculum</span>
             <span class="stat-value" style="color: ${profile.math_years_algebra2 && (profile.science_years || 0) >= 3 ? 'var(--success)' : 'var(--warning)'}; font-size: 0.85rem;">
-              ${profile.math_years_algebra2 && (profile.science_years || 0) >= 3 ? '✓ On Track (Math + Science)' : '⚠ Incomplete'}
+              ${profile.math_years_algebra2 && (profile.science_years || 0) >= 3 ? 'On Track (Math + Science)' : 'Incomplete'}
             </span>
           </div>
 
@@ -239,7 +239,7 @@ const StatusEngine = {
               <div class="statute">Authority: ${rule.statute}</div>
             </div>
             <div class="rule-status-badge ${isQualified ? 'qualified' : 'not-qualified'}">
-              ${isQualified ? '✓ STATUTORILY QUALIFIED' : '⚠ CRITERIA MISSING'}
+              ${isQualified ? 'ELIGIBLE' : 'ACTION REQUIRED'}
             </div>
           </div>
           <div class="rule-body">
@@ -252,7 +252,7 @@ const StatusEngine = {
             <div class="criteria-list">
               ${result.criteria.map(c => `
                 <div class="criteria-item ${c.isMet ? 'met' : 'unmet'}">
-                  <div class="criteria-icon">${c.isMet ? '✓' : '✗'}</div>
+                  <div class="criteria-icon">${c.isMet ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'}</div>
                   <div class="criteria-text">
                     <div class="criteria-label">${c.label}</div>
                     ${c.fix ? `<div class="criteria-fix"><strong>Single Fix Needed:</strong> ${c.fix}</div>` : ''}

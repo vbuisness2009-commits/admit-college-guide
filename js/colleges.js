@@ -48,7 +48,7 @@ const CollegesEngine = {
             <p>Compare your test scores against the official middle-50% published ranges from the U.S. Dept. of Education College Scorecard.</p>
           </div>
           <button class="compare-counter-pill" id="compare-modal-btn" onclick="CollegesEngine.openComparisonModal()">
-            <span>⚖ Compare Saved</span>
+            <span>Compare Saved</span>
             <span class="tab-badge" id="compare-badge">${profile.saved_colleges ? profile.saved_colleges.length : 0}</span>
           </button>
         </div>
@@ -57,13 +57,13 @@ const CollegesEngine = {
       <!-- Toolbar -->
       <div class="colleges-toolbar">
         <div class="search-box">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
           <input type="text" class="input-control" placeholder="Search by college name, city, or state..." oninput="CollegesEngine.setSearch(this.value)" value="${this.searchQuery}">
         </div>
 
         <div class="filter-pills">
           <button class="pill-btn ${this.activeFilter === 'all' ? 'active' : ''}" onclick="CollegesEngine.setFilter('all')">All Schools</button>
-          <button class="pill-btn ${this.activeFilter === 'saved' ? 'active' : ''}" onclick="CollegesEngine.setFilter('saved')">Saved Only ★</button>
+          <button class="pill-btn ${this.activeFilter === 'saved' ? 'active' : ''}" onclick="CollegesEngine.setFilter('saved')">Saved Only</button>
           <button class="pill-btn ${this.activeFilter === 'in-state' ? 'active' : ''}" onclick="CollegesEngine.setFilter('in-state')">In-State (${profile.residency})</button>
           <button class="pill-btn ${this.activeFilter === 'public' ? 'active' : ''}" onclick="CollegesEngine.setFilter('public')">Public</button>
           <button class="pill-btn ${this.activeFilter === 'private' ? 'active' : ''}" onclick="CollegesEngine.setFilter('private')">Private</button>
@@ -163,10 +163,10 @@ const CollegesEngine = {
           <div class="college-card-header">
             <div class="college-title">
               <h3>${col.name}</h3>
-              <div class="college-location">📍 ${col.city}, ${col.state} · ${col.type}</div>
+              <div class="college-location">${col.city}, ${col.state} · ${col.type}</div>
             </div>
             <button class="btn-secondary" onclick="CollegesEngine.toggleSave('${col.id}')" style="padding: 0.35rem 0.6rem; font-size: 0.85rem;" title="${isSaved ? 'Remove from saved' : 'Save to compare'}">
-              ${isSaved ? '★ Saved' : '☆ Save'}
+              ${isSaved ? 'Saved' : 'Save'}
             </button>
           </div>
 
@@ -194,7 +194,6 @@ const CollegesEngine = {
             </div>
 
             <div class="range-target-hint">
-              <span>🎯</span>
               <span>${targetText}</span>
             </div>
           </div>
@@ -226,7 +225,7 @@ const CollegesEngine = {
           <!-- Card Actions -->
           <div class="college-card-actions">
             <button class="btn-secondary" style="font-size: 0.78rem; width: 100%; justify-content: center;" onclick="App.switchToCreditsTabForCollege('${col.id}')">
-              🎓 View AP/IB Credit Policy & Tuition Saved →
+              View AP/IB Credit Policy & Tuition Saved →
             </button>
           </div>
         </div>
@@ -252,7 +251,7 @@ const CollegesEngine = {
     const savedIds = profile.saved_colleges || [];
 
     if (savedIds.length === 0) {
-      App.showToast("Save at least 1 college by clicking '☆ Save' to compare side-by-side.", "warning");
+      App.showToast("Save at least 1 college to compare side-by-side.", "warning");
       return;
     }
 
@@ -284,7 +283,7 @@ const CollegesEngine = {
                 <td>
                   <strong style="color: #60A5FA;">${s.sat_total_25} – ${s.sat_total_75}</strong>
                   <div style="font-size: 0.72rem; color: ${studentScore >= s.sat_total_25 && studentScore <= s.sat_total_75 ? 'var(--success)' : studentScore > s.sat_total_75 ? '#93C5FD' : 'var(--warning)'}; margin-top: 2px;">
-                    ${studentScore < s.sat_total_25 ? `Below (-${s.sat_total_25 - studentScore})` : studentScore > s.sat_total_75 ? `Above (+${studentScore - s.sat_total_75})` : 'In Range ✓'}
+                    ${studentScore < s.sat_total_25 ? `Below (-${s.sat_total_25 - studentScore})` : studentScore > s.sat_total_75 ? `Above (+${studentScore - s.sat_total_75})` : 'In Range'}
                   </div>
                 </td>
               `).join('')}

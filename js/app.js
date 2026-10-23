@@ -222,7 +222,7 @@ const App = {
       pill.innerHTML = `
         <span class="dot"></span>
         <span>Grade ${profile.grade_level || 11} · ${profile.residency || 'TX'} · ${rankText} · ${satText}</span>
-        <span style="font-size: 0.72rem; color: var(--text-dim); margin-left: 2px;">✏ Edit</span>
+        <span style="font-size: 0.72rem; color: var(--text-dim); margin-left: 2px;">Edit</span>
       `;
     }
 
@@ -244,13 +244,13 @@ const App = {
             <span style="font-size: 0.72rem; color: var(--text-dim); word-break: break-all;">${user.email}</span>
           </div>
           <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="App.openProfileModal(); App.toggleUserDropdown();">
-            ✏ Edit Academic Stats
+            Edit Academic Stats
           </button>
           <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="Onboarding.open(); App.toggleUserDropdown();">
-            ⚡ Re-run Setup Wizard
+            Re-run Setup Wizard
           </button>
           <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; color: #F87171;" onclick="App.handleLogout()">
-            🚪 Sign Out
+            Sign Out
           </button>
         </div>
       `;
@@ -437,7 +437,7 @@ const App = {
     const toast = document.createElement("div");
     toast.className = `toast ${type}`;
     toast.innerHTML = `
-      <span>${type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+      <span class="toast-tag">${type.toUpperCase()}</span>
       <span>${message}</span>
     `;
 

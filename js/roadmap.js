@@ -25,7 +25,7 @@ const RoadmapEngine = {
     if (!profile.math_years_algebra2) {
       gaps.coursework.push({
         title: "Enroll in Algebra II and 4th Year Mathematics",
-        desc: "Crucial prerequisite required for the Texas Distinguished Level of Achievement and STEM college readiness.",
+        desc: "Crucial prerequisite required for advanced high school diploma endorsements, state automatic admission programs, and STEM college readiness.",
         urgency: currentGrade >= 11 ? "gap-fix" : "academic"
       });
     }
@@ -124,7 +124,7 @@ const RoadmapEngine = {
           <div class="grade-content">
             <div class="grade-title">
               <h3>Freshman Year · Foundation Building</h3>
-              <span style="font-size: 0.75rem; color: var(--text-dim);">${currentGrade > 9 ? '✓ Completed' : currentGrade === 9 ? 'Current Stage' : 'Upcoming'}</span>
+              <span style="font-size: 0.75rem; color: var(--text-dim);">${currentGrade > 9 ? 'Completed' : currentGrade === 9 ? 'Current Stage' : 'Upcoming'}</span>
             </div>
             <div class="action-items-list">
               <div class="action-item">
@@ -151,7 +151,7 @@ const RoadmapEngine = {
           <div class="grade-content">
             <div class="grade-title">
               <h3>Sophomore Year · Rigor & Early APs</h3>
-              <span style="font-size: 0.75rem; color: var(--text-dim);">${currentGrade > 10 ? '✓ Completed' : currentGrade === 10 ? 'Current Stage' : 'Upcoming'}</span>
+              <span style="font-size: 0.75rem; color: var(--text-dim);">${currentGrade > 10 ? 'Completed' : currentGrade === 10 ? 'Current Stage' : 'Upcoming'}</span>
             </div>
             <div class="action-items-list">
               <div class="action-item">
@@ -178,7 +178,7 @@ const RoadmapEngine = {
           <div class="grade-content">
             <div class="grade-title">
               <h3>Junior Year · Peak Testing & Coursework Optimization</h3>
-              <span style="font-size: 0.75rem; color: var(--text-dim);">${currentGrade > 11 ? '✓ Completed' : currentGrade === 11 ? 'Current Stage' : 'Upcoming'}</span>
+              <span style="font-size: 0.75rem; color: var(--text-dim);">${currentGrade > 11 ? 'Completed' : currentGrade === 11 ? 'Current Stage' : 'Upcoming'}</span>
             </div>
             <div class="action-items-list">
               ${gaps.coursework.map(item => `
