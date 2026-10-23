@@ -119,6 +119,9 @@ const App = {
       case "roadmap":
         RoadmapEngine.render("roadmap-tab-content", profile, this.collegesData);
         break;
+      case "ai":
+        AdmitAI.render("ai-tab-content", profile, this.collegesData, StatusEngine.rulesData, CreditsEngine.apData);
+        break;
     }
   },
 

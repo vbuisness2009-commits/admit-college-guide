@@ -49,6 +49,13 @@ Most commercial college tools give students a speculative *"X% admission chance"
   * Recommended AP exams to maximize college credit savings.
   * Standardized application timeline (FAFSA, ApplyTexas, Common App, UC application deadlines).
 
+### Tab 5 — AI Audit & Advisor: "What do I qualify for and what don't I?"
+* **Executive Diagnostic Brief:** Algorithmically analyzes the student's full profile (GPA, class rank, SAT/ACT splits, course prerequisites, and AP scores) to produce an authoritative diagnosis:
+  * **Key Strategic Strengths:** Pinpoints academic anchors, statutory guarantees, and course credit gains.
+  * **Critical Deficits & Disqualifications:** Explicitly flags why a student does *not* qualify for specific programs (e.g. *"Missing 4th lab science course required under TEC § 51.803"* or *"SAT score is 70 points below the 25th percentile at Rice University"*).
+  * **Recommended #1 Immediate Action:** Identifies the single highest-leverage academic or testing adjustment.
+* **Interactive Admissions Advisor (AI Chat):** Context-aware conversational assistant that answers questions grounded directly in the student's numbers without hallucination (e.g., *"What do I qualify for right now?"*, *"How does my SAT compare to my saved schools?"*, *"How much money do my APs save me?"*).
+
 ---
 
 ## 🛠 Tech Stack & Design Principles

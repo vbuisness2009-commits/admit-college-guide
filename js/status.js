@@ -83,6 +83,24 @@ const StatusEngine = {
 
     // Render HTML
     container.innerHTML = `
+      <!-- AI Quick Callout Banner -->
+      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(30, 41, 59, 0.6) 100%); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: #2563EB; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800;">
+            🤖
+          </div>
+          <div>
+            <strong style="color: #FFFFFF; font-size: 0.95rem;">Admit AI Diagnostic Scanner Active</strong>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">
+              Multi-vector AI analysis of your GPA, test scores, coursework, and credit savings against official state statutes.
+            </p>
+          </div>
+        </div>
+        <button class="btn-primary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="App.switchTab('ai')">
+          Launch Full AI Audit & Advisor →
+        </button>
+      </div>
+
       <div class="status-grid">
         <!-- Profile Summary Column -->
         <div class="profile-summary-box">
