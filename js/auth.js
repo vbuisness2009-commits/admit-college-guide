@@ -73,6 +73,7 @@ const Auth = {
       name: cleanName,
       email: cleanEmail,
       password: cleanPass, // client-side demo storage
+      provider: "email",
       created_at: new Date().toISOString(),
       onboarding_completed: false,
       profile: ProfileManager.getBlankProfile()
@@ -104,6 +105,10 @@ const Auth = {
       return { success: false, error: "No account found with this email. Please check your spelling or create an account." };
     }
 
+    if (user.provider === "google" && !user.password) {
+      return { success: false, error: "This email is registered with Google. Please click 'Sign in with Google' above." };
+    }
+
     if (user.password !== cleanPass) {
       return { success: false, error: "Incorrect password. Please try again." };
     }
@@ -112,12 +117,60 @@ const Auth = {
     return { success: true, user: user };
   },
 
+  loginWithGoogle(googleProfile) {
+    const cleanEmail = (googleProfile.email || "").trim().toLowerCase();
+    const cleanName = (googleProfile.name || "").trim() || (cleanEmail.split("@")[0]);
+    const photoURL = googleProfile.picture || null;
+
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      return { success: false, error: "Invalid Google account email address." };
+    }
+
+    const users = this.getUsers();
+    let user = users.find(u => u.email.toLowerCase() === cleanEmail);
+    let isNew = false;
+
+    if (user) {
+      user.provider = "google";
+      if (photoURL) user.photoURL = photoURL;
+      if (!user.name) user.name = cleanName;
+      const idx = users.findIndex(u => u.id === user.id);
+      users[idx] = user;
+      try {
+        localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+      } catch (e) {}
+    } else {
+      isNew = true;
+      user = {
+        id: "usr_g_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
+        name: cleanName,
+        email: cleanEmail,
+        provider: "google",
+        photoURL: photoURL,
+        created_at: new Date().toISOString(),
+        onboarding_completed: false,
+        profile: ProfileManager.getBlankProfile()
+      };
+      users.push(user);
+      try {
+        localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+      } catch (e) {
+        return { success: false, error: "Local storage limit reached. Please clear browser cache." };
+      }
+    }
+
+    this.setSession(user);
+    return { success: true, user: user, isNewUser: isNew };
+  },
+
   setSession(user) {
     try {
       localStorage.setItem(this.SESSION_KEY, JSON.stringify({
         id: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
+        provider: user.provider || "email",
+        photoURL: user.photoURL || null
       }));
     } catch (e) {
       this.sessionStorageFailed = true;

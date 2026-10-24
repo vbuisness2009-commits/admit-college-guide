@@ -74,6 +74,7 @@ const App = {
     const tabSignUp = document.getElementById("landing-tab-signup");
     const formSignIn = document.getElementById("landing-form-signin");
     const formSignUp = document.getElementById("landing-form-signup");
+    const googleBtnLabel = document.getElementById("google-btn-label");
     const errBox = document.getElementById("landing-auth-error");
 
     if (errBox) errBox.style.display = "none";
@@ -83,12 +84,78 @@ const App = {
       if (tabSignUp) tabSignUp.classList.remove("active");
       if (formSignIn) formSignIn.style.display = "block";
       if (formSignUp) formSignUp.style.display = "none";
+      if (googleBtnLabel) googleBtnLabel.textContent = "Sign in with Google";
     } else {
       if (tabSignUp) tabSignUp.classList.add("active");
       if (tabSignIn) tabSignIn.classList.remove("active");
       if (formSignUp) formSignUp.style.display = "block";
       if (formSignIn) formSignIn.style.display = "none";
+      if (googleBtnLabel) googleBtnLabel.textContent = "Create account with Google";
     }
+  },
+
+  openGoogleAuthModal() {
+    const modal = document.getElementById("google-auth-modal");
+    const loading = document.getElementById("google-auth-loading");
+    const picker = document.getElementById("google-auth-picker");
+    const customForm = document.getElementById("google-custom-account-form");
+
+    if (loading) loading.style.display = "none";
+    if (picker) picker.style.display = "block";
+    if (customForm) customForm.style.display = "none";
+    if (modal) modal.classList.add("open");
+  },
+
+  closeGoogleAuthModal() {
+    const modal = document.getElementById("google-auth-modal");
+    if (modal) modal.classList.remove("open");
+  },
+
+  toggleCustomGoogleInput() {
+    const customForm = document.getElementById("google-custom-account-form");
+    if (!customForm) return;
+    const isHidden = customForm.style.display === "none";
+    customForm.style.display = isHidden ? "block" : "none";
+    if (isHidden) {
+      const nameInput = document.getElementById("google-custom-name");
+      if (nameInput) nameInput.focus();
+    }
+  },
+
+  handleCustomGoogleSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById("google-custom-name").value;
+    const email = document.getElementById("google-custom-email").value;
+    this.executeGoogleAuth(name, email);
+  },
+
+  executeGoogleAuth(name, email, picture = null) {
+    const loading = document.getElementById("google-auth-loading");
+    const picker = document.getElementById("google-auth-picker");
+
+    if (picker) picker.style.display = "none";
+    if (loading) loading.style.display = "block";
+
+    setTimeout(() => {
+      const res = Auth.loginWithGoogle({ name, email, picture });
+      this.closeGoogleAuthModal();
+
+      if (res.success) {
+        const firstName = (res.user.name || "Student").split(" ")[0];
+        if (res.isNewUser) {
+          this.showToast(`Google account linked! Welcome, ${firstName}.`, "success");
+        } else {
+          this.showToast(`Signed in with Google as ${firstName}!`, "success");
+        }
+        this.updateAppView();
+      } else {
+        const errBox = document.getElementById("landing-auth-error");
+        if (errBox) {
+          errBox.innerText = res.error || "Google authentication failed. Please try again.";
+          errBox.style.display = "block";
+        }
+      }
+    }, 450);
   },
 
   handleLoginSubmit(e) {
@@ -104,7 +171,14 @@ const App = {
       this.updateAppView();
     } else {
       if (errBox) {
-        errBox.innerText = res.error;
+        errBox.innerHTML = `
+          <div>${escapeHTML(res.error)}</div>
+          ${res.error.includes("create an account") || res.error.includes("No account found") ? `
+            <button type="button" class="footer-link-btn" style="color: #60A5FA; margin-top: 0.35rem; font-size: 0.8rem;" onclick="App.switchLandingAuthTab('signup')">
+              Create an Account Now →
+            </button>
+          ` : ''}
+        `;
         errBox.style.display = "block";
       }
     }
@@ -133,7 +207,14 @@ const App = {
       this.updateAppView();
     } else {
       if (errBox) {
-        errBox.innerText = res.error;
+        errBox.innerHTML = `
+          <div>${escapeHTML(res.error)}</div>
+          ${res.error.includes("already registered") ? `
+            <button type="button" class="footer-link-btn" style="color: #60A5FA; margin-top: 0.35rem; font-size: 0.8rem;" onclick="App.switchLandingAuthTab('signin')">
+              Switch to Sign In →
+            </button>
+          ` : ''}
+        `;
         errBox.style.display = "block";
       }
     }
@@ -219,16 +300,24 @@ const App = {
       const safeName = escapeHTML(user.name);
       const safeEmail = escapeHTML(user.email);
       const firstName = escapeHTML(user.name.split(" ")[0]);
+      const isGoogle = user.provider === "google";
+      const providerBadge = isGoogle 
+        ? `<span class="google-badge"><svg width="10" height="10" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg> Google</span>` 
+        : `<span style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Email Account</span>`;
+
       userContainer.innerHTML = `
         <div class="user-avatar-btn" onclick="App.toggleUserDropdown()" title="${safeName} (${safeEmail})">
-          <div class="avatar-circle">${initials}</div>
+          <div class="avatar-circle" style="${isGoogle ? 'background: #1a73e8;' : ''}">${initials}</div>
           <span style="font-weight: 600;">${firstName}</span>
           <span style="font-size: 0.7rem; color: var(--text-dim);">▾</span>
         </div>
 
-        <div id="user-dropdown-menu" style="display: none; position: absolute; right: 0; top: 2.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem; box-shadow: var(--shadow-lg); min-width: 220px; z-index: 60;">
+        <div id="user-dropdown-menu" style="display: none; position: absolute; right: 0; top: 2.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem; box-shadow: var(--shadow-lg); min-width: 230px; z-index: 60;">
           <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 0.4rem;">
-            <strong style="color: #FFFFFF; font-size: 0.86rem; display: block;">${safeName}</strong>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+              <strong style="color: #FFFFFF; font-size: 0.86rem; display: block;">${safeName}</strong>
+              ${providerBadge}
+            </div>
             <span style="font-size: 0.72rem; color: var(--text-dim); word-break: break-all;">${safeEmail}</span>
           </div>
           <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="App.openProfileModal(); App.toggleUserDropdown();">
