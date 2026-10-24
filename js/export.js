@@ -255,7 +255,7 @@ const DossierExporter = {
             <span>Data Sources: U.S. Dept. of Education College Scorecard (June 2026) · State Education Statutes · Institutional Registrar Testing Catalogs</span>
           </div>
           <div>
-            <span>Generated via Admit Platform · 100% Deterministic Public Data Engine</span>
+            <span>Generated via AdmitAI Platform · 100% Deterministic Public Data Engine</span>
           </div>
         </div>
       </div>

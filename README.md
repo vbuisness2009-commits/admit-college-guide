@@ -1,4 +1,4 @@
-# Admit — Fact-Based College Standing & AP Credit ROI Engine
+# AdmitAI — Fact-Based College Standing & AP Credit ROI Engine
 
 > **2026 Congressional App Challenge Submission**  
 > *Enter your scores once to see published college score ranges, statutory admission guarantees, and AP/IB credit tuition savings without speculative predictions.*
@@ -9,7 +9,7 @@
 
 Most commercial college tools give students a speculative *"X% admission chance"* calculated by proprietary black-box algorithms. In reality, university admissions involve holistic qualitative evaluations (essays, extracurricular leadership, regional quotas, and recommendation letters) that no machine can reliably calculate. Reviewers consistently note that these percentage guesses mislead students and run unrealistically high.
 
-**Admit takes the opposite approach:** It never guesses or predicts admissions. Instead, it operates strictly on **facts it can verify with 100% certainty**:
+**AdmitAI takes the opposite approach:** It never guesses or predicts admissions. Instead, it operates strictly on **facts it can verify with 100% certainty**:
 1. **Official Published Score Ranges:** Direct middle-50% SAT/ACT percentile bands from the U.S. Department of Education.
 2. **Statutory Admission Rules:** Verified state laws guaranteeing admission (e.g., Texas Uniform Admission Policy TEC § 51.803, California UC ELC, Florida Talented Twenty).
 3. **Institutional AP/IB Credit Catalogs:** Real course code equivalencies and per-credit-hour tuition savings calculated from university registrar catalogs and state legislation (e.g., Texas HB 1992).
