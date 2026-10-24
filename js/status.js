@@ -22,7 +22,11 @@ const StatusEngine = {
   evaluateRule(rule, profile) {
     let allMet = true;
     const evaluatedCriteria = [];
-    const checkField = f => (f === "science_years" ? (profile[f] || 0) >= 3 : !!profile[f]);
+    const checkField = f => {
+      if (f === "science_years_4") return (profile.science_years ?? 0) >= 4;
+      if (f === "science_years") return (profile.science_years ?? 0) >= 3;
+      return !!profile[f];
+    };
 
     for (const criterion of rule.criteria) {
       let isMet = false;
@@ -145,9 +149,26 @@ const StatusEngine = {
 
           <div class="stat-row">
             <span class="stat-label">Core College Prep Curriculum</span>
-            <span class="stat-value" style="color: ${profile.math_years_algebra2 && (profile.science_years || 0) >= 3 ? 'var(--success)' : 'var(--warning)'}; font-size: 0.85rem;">
-              ${profile.math_years_algebra2 && (profile.science_years || 0) >= 3 ? 'On Track (Math + Science)' : 'Incomplete'}
+            <span class="stat-value" style="color: ${profile.math_years_algebra2 && (profile.science_years ?? 0) >= 4 && profile.has_endorsement ? 'var(--success)' : 'var(--warning)'}; font-size: 0.85rem;">
+              ${profile.math_years_algebra2 && (profile.science_years ?? 0) >= 4 && profile.has_endorsement ? 'Distinguished Ready' : 'Action Needed'}
             </span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.35rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 0.55rem 0.65rem;">
+            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-dim); font-weight: 700;">
+              Interactive Curriculum Quick-Check (Click to Toggle)
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+              <button type="button" class="pill-btn" onclick="StatusEngine.quickToggleCurriculum('math_years_algebra2')" style="font-size: 0.72rem; padding: 0.22rem 0.55rem; border-color: ${profile.math_years_algebra2 ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}; color: ${profile.math_years_algebra2 ? '#34D399' : '#F87171'};">
+                ${profile.math_years_algebra2 ? '✓' : '✕'} 4 Math (incl. Alg II)
+              </button>
+              <button type="button" class="pill-btn" onclick="StatusEngine.quickToggleCurriculum('science_years')" style="font-size: 0.72rem; padding: 0.22rem 0.55rem; border-color: ${(profile.science_years ?? 0) >= 4 ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}; color: ${(profile.science_years ?? 0) >= 4 ? '#34D399' : '#F87171'};">
+                ${(profile.science_years ?? 0) >= 4 ? '✓' : '✕'} Lab Science (${profile.science_years ?? 0}/4 yrs)
+              </button>
+              <button type="button" class="pill-btn" onclick="StatusEngine.quickToggleCurriculum('has_endorsement')" style="font-size: 0.72rem; padding: 0.22rem 0.55rem; border-color: ${profile.has_endorsement ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}; color: ${profile.has_endorsement ? '#34D399' : '#F87171'};">
+                ${profile.has_endorsement ? '✓' : '✕'} Endorsement & Lang
+              </button>
+            </div>
           </div>
 
           <div class="stat-row">
@@ -213,6 +234,16 @@ const StatusEngine = {
     if (!listElem) return;
     const profile = ProfileManager.get();
     listElem.innerHTML = this.renderEvaluatedRules(profile, stateVal);
+  },
+
+  quickToggleCurriculum(field) {
+    const profile = ProfileManager.get();
+    if (field === "science_years") {
+      profile.science_years = (profile.science_years ?? 0) >= 4 ? 3 : 4;
+    } else {
+      profile[field] = !profile[field];
+    }
+    ProfileManager.save(profile);
   },
 
   renderEvaluatedRules(profile, overrideState = null) {

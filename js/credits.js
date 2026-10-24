@@ -49,7 +49,7 @@ const CreditsEngine = {
         rows.push({ exam, rule: best, qualifies: true });
       } else {
         const minReq = rules.filter(r => r.exam_id === exam.id).sort((a, b) => a.min_score - b.min_score)[0];
-        rows.push({ exam, rule: minReq || null, qualifies: false, minRequired: minReq ? minReq.min_score : 4 });
+        rows.push({ exam, rule: minReq || null, qualifies: false, minRequired: minReq ? minReq.min_score : null });
       }
     }
     return { credits, rows };
@@ -224,14 +224,14 @@ const CreditsEngine = {
                       <span class="score-badge score-${row.exam.score}">${row.exam.score}</span>
                     </td>
                     <td>
-                      <span style="color: var(--warning); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.03em;">BELOW CUTOFF</span>
+                      <span style="color: ${row.minRequired ? 'var(--warning)' : 'var(--text-dim)'}; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.03em;">${row.minRequired ? 'BELOW CUTOFF' : 'NO CREDIT POLICY'}</span>
                     </td>
                     <td style="color: var(--text-dim); font-size: 0.85rem;">
-                      None (Requires score of ${row.minRequired}+)
+                      ${row.minRequired ? `None (Requires score of ${row.minRequired}+)` : 'Not accepted for course credit'}
                     </td>
                     <td style="color: var(--text-dim);">0 Credits</td>
                     <td style="font-size: 0.8rem; color: var(--text-dim);">
-                      ${college.short_name} requires at least a ${row.minRequired} on this exam for academic credit.
+                      ${row.minRequired ? `${college.short_name} requires at least a ${row.minRequired} on this exam for academic credit.` : `${college.short_name} does not award undergraduate credit for this AP exam.`}
                     </td>
                   </tr>
                 `;

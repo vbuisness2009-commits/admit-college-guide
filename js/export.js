@@ -37,7 +37,8 @@ const DossierExporter = {
 
     const currentGrade = profile.grade_level || 11;
     const residency = profile.residency || "US";
-    const studentSat = profile.sat_total;
+    const eff = CollegesEngine.getEffectiveSat(profile);
+    const studentSat = eff.score;
     const studentGpa = profile.gpa_unweighted ? profile.gpa_unweighted.toFixed(2) : "Not entered";
     const rankStr = profile.class_rank ? `${profile.class_rank} / ${profile.class_size} (Top ${profile.class_percentile}%)` : "Unranked";
 
@@ -102,7 +103,7 @@ const DossierExporter = {
           <div class="dossier-curriculum-row">
             <span class="lbl">College-Prep Curriculum Standards:</span>
             <span class="tag ${profile.math_years_algebra2 ? 'met' : 'unmet'}">Algebra II: ${profile.math_years_algebra2 ? 'Completed' : 'Missing'}</span>
-            <span class="tag ${(profile.science_years || 0) >= 3 ? 'met' : 'unmet'}">Lab Sciences: ${profile.science_years || 0} Years ${(profile.science_years || 0) >= 4 ? '(Distinguished)' : ''}</span>
+            <span class="tag ${(profile.science_years ?? 0) >= 4 ? 'met' : 'unmet'}">Lab Sciences: ${profile.science_years ?? 0} Years ${(profile.science_years ?? 0) >= 4 ? '(Distinguished)' : '(Need 4 for DLA)'}</span>
             <span class="tag ${profile.has_endorsement ? 'met' : 'unmet'}">State Endorsement / Honors: ${profile.has_endorsement ? 'Verified' : 'Pending'}</span>
           </div>
         </div>

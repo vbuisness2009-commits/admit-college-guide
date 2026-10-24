@@ -11,9 +11,10 @@ const AdmitAI = {
    * Run full multi-vector diagnostic audit
    */
   generateAudit(profile, collegesData, rulesData, apData) {
-    const studentSat = profile.sat_total || 1200;
+    const eff = CollegesEngine.getEffectiveSat(profile);
+    const studentSat = eff.score;
     const studentGpa = profile.gpa_unweighted || 3.8;
-    const studentPercentile = profile.class_percentile || 10.0;
+    const studentPercentile = profile.class_percentile;
     const residency = profile.residency || "TX";
 
     const qualifications = [];
@@ -23,11 +24,12 @@ const AdmitAI = {
     relevantRules.forEach(rule => {
       const evaluation = StatusEngine.evaluateRule(rule, profile);
       if (evaluation.isQualified) {
+        const pctNote = studentPercentile !== null && studentPercentile !== undefined ? `Class percentile Top ${studentPercentile}% meets cutoff; ` : "";
         qualifications.push({
           type: "statutory",
           title: rule.name,
           statute: rule.statute,
-          detail: `You meet 100% of statutory criteria (Class percentile ${studentPercentile}% meets cutoff; coursework prerequisites satisfied).`,
+          detail: `You meet 100% of statutory criteria (${pctNote}coursework and testing prerequisites satisfied).`,
           impact: "Guaranteed Automatic Admission"
         });
       } else {
@@ -48,35 +50,37 @@ const AdmitAI = {
     const middleTarget = [];
     const strongAnchor = [];
 
-    savedColleges.forEach(col => {
-      const p25 = col.sat_total_25;
-      const p75 = col.sat_total_75;
+    if (studentSat !== null) {
+      savedColleges.forEach(col => {
+        const p25 = col.sat_total_25;
+        const p75 = col.sat_total_75;
 
-      if (studentSat < p25) {
-        const delta = p25 - studentSat;
-        competitiveReach.push({
-          college: col,
-          delta: delta,
-          target75: p75 - studentSat,
-          status: "Below Middle-50% Range",
-          detail: `Your score (${studentSat}) is ${delta} points below the 25th percentile (${p25}). Admitted students in this band typically require exceptional non-cognitive hooks or holistic extracurricular differentiation.`
-        });
-      } else if (studentSat >= p75) {
-        strongAnchor.push({
-          college: col,
-          status: "Above 75th Percentile",
-          detail: `Your score (${studentSat}) places you in the top 25% of admitted freshmen at ${col.short_name} (75th percentile: ${p75}). Academically very competitive.`
-        });
-      } else {
-        const delta75 = p75 - studentSat;
-        middleTarget.push({
-          college: col,
-          delta75: delta75,
-          status: "Inside Middle-50% Range",
-          detail: `Your score is solidly within the median enrolled band (${p25}–${p75}). +${delta75} points needed to reach top quartile.`
-        });
-      }
-    });
+        if (studentSat < p25) {
+          const delta = p25 - studentSat;
+          competitiveReach.push({
+            college: col,
+            delta: delta,
+            target75: p75 - studentSat,
+            status: "Below Middle-50% Range",
+            detail: `Your score (${eff.label}) is ${delta} points below the 25th percentile (${p25}).`
+          });
+        } else if (studentSat >= p75) {
+          strongAnchor.push({
+            college: col,
+            status: "Above 75th Percentile",
+            detail: `Your score (${eff.label}) places you in the top 25% of admitted freshmen at ${col.short_name} (75th percentile: ${p75}).`
+          });
+        } else {
+          const delta75 = p75 - studentSat;
+          middleTarget.push({
+            college: col,
+            delta75: delta75,
+            status: "Inside Middle-50% Range",
+            detail: `Your score (${eff.label}) is solidly within the median enrolled band (${p25}–${p75}). +${delta75} points needed to reach top quartile.`
+          });
+        }
+      });
+    }
 
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
@@ -93,13 +97,16 @@ const AdmitAI = {
       ],
       criticalVulnerabilities: [
         ...disqualifications.map(d => `${d.title}: ${d.reason} ${d.fix ? `Fix: ${d.fix}` : ''}`),
+        ...(studentSat === null ? ["No standardized test score logged: Add an SAT or ACT score in your profile to benchmark against university middle-50% ranges."] : []),
         ...competitiveReach.map(r => `Test Score Gap at ${r.college.short_name}: ${r.delta} points below published 25th percentile (${r.college.sat_total_25}).`)
       ],
       immediateActionItem: disqualifications.length > 0 && disqualifications[0].fix 
         ? disqualifications[0].fix 
-        : competitiveReach.length > 0 
-          ? `Target a ${competitiveReach[0].delta + 40}-point SAT score increase to clear the 25th percentile threshold at ${competitiveReach[0].college.short_name}.`
-          : `Maintain rigorous senior year course grades and submit official AP score reports during university registration.`
+        : studentSat === null
+          ? "Take an official SAT or ACT exam and log your score to evaluate your standing across target universities."
+          : competitiveReach.length > 0 
+            ? `Target a ${competitiveReach[0].delta + 40}-point SAT score increase to clear the 25th percentile threshold at ${competitiveReach[0].college.short_name}.`
+            : `Maintain rigorous senior year course grades and submit official AP score reports during university registration.`
     };
 
     return {
@@ -121,25 +128,47 @@ const AdmitAI = {
   respondToQuery(query, profile, collegesData, rulesData, apData) {
     const q = query.toLowerCase().trim();
     const audit = this.generateAudit(profile, collegesData, rulesData, apData);
-    const studentSat = profile.sat_total || 1200;
-    const studentGpa = profile.gpa_unweighted || 3.8;
-    const rank = profile.class_rank;
+    const eff = CollegesEngine.getEffectiveSat(profile);
+    const studentSat = eff.score;
     const pct = profile.class_percentile;
+    const completed = (profile.ap_exams || []).filter(e => e.status === "completed");
+
+    const matchedCollege = (collegesData || []).find(c =>
+      q.includes(c.short_name.toLowerCase()) ||
+      q.includes(c.name.toLowerCase()) ||
+      q.includes(c.id.replace("-", " "))
+    );
+
+    if (matchedCollege) {
+      const savings = CreditsEngine.calculateCollegeSavings(matchedCollege, completed, profile.residency);
+      const scoreStatus = studentSat === null
+        ? `No SAT/ACT logged yet (Middle-50% SAT: **${matchedCollege.sat_total_25}–${matchedCollege.sat_total_75}**, ACT: **${matchedCollege.act_composite_25}–${matchedCollege.act_composite_75}**).`
+        : studentSat < matchedCollege.sat_total_25
+          ? `Your score (${eff.label}) is **${matchedCollege.sat_total_25 - studentSat} pts below** the 25th percentile (${matchedCollege.sat_total_25}).`
+          : studentSat > matchedCollege.sat_total_75
+            ? `Your score (${eff.label}) is **+${studentSat - matchedCollege.sat_total_75} pts above** the 75th percentile (${matchedCollege.sat_total_75}).`
+            : `Your score (${eff.label}) is **inside the middle-50% range** (${matchedCollege.sat_total_25}–${matchedCollege.sat_total_75}).`;
+
+      return `### Institutional Diagnostic: ${matchedCollege.name}\n\n* **Scorecard Standing:** ${scoreStatus}\n* **Admit & Graduation Rates:** ${(matchedCollege.admit_rate * 100).toFixed(0)}% admit rate · ${(matchedCollege.grad_rate * 100).toFixed(0)}% graduation rate\n* **Tuition & Net Cost:** In-State $${matchedCollege.tuition_in_state.toLocaleString()}/yr · Out-of-State $${matchedCollege.tuition_out_of_state.toLocaleString()}/yr · Avg Net Price **$${(matchedCollege.avg_cost || matchedCollege.tuition_in_state).toLocaleString()}/yr**\n* **Your AP Credit Value at ${matchedCollege.short_name}:** **${savings.credits} credit hours** (**$${savings.tuitionSaved.toLocaleString()}** estimated tuition saved)`;
+    }
 
     if (q.includes("qualify") || q.includes("eligible") || q.includes("guarantee") || q.includes("auto")) {
       if (audit.qualifications.length === 0) {
-        return `### Statutory Qualification Status\n\nBased on your current profile, **you do NOT currently qualify for automatic statutory admission**.\n\n**Key Missing Criteria:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.reason}\n  * *Immediate Fix:* ${d.fix}`).join("\n\n")}\n\n*Note: Holistic admission is still possible, but you are not statutorily guaranteed admission.*`;
+        return `### Statutory Qualification Status\n\nBased on your current profile, **you do NOT currently qualify for automatic statutory admission**.\n\n**Key Missing Criteria:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.reason}\n* *Immediate Fix:* ${d.fix}`).join("\n\n")}\n\n*Note: Holistic admission is still possible, but you are not statutorily guaranteed admission.*`;
       } else {
-        return `### Official Statutory Qualifications Confirmed\n\nGood news! You meet all legal requirements for:\n\n${audit.qualifications.map(q => `* **${q.title}** (${q.statute}):\n  * Status: **${q.impact}**\n  * Reason: Class rank (Top ${pct}%) and coursework prerequisites satisfy published criteria.`).join("\n\n")}\n\n${audit.disqualifications.length > 0 ? `\n\n**Where you are currently disqualified:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.fix}`).join("\n")}` : ""}`;
+        return `### Official Statutory Qualifications Confirmed\n\nGood news! You meet all legal requirements for:\n\n${audit.qualifications.map(item => `* **${item.title}** (${item.statute}): **${item.impact}** (${pct ? `Top ${pct}% rank and ` : ''}coursework prerequisites satisfied)`).join("\n")}\n\n${audit.disqualifications.length > 0 ? `\n\n**Where you are currently disqualified:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.fix}`).join("\n")}` : ""}`;
       }
     }
 
     if (q.includes("sat") || q.includes("act") || q.includes("score") || q.includes("test")) {
-      const reaches = audit.competitiveReach.map(r => `* **${r.college.short_name}**: Your score (${studentSat}) is **${r.delta} points below** the 25th percentile (${r.college.sat_total_25}).`).join("\n");
+      if (studentSat === null) {
+        return `### Standardized Testing Status\n\nYou have not logged an SAT or ACT score yet.\n\n* **National College Readiness Benchmark:** Scoring at least **480 ERW + 530 Math** on the SAT or **22+ Composite** on the ACT satisfies college readiness placement nationwide.\n* **Next Step:** Open **Edit Profile** to enter an SAT or ACT score, or open the **Colleges** tab and launch the **What-If Goal Simulator** to test hypothetical scores.`;
+      }
+      const reaches = audit.competitiveReach.map(r => `* **${r.college.short_name}**: Your score (${eff.label}) is **${r.delta} points below** the 25th percentile (${r.college.sat_total_25}).`).join("\n");
       const targets = audit.middleTarget.map(t => `* **${t.college.short_name}**: Inside median band (${t.college.sat_total_25}–${t.college.sat_total_75}). You need **+${t.delta75} pts** to reach the 75th percentile.`).join("\n");
       const anchors = audit.strongAnchor.map(a => `* **${a.college.short_name}**: In the top 25% of admitted freshmen (Above 75th percentile: ${a.college.sat_total_75}).`).join("\n");
 
-      return `### Test Score Analysis (SAT: ${studentSat})\n\nHere is how your standardized test score matches against your saved colleges:\n\n${anchors ? `**Academically Strong (>75th Percentile):**\n${anchors}\n\n` : ""}${targets ? `**Inside Middle-50% Admitted Range:**\n${targets}\n\n` : ""}${reaches ? `**Test Score Deficit (<25th Percentile):**\n${reaches}\n\n` : ""}\n**AI Recommendation:** If you retake the SAT, focus primarily on Math/ERW subscores to gain **+${audit.competitiveReach.length > 0 ? audit.competitiveReach[0].delta + 30 : 50} points**, which places you safely into the median band across your entire list.`;
+      return `### Test Score Analysis (${eff.label})\n\nHere is how your standardized test score matches against your saved colleges:\n\n${anchors ? `**Academically Strong (>75th Percentile):**\n${anchors}\n\n` : ""}${targets ? `**Inside Middle-50% Admitted Range:**\n${targets}\n\n` : ""}${reaches ? `**Test Score Deficit (<25th Percentile):**\n${reaches}\n\n` : ""}\n**Recommendation:** If you retake the exam, aim for **+${audit.competitiveReach.length > 0 ? audit.competitiveReach[0].delta + 30 : 50} SAT points** to position your score in the median band across your target list.`;
     }
 
     if (q.includes("ap") || q.includes("ib") || q.includes("credit") || q.includes("tuition") || q.includes("save") || q.includes("money")) {
@@ -409,7 +438,7 @@ AdmitAI.postUserMessage = function(text) {
     .replace(/### (.*?)\n/g, '<h4 style="color: #60A5FA; font-size: 0.95rem; margin-bottom: 0.4rem;">$1</h4>')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/\n\* (.*?)/g, '<li style="margin-left: 1.25rem;">$1</li>')
+    .replace(/\n\* ([^\n]+)/g, '<li style="margin-left: 1.25rem;">$1</li>')
     .replace(/\n\n/g, '<div style="margin-bottom: 0.6rem;"></div>');
 
   botBubble.innerHTML = `

@@ -111,8 +111,8 @@
       },
       {
         "id": "coursework",
-        "label": "Complete Required High School Curriculum (RHSC)",
-        "fields": ["math_years_algebra2", "science_years"],
+        "label": "Complete Required High School Curriculum (RHSC: 4 Math + 4 Lab Science)",
+        "fields": ["math_years_algebra2", "science_years_4"],
         "operator": "all_true",
         "fix": "Complete 4 units of mathematics and 4 units of laboratory science."
       }
@@ -190,13 +190,13 @@
       },
       {
         "id": "diploma_or_scores",
-        "label": "College-Prep Math (incl. Algebra II) + 4 Lab Sciences OR SAT/ACT Benchmark",
+        "label": "Distinguished Level of Achievement (4 Math incl. Algebra II + 4 Science + Endorsement) OR SAT/ACT Benchmark",
         "subcriteria_type": "any",
         "subcriteria": [
           {
             "id": "distinguished",
-            "label": "4 Math (incl. Algebra II) + 4 Science",
-            "fields": ["math_years_algebra2", "science_years"],
+            "label": "Distinguished Level of Achievement (4 Math + 4 Science + Endorsement)",
+            "fields": ["math_years_algebra2", "science_years_4", "has_endorsement"],
             "operator": "all_true"
           },
           {
@@ -204,9 +204,15 @@
             "label": "SAT Readiness Benchmark: 480 ERW + 530 Math",
             "fields": ["sat_rw", "sat_m"],
             "operator": "sat_benchmark_check"
+          },
+          {
+            "id": "act_benchmark",
+            "label": "ACT Readiness Benchmark: 22+ Composite",
+            "fields": ["act_composite"],
+            "operator": "act_benchmark_check"
           }
         ],
-        "fix": "Complete 4 Math credits (including Algebra II) + 4 Science credits, OR meet SAT college readiness benchmarks."
+        "fix": "Complete the Distinguished Level of Achievement (4 Math credits including Algebra II, 4 Science credits, and a graduation Endorsement), OR meet SAT/ACT college readiness benchmarks."
       }
     ],
     "source_url": "https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803"
@@ -240,10 +246,29 @@
       },
       {
         "id": "coursework",
-        "label": "4 Math courses (incl. Algebra II) + 4 Science courses",
-        "fields": ["math_years_algebra2", "science_years"],
-        "operator": "all_true",
-        "fix": "Complete 4 math courses including Algebra II and 4 lab science courses."
+        "label": "Distinguished Level of Achievement (4 Math incl. Algebra II + 4 Science + Endorsement) OR SAT/ACT Benchmark",
+        "subcriteria_type": "any",
+        "subcriteria": [
+          {
+            "id": "distinguished",
+            "label": "Distinguished Level of Achievement (4 Math + 4 Science + Endorsement)",
+            "fields": ["math_years_algebra2", "science_years_4", "has_endorsement"],
+            "operator": "all_true"
+          },
+          {
+            "id": "sat_benchmark",
+            "label": "SAT Readiness Benchmark: 480 ERW + 530 Math",
+            "fields": ["sat_rw", "sat_m"],
+            "operator": "sat_benchmark_check"
+          },
+          {
+            "id": "act_benchmark",
+            "label": "ACT Readiness Benchmark: 22+ Composite",
+            "fields": ["act_composite"],
+            "operator": "act_benchmark_check"
+          }
+        ],
+        "fix": "Complete 4 math courses including Algebra II, 4 lab science courses, and a graduation Endorsement (Distinguished Level of Achievement), OR meet SAT/ACT readiness benchmarks."
       }
     ],
     "source_url": "https://admissions.utexas.edu/apply/freshman/automatic-admission/"

@@ -41,10 +41,14 @@ const ProfileManager = {
 
     if (merged.sat_rw !== null && merged.sat_m !== null && merged.sat_rw !== "" && merged.sat_m !== "") {
       merged.sat_total = parseInt(merged.sat_rw, 10) + parseInt(merged.sat_m, 10);
+    } else {
+      merged.sat_total = null;
     }
 
     if (merged.class_rank && merged.class_size && merged.class_size > 0) {
       merged.class_percentile = parseFloat(((merged.class_rank / merged.class_size) * 100).toFixed(1));
+    } else {
+      merged.class_percentile = null;
     }
 
     if (Auth.isLoggedIn()) {

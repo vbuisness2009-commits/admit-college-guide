@@ -35,6 +35,23 @@ const CollegesEngine = {
     return this.collegesData.find(c => c.id === id);
   },
 
+  getEffectiveSat(profile) {
+    if (profile.sat_total !== null && profile.sat_total !== undefined && profile.sat_total > 0) {
+      return { score: profile.sat_total, isActConcordance: false, label: `SAT ${profile.sat_total}` };
+    }
+    if (profile.act_composite !== null && profile.act_composite !== undefined && profile.act_composite > 0) {
+      const actTable = {
+        36: 1590, 35: 1540, 34: 1500, 33: 1460, 32: 1430, 31: 1400, 30: 1370,
+        29: 1340, 28: 1310, 27: 1280, 26: 1240, 25: 1210, 24: 1180, 23: 1140,
+        22: 1110, 21: 1080, 20: 1040, 19: 1010, 18: 970, 17: 930, 16: 890, 15: 850
+      };
+      const act = Math.min(36, Math.max(15, Math.round(profile.act_composite)));
+      const eq = actTable[act] || 1000;
+      return { score: eq, isActConcordance: true, label: `ACT ${profile.act_composite} (~${eq} SAT)` };
+    }
+    return { score: null, isActConcordance: false, label: "No Test Score" };
+  },
+
   setFilter(filter) {
     this.activeFilter = filter;
     this.renderCards();
@@ -72,20 +89,20 @@ const CollegesEngine = {
     const summaryElem = document.getElementById("sim-unlocked-summary");
     if (!valElem || !scoreElem) return;
 
-    const baseScore = profile.sat_total || 1200;
+    const eff = this.getEffectiveSat(profile);
+    const baseScore = eff.score || 1200;
     const effective = Math.min(1600, Math.max(400, baseScore + this.simSatDelta));
 
     valElem.innerText = (this.simSatDelta >= 0 ? `+${this.simSatDelta}` : `${this.simSatDelta}`) + " pts";
     scoreElem.innerText = `Simulated SAT: ${effective}`;
 
     if (summaryElem) {
-      // Calculate how many saved/all schools shift into range
       const inRangeNow = this.collegesData.filter(c => baseScore >= c.sat_total_25 && baseScore <= c.sat_total_75).length;
       const inRangeSim = this.collegesData.filter(c => effective >= c.sat_total_25 && effective <= c.sat_total_75).length;
       const diff = inRangeSim - inRangeNow;
       
       summaryElem.innerHTML = `
-        <span>Range Impact: <strong>${inRangeSim}</strong> of 20 universities inside median band ${diff > 0 ? `<span style="color: var(--success);">(+${diff} unlocked)</span>` : diff < 0 ? `<span style="color: var(--warning);">(${diff} shifted)</span>` : ''}</span>
+        <span>Range Impact: <strong>${inRangeSim}</strong> of ${this.collegesData.length} universities inside median band ${diff > 0 ? `<span style="color: var(--success);">(+${diff} unlocked)</span>` : diff < 0 ? `<span style="color: var(--warning);">(${diff} shifted)</span>` : ''}</span>
       `;
     }
   },
@@ -94,7 +111,8 @@ const CollegesEngine = {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const baseScore = profile.sat_total || 1200;
+    const eff = this.getEffectiveSat(profile);
+    const baseScore = eff.score || 1200;
     const effectiveScore = Math.min(1600, Math.max(400, baseScore + this.simSatDelta));
 
     container.innerHTML = `
@@ -187,8 +205,9 @@ const CollegesEngine = {
     if (!grid) return;
 
     const profile = ProfileManager.get();
-    const hasBaseScore = profile.sat_total !== null && profile.sat_total !== undefined && profile.sat_total > 0;
-    const baseScore = hasBaseScore ? profile.sat_total : null;
+    const eff = this.getEffectiveSat(profile);
+    const hasBaseScore = eff.score !== null || this.simulatorActive;
+    const baseScore = eff.score !== null ? eff.score : (this.simulatorActive ? 1200 : null);
     const studentScore = hasBaseScore ? Math.min(1600, Math.max(400, baseScore + this.simSatDelta)) : null;
 
     let filtered = this.collegesData.filter(c => {
@@ -299,13 +318,13 @@ const CollegesEngine = {
 
               <!-- Baseline Ghost Dot (If simulator active) -->
               ${originalDotPercent !== null ? `
-                <div class="student-dot-ghost" style="position: absolute; top: 50%; width: 12px; height: 12px; background: rgba(255,255,255,0.4); border: 1px dashed #FFFFFF; border-radius: 50%; transform: translate(-50%, -50%); z-index: 4;" title="Original Baseline: ${baseScore}"></div>
+                <div class="student-dot-ghost" style="left: ${originalDotPercent}%; position: absolute; top: 50%; width: 12px; height: 12px; background: rgba(255,255,255,0.4); border: 1px dashed #FFFFFF; border-radius: 50%; transform: translate(-50%, -50%); z-index: 4;" title="Original Baseline: ${baseScore}"></div>
               ` : ''}
 
               <!-- Active Student Dot -->
               ${hasBaseScore ? `
-                <div class="student-dot" style="left: ${dotPercent}%;" title="${this.simulatorActive ? `Simulated SAT: ${studentScore}` : `Your SAT: ${studentScore}`}">
-                  <div class="student-dot-label">${this.simulatorActive ? `Sim: ${studentScore}` : `You: ${studentScore}`}</div>
+                <div class="student-dot" style="left: ${dotPercent}%;" title="${this.simulatorActive ? `Simulated SAT: ${studentScore}` : eff.label}">
+                  <div class="student-dot-label">${this.simulatorActive ? `Sim: ${studentScore}` : (eff.isActConcordance ? `ACT ${profile.act_composite}` : `You: ${studentScore}`)}</div>
                 </div>
               ` : ''}
             </div>
@@ -375,7 +394,8 @@ const CollegesEngine = {
     if (!modal || !container) return;
 
     const savedSchools = this.collegesData.filter(c => savedIds.includes(c.id)).slice(0, 5);
-    const studentScore = profile.sat_total || 1200;
+    const eff = this.getEffectiveSat(profile);
+    const studentScore = eff.score;
 
     container.innerHTML = `
       <div class="comparison-table-wrapper">
@@ -397,8 +417,8 @@ const CollegesEngine = {
               ${savedSchools.map(s => `
                 <td>
                   <strong style="color: #60A5FA;">${s.sat_total_25} – ${s.sat_total_75}</strong>
-                  <div style="font-size: 0.72rem; color: ${studentScore >= s.sat_total_25 && studentScore <= s.sat_total_75 ? 'var(--success)' : studentScore > s.sat_total_75 ? '#93C5FD' : 'var(--warning)'}; margin-top: 2px;">
-                    ${studentScore < s.sat_total_25 ? `Below (-${s.sat_total_25 - studentScore})` : studentScore > s.sat_total_75 ? `Above (+${studentScore - s.sat_total_75})` : 'In Range'}
+                  <div style="font-size: 0.72rem; color: ${!studentScore ? 'var(--text-dim)' : studentScore >= s.sat_total_25 && studentScore <= s.sat_total_75 ? 'var(--success)' : studentScore > s.sat_total_75 ? '#93C5FD' : 'var(--warning)'}; margin-top: 2px;">
+                    ${!studentScore ? 'No score entered' : studentScore < s.sat_total_25 ? `Below (-${s.sat_total_25 - studentScore})` : studentScore > s.sat_total_75 ? `Above (+${studentScore - s.sat_total_75})` : 'In Range'}
                   </div>
                 </td>
               `).join('')}

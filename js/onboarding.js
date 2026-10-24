@@ -108,7 +108,8 @@ const Onboarding = {
       }
       case 3: {
         const noTest = document.getElementById("ob-no-test");
-        if (noTest && noTest.checked) {
+        this.wizardData.no_test_checked = !!(noTest && noTest.checked);
+        if (this.wizardData.no_test_checked) {
           this.wizardData.sat_rw = null;
           this.wizardData.sat_m = null;
           this.wizardData.sat_total = null;
@@ -132,7 +133,10 @@ const Onboarding = {
         const end = document.getElementById("ob-end");
         const fl = document.getElementById("ob-fl");
         if (alg2) this.wizardData.math_years_algebra2 = alg2.checked;
-        if (sci) this.wizardData.science_years = parseInt(sci.value, 10) || 4;
+        if (sci) {
+          const parsedSci = parseInt(sci.value, 10);
+          this.wizardData.science_years = Number.isNaN(parsedSci) ? 4 : parsedSci;
+        }
         if (end) this.wizardData.has_endorsement = end.checked;
         if (fl) this.wizardData.fl_prep_complete = fl.checked;
         break;
@@ -318,14 +322,14 @@ const Onboarding = {
             </div>
 
             <label class="checkbox-group" style="margin-bottom: 1rem;">
-              <input type="checkbox" id="ob-no-test" onchange="Onboarding.toggleTestInputs(this.checked)" ${!hasScores && !this.wizardData.act_composite ? '' : ''}>
+              <input type="checkbox" id="ob-no-test" onchange="Onboarding.toggleTestInputs(this.checked)" ${this.wizardData.no_test_checked ? 'checked' : ''}>
               <div class="checkbox-label">
                 <strong>I haven't taken the SAT or ACT yet</strong>
                 <span class="checkbox-sub">You can add test scores anytime later from your profile.</span>
               </div>
             </label>
 
-            <div id="ob-test-fields">
+            <div id="ob-test-fields" style="opacity: ${this.wizardData.no_test_checked ? '0.4' : '1'};">
               <div class="form-grid">
                 <div class="form-group">
                   <label for="ob-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
@@ -371,14 +375,14 @@ const Onboarding = {
 
               <div class="form-group" style="margin-top: 0.25rem;">
                 <label for="ob-sci">Total Laboratory Science Courses (Completed or Enrolled)</label>
-                <input type="number" min="0" max="6" id="ob-sci" class="input-control" value="${this.wizardData.science_years || 4}">
+                <input type="number" min="0" max="6" id="ob-sci" class="input-control" value="${this.wizardData.science_years ?? 4}">
               </div>
 
               <label class="checkbox-group">
                 <input type="checkbox" id="ob-end" ${this.wizardData.has_endorsement ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Completed 2+ Years of the Same World / Foreign Language</strong>
-                  <span class="checkbox-sub">Standard freshman admission prerequisite for 4-year public university flagships.</span>
+                  <strong>Completed Graduation Endorsement & 2+ Years World Language</strong>
+                  <span class="checkbox-sub">Required for Texas Distinguished Level of Achievement (TEC § 51.803) and flagship university admission.</span>
                 </div>
               </label>
 
@@ -463,8 +467,13 @@ const Onboarding = {
   },
 
   toggleTestInputs(isNoTest) {
+    this.wizardData.no_test_checked = isNoTest;
     const fields = document.getElementById("ob-test-fields");
     if (fields) fields.style.opacity = isNoTest ? "0.4" : "1";
+    ["ob-sat-rw", "ob-sat-m", "ob-act"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = isNoTest;
+    });
   },
 
   updatePercentileLive() {

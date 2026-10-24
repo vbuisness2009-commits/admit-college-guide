@@ -522,7 +522,7 @@ const App = {
     document.getElementById("input-act").value = profile.act_composite || "";
     
     document.getElementById("check-math-algebra2").checked = !!profile.math_years_algebra2;
-    document.getElementById("input-science-years").value = profile.science_years || 4;
+    document.getElementById("input-science-years").value = profile.science_years ?? 4;
     document.getElementById("check-endorsement").checked = !!profile.has_endorsement;
     document.getElementById("check-fl-prep").checked = !!profile.fl_prep_complete;
 
@@ -554,7 +554,7 @@ const App = {
                 <option value="3" ${exam.score === 3 ? 'selected' : ''}>Score: 3</option>
                 <option value="0" ${exam.status === 'planned' ? 'selected' : ''}>Planned (Future)</option>
               </select>
-              <button class="btn-secondary" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; color: #F87171;" onclick="App.removeModalExam(${idx})">✕</button>
+              <button type="button" class="btn-secondary" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; color: #F87171;" onclick="App.removeModalExam(${idx})">✕</button>
             </div>
           </div>
         `).join('')}
@@ -564,7 +564,7 @@ const App = {
           <select id="new-exam-select" class="select-control" style="font-size: 0.8rem;">
             ${availableExams.map(ae => `<option value="${ae.id}|${ae.name}">${ae.name}</option>`).join('')}
           </select>
-          <button class="btn-secondary" style="font-size: 0.8rem; white-space: nowrap;" onclick="App.addModalExam()">+ Add Exam</button>
+          <button type="button" class="btn-secondary" style="font-size: 0.8rem; white-space: nowrap;" onclick="App.addModalExam()">+ Add Exam</button>
         </div>
       </div>
     `;
@@ -621,6 +621,8 @@ const App = {
     const mVal = document.getElementById("input-sat-m").value;
     const actVal = document.getElementById("input-act").value;
 
+    const sciParsed = parseInt(document.getElementById("input-science-years").value, 10);
+
     const updated = {
       grade_level: parseInt(document.getElementById("input-grade").value, 10) || 11,
       residency: document.getElementById("input-residency").value || "TX",
@@ -632,7 +634,7 @@ const App = {
       sat_m: mVal ? parseInt(mVal, 10) : null,
       act_composite: actVal ? parseInt(actVal, 10) : null,
       math_years_algebra2: document.getElementById("check-math-algebra2").checked,
-      science_years: parseInt(document.getElementById("input-science-years").value, 10) || 4,
+      science_years: Number.isNaN(sciParsed) ? 4 : sciParsed,
       has_endorsement: document.getElementById("check-endorsement").checked,
       fl_prep_complete: document.getElementById("check-fl-prep").checked
     };

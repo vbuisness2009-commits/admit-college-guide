@@ -10,7 +10,8 @@ const RoadmapEngine = {
     if (!container) return;
 
     const currentGrade = profile.grade_level || 11;
-    const studentSat = profile.sat_total || 1200;
+    const eff = CollegesEngine.getEffectiveSat(profile);
+    const studentSat = eff.score;
     const savedColleges = (collegesData || []).filter(c => (profile.saved_colleges || []).includes(c.id));
 
     const gaps = {
@@ -45,7 +46,7 @@ const RoadmapEngine = {
       });
     }
 
-    if (savedColleges.length > 0) {
+    if (savedColleges.length > 0 && studentSat !== null) {
       const schoolsBelow = savedColleges.filter(s => studentSat < s.sat_total_25);
       const schoolsInMid = savedColleges.filter(s => studentSat >= s.sat_total_25 && studentSat < s.sat_total_75);
 
@@ -53,17 +54,25 @@ const RoadmapEngine = {
         const topGap = Math.max(...schoolsBelow.map(s => s.sat_total_25 - studentSat));
         gaps.testing.push({
           title: `Schedule SAT/ACT Retake: Aim for +${topGap} Points`,
-          desc: `Your current SAT (${studentSat}) is below the middle-50% threshold for ${schoolsBelow.length} of your saved schools (${schoolsBelow.map(s => s.short_name).join(', ')}). A targeted ${topGap}-point gain moves your score into their published median band.`,
+          desc: `Your current ${eff.label} is below the middle-50% threshold for ${schoolsBelow.length} of your saved schools (${schoolsBelow.map(s => s.short_name).join(', ')}). A targeted ${topGap}-point gain moves your score into their published median band.`,
           urgency: "gap-fix"
         });
       } else if (schoolsInMid.length > 0) {
         const target75 = Math.max(...schoolsInMid.map(s => s.sat_total_75 - studentSat));
         gaps.testing.push({
           title: `Optional Retake to Reach 75th Percentile (+${target75} pts)`,
-          desc: `Your score is solidly in the middle-50% range for ${schoolsInMid.map(s => s.short_name).join(', ')}. Gaining +${target75} points places you in the top quartile of admitted students.`,
+          desc: `Your score (${eff.label}) is solidly in the middle-50% range for ${schoolsInMid.map(s => s.short_name).join(', ')}. Gaining +${target75} points places you in the top quartile of admitted students.`,
           urgency: "testing"
         });
       }
+    } else if (savedColleges.length > 0 && studentSat === null) {
+      const min25 = Math.min(...savedColleges.map(s => s.sat_total_25));
+      const max75 = Math.max(...savedColleges.map(s => s.sat_total_75));
+      gaps.testing.push({
+        title: `Sit for Official SAT or ACT Exam (Target ${min25}–${max75} SAT)`,
+        desc: `No test score is currently logged. Your saved universities publish middle-50% SAT bands spanning ${min25} to ${max75}. Register for a junior-year SAT or ACT exam date to establish your baseline.`,
+        urgency: "gap-fix"
+      });
     } else {
       gaps.testing.push({
         title: "Take Official SAT or ACT Exam",
