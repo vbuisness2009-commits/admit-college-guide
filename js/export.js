@@ -174,13 +174,14 @@ const DossierExporter = {
                 <th>Type / Location</th>
                 <th>Admit Rate</th>
                 <th>Scorecard Middle-50%</th>
+                <th>Priority / Reg Deadlines</th>
                 <th>Candidate Standing</th>
                 <th>Target Delta to 75th %ile</th>
               </tr>
             </thead>
             <tbody>
               ${savedColleges.length === 0 ? `
-                <tr><td colspan="6" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">No saved colleges in student list. Add universities in the Colleges tab to generate matrix.</td></tr>
+                <tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">No saved colleges in student list. Add universities in the Colleges tab to generate matrix.</td></tr>
               ` : savedColleges.map(col => {
                 let standing = "In Range";
                 let deltaText = "At / above 75th %ile";
@@ -210,6 +211,7 @@ const DossierExporter = {
                     <td>${col.city}, ${col.state} · ${col.type}</td>
                     <td>${(col.admit_rate * 100).toFixed(0)}%</td>
                     <td><strong>${col.sat_total_25} – ${col.sat_total_75}</strong></td>
+                    <td>${col.early_deadline || col.regular_deadline} · RD: ${col.regular_deadline || 'Jan 1'}</td>
                     <td><span class="dossier-badge ${badgeClass}">${standing}</span></td>
                     <td>${deltaText}</td>
                   </tr>

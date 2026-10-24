@@ -452,6 +452,18 @@ const CollegesEngine = {
               ${savedSchools.map(s => `<td>${s.student_size.toLocaleString()} students</td>`).join('')}
             </tr>
             <tr>
+              <td class="feature-title">Early / Priority Deadline</td>
+              ${savedSchools.map(s => `<td><strong style="color: #93C5FD;">${s.early_deadline || 'See Regular'}</strong></td>`).join('')}
+            </tr>
+            <tr>
+              <td class="feature-title">Regular Decision Deadline</td>
+              ${savedSchools.map(s => `<td><strong>${s.regular_deadline || 'Jan 1'}</strong></td>`).join('')}
+            </tr>
+            <tr>
+              <td class="feature-title">Priority Scholarship Cutoff</td>
+              ${savedSchools.map(s => `<td style="color: #FCD34D; font-size: 0.78rem;">${s.scholarship_deadline || s.early_deadline || 'Automatic review'}</td>`).join('')}
+            </tr>
+            <tr>
               <td class="feature-title">Official Scorecard Source</td>
               ${savedSchools.map(s => `<td><a href="${s.scorecard_source_url}" target="_blank" rel="noopener noreferrer" class="badge-source">Scorecard ↗</a></td>`).join('')}
             </tr>

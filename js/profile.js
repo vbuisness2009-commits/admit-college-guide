@@ -23,7 +23,8 @@ const ProfileManager = {
       has_endorsement: true,
       fl_prep_complete: false,
       saved_colleges: [],
-      ap_exams: []
+      ap_exams: [],
+      application_tracker: {}
     };
   },
 

@@ -22,6 +22,11 @@
     "grad_rate": 0.88,
     "avg_cost": 17434,
     "student_size": 41309,
+    "early_deadline": "Oct 15 (Early Action)",
+    "regular_deadline": "Dec 1",
+    "scholarship_deadline": "Dec 1 (Forty Acres & Terry Scholars)",
+    "application_portal": "Common App / ApplyTexas",
+    "merit_aid_note": "Texas Advance Commitment covers 100% of tuition for in-state families earning under $100,000; Forty Acres Scholars & departmental honors require Dec 1 completion.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?228778-The-University-of-Texas-at-Austin"
   },
   {
@@ -47,6 +52,11 @@
     "grad_rate": 0.83,
     "avg_cost": 20375,
     "student_size": 56804,
+    "early_deadline": "Oct 15 (Engineering Early Action)",
+    "regular_deadline": "Dec 1",
+    "scholarship_deadline": "Dec 1 (Brown Foundation & President's Endowed)",
+    "application_portal": "Common App / ApplyTexas",
+    "merit_aid_note": "Aggie Assurance covers tuition for Texas families under $60,000; National Merit Semifinalists/Finalists qualify for $42,000+ packages plus out-of-state tuition waiver.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?228723-Texas-A-&-M-University-College-Station"
   },
   {
@@ -72,6 +82,11 @@
     "grad_rate": 0.63,
     "avg_cost": 14056,
     "student_size": 38580,
+    "early_deadline": "Nov 1 (Priority Scholarship)",
+    "regular_deadline": "May 1",
+    "scholarship_deadline": "Nov 1 (Academic Excellence & Tier One)",
+    "application_portal": "Common App / ApplyTexas",
+    "merit_aid_note": "Must apply by Nov 1 for Academic Excellence Scholarships ($1,000–$6,000/yr plus out-of-state tuition waiver) and Tier One Invitational full-ride scholarship.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?225511-University-of-Houston"
   },
   {
@@ -97,6 +112,11 @@
     "grad_rate": 0.94,
     "avg_cost": 19215,
     "student_size": 4240,
+    "early_deadline": "Nov 1 (Early Decision I)",
+    "regular_deadline": "Jan 4",
+    "scholarship_deadline": "Jan 4 (Automatic Merit Consideration)",
+    "application_portal": "Common App / Coalition",
+    "merit_aid_note": "The Rice Investment provides full tuition + room/board under $75k income, 100% full tuition for $75k–$140k, and 50% tuition for $140k–$200k; Trustee Distinguished Merit awards require no separate application.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?227757-Rice-University"
   },
   {
@@ -122,6 +142,11 @@
     "grad_rate": 0.93,
     "avg_cost": 19329,
     "student_size": 32143,
+    "early_deadline": "Oct 1 – Nov 30 (UC Filing Window)",
+    "regular_deadline": "Nov 30",
+    "scholarship_deadline": "Nov 30 (Regents' and Chancellor's)",
+    "application_portal": "UC Application",
+    "merit_aid_note": "UC Blue and Gold Opportunity Plan covers systemwide tuition and fees for CA residents with family income under $80,000; all Nov 30 applicants are reviewed for Regents' Scholarships.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?110635-University-of-California-Berkeley"
   },
   {
@@ -147,6 +172,11 @@
     "grad_rate": 0.92,
     "avg_cost": 16474,
     "student_size": 32121,
+    "early_deadline": "Oct 1 – Nov 30 (UC Filing Window)",
+    "regular_deadline": "Nov 30",
+    "scholarship_deadline": "Nov 30 (Regents & Alumni Scholarships)",
+    "application_portal": "UC Application",
+    "merit_aid_note": "Strict Nov 30 UC filing cutoff (no late applications); Blue and Gold Plan waives tuition for CA families under $80k; Regents Scholarship awards priority enrollment and housing.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?110662-University-of-California-Los-Angeles"
   },
   {
@@ -172,6 +202,11 @@
     "grad_rate": 0.96,
     "avg_cost": 18279,
     "student_size": 7761,
+    "early_deadline": "Nov 1 (Restrictive Early Action)",
+    "regular_deadline": "Jan 5",
+    "scholarship_deadline": "Feb 15 (CSS Profile & FAFSA)",
+    "application_portal": "Common App",
+    "merit_aid_note": "100% need-based aid with zero parental contribution toward tuition, room, and board for families earning under $100,000 and free tuition under $150,000.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?243744-Stanford-University"
   },
   {
@@ -197,6 +232,11 @@
     "grad_rate": 0.96,
     "avg_cost": 20232,
     "student_size": 4638,
+    "early_deadline": "Nov 1 (Non-Binding Early Action)",
+    "regular_deadline": "Jan 6",
+    "scholarship_deadline": "Feb 15 (Need-Based Financial Aid)",
+    "application_portal": "MIT Application Portal",
+    "merit_aid_note": "100% tuition-free for families earning under $200,000/yr with typical assets; families under $100,000 pay $0 for tuition, housing, dining, and fees.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?166683-Massachusetts-Institute-of-Technology"
   },
   {
@@ -222,6 +262,11 @@
     "grad_rate": 0.98,
     "avg_cost": 19500,
     "student_size": 7165,
+    "early_deadline": "Nov 1 (Restrictive Early Action)",
+    "regular_deadline": "Jan 1",
+    "scholarship_deadline": "Feb 1 (CSS Profile & FAFSA)",
+    "application_portal": "Common App / Coalition",
+    "merit_aid_note": "Harvard Financial Aid Initiative covers 100% of tuition, food, and housing for families earning under $85,000, and caps contribution at 0–10% of income up to $150,000.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?166027-Harvard-University"
   },
   {
@@ -247,6 +292,11 @@
     "grad_rate": 0.93,
     "avg_cost": 19349,
     "student_size": 32282,
+    "early_deadline": "Nov 1 (Early Action)",
+    "regular_deadline": "Feb 1",
+    "scholarship_deadline": "Dec 15 (Priority Financial Aid & Merit)",
+    "application_portal": "Common App",
+    "merit_aid_note": "Go Blue Guarantee provides 4 years of free in-state tuition for Michigan families with income under $125,000; Stamps & Rogel Award of Excellence automatic review with admission.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?170976-University-of-Michigan-Ann-Arbor"
   },
   {
@@ -272,6 +322,11 @@
     "grad_rate": 0.90,
     "avg_cost": 10075,
     "student_size": 34552,
+    "early_deadline": "Nov 1 (Early Action)",
+    "regular_deadline": "Jan 15",
+    "scholarship_deadline": "Nov 1 (Presidential & Honors Priority)",
+    "application_portal": "Common App",
+    "merit_aid_note": "Florida Bright Futures Academic Scholars covers 100% of in-state tuition; Benacquisto Scholarship awards full cost of attendance to FL National Merit Finalists; Nov 1 EA required for Honors.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?134130-University-of-Florida"
   },
   {
@@ -297,6 +352,11 @@
     "grad_rate": 0.92,
     "avg_cost": 16951,
     "student_size": 17447,
+    "early_deadline": "Oct 15 (GA Early Action 1) / Nov 1 (OOS EA 2)",
+    "regular_deadline": "Jan 6",
+    "scholarship_deadline": "Oct 15 / Nov 1 (Stamps President's Scholars)",
+    "application_portal": "Common App",
+    "merit_aid_note": "Must apply Early Action (Oct 15 for GA residents, Nov 1 for non-residents) to be considered for Stamps President's Scholars & Gold Scholars; Zell Miller Scholarship covers 100% of GA tuition.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?139755-Georgia-Institute-of-Technology-Main-Campus"
   },
   {
@@ -322,6 +382,11 @@
     "grad_rate": 0.86,
     "avg_cost": 16183,
     "student_size": 35120,
+    "early_deadline": "Nov 1 (Early Action)",
+    "regular_deadline": "Jan 5",
+    "scholarship_deadline": "Nov 1 (Campus Honors & Stamps Priority)",
+    "application_portal": "Common App / myIllini",
+    "merit_aid_note": "Illinois Commitment covers 4 years of tuition and fees for IL residents with family income under $75,000; Nov 1 Early Action strongly recommended for CS, Grainger Engineering, and Gies Business.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?145637-University-of-Illinois-Urbana-Champaign"
   },
   {
@@ -347,6 +412,11 @@
     "grad_rate": 0.83,
     "avg_cost": 12684,
     "student_size": 37949,
+    "early_deadline": "Nov 1 (Early Action & Merit Cutoff)",
+    "regular_deadline": "Jan 15",
+    "scholarship_deadline": "Nov 1 (Trustees & Presidential Scholarships)",
+    "application_portal": "Common App",
+    "merit_aid_note": "Strict Nov 1 Early Action deadline required for Trustees ($10k–$16k/yr), Presidential ($4k–$12k/yr), John Martinson Honors College, and priority admission to Computer Science and Engineering.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?152080-Purdue-University-Main-Campus"
   },
   {
@@ -372,6 +442,11 @@
     "grad_rate": 0.84,
     "avg_cost": 14755,
     "student_size": 36297,
+    "early_deadline": "Nov 15 (Single Autumn Filing Deadline)",
+    "regular_deadline": "Nov 15",
+    "scholarship_deadline": "Nov 15 (Purple & Gold Automatic Merit)",
+    "application_portal": "Common App",
+    "merit_aid_note": "Single Nov 15 freshman deadline; Husky Promise covers full tuition for eligible WA residents; out-of-state students are automatically considered for Purple and Gold Scholarships ($3,000–$5,400/yr).",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?236948-University-of-Washington-Seattle-Campus"
   },
   {
@@ -397,6 +472,11 @@
     "grad_rate": 0.91,
     "avg_cost": 13016,
     "student_size": 19897,
+    "early_deadline": "Oct 15 (Early Action)",
+    "regular_deadline": "Jan 15",
+    "scholarship_deadline": "Oct 15 (Morehead-Cain & Robertson Priority)",
+    "application_portal": "Common App",
+    "merit_aid_note": "Meets 100% of demonstrated financial need for all students; Carolina Covenant provides a debt-free graduation for low-income scholars; Oct 15 EA required for top merit fellowships.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?199120-University-of-North-Carolina-at-Chapel-Hill"
   },
   {
@@ -422,6 +502,11 @@
     "grad_rate": 0.95,
     "avg_cost": 21876,
     "student_size": 17299,
+    "early_deadline": "Nov 1 (Early Decision / Early Action)",
+    "regular_deadline": "Jan 5",
+    "scholarship_deadline": "Nov 15 (Jefferson Scholars Nomination)",
+    "application_portal": "Common App",
+    "merit_aid_note": "AccessUVA meets 100% of demonstrated need and covers full tuition, room, and board for Virginia families earning under $50,000 and full tuition under $100,000.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?234076-University-of-Virginia-Main-Campus"
   },
   {
@@ -447,6 +532,11 @@
     "grad_rate": 0.88,
     "avg_cost": 41530,
     "student_size": 29401,
+    "early_deadline": "Nov 1 (Early Decision I) / Jan 1 (ED II)",
+    "regular_deadline": "Jan 5",
+    "scholarship_deadline": "Feb 1 (CSS Profile & NYU Promise)",
+    "application_portal": "Common App",
+    "merit_aid_note": "NYU Promise covers 100% of tuition for first-year families with income under $100,000 and typical assets, plus meets 100% of demonstrated financial need.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?193900-New-York-University"
   },
   {
@@ -472,6 +562,11 @@
     "grad_rate": 0.93,
     "avg_cost": 36474,
     "student_size": 7509,
+    "early_deadline": "Nov 1 (Early Decision I)",
+    "regular_deadline": "Jan 3",
+    "scholarship_deadline": "Feb 15 (CSS Profile & FAFSA)",
+    "application_portal": "Common App",
+    "merit_aid_note": "CMU Pathway to Success meets 100% of demonstrated financial need with zero student loans in financial aid packages for qualifying undergraduate admits.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?211440-Carnegie-Mellon-University"
   },
   {
@@ -497,6 +592,11 @@
     "grad_rate": 0.88,
     "avg_cost": 19489,
     "student_size": 47106,
+    "early_deadline": "Nov 1 (Early Action & Merit Cutoff)",
+    "regular_deadline": "Jan 15",
+    "scholarship_deadline": "Nov 1 (Maximus, Provost, & Morrill Scholars)",
+    "application_portal": "Common App",
+    "merit_aid_note": "Must apply by Nov 1 Early Action to qualify for Maximus, Provost, Trustees, and National Buckeye Out-of-State Merit Scholarships ($13,500/yr) and Honors/Scholars programs.",
     "scorecard_source_url": "https://collegescorecard.ed.gov/school/?204796-Ohio-State-University-Main-Campus"
   }
 ]

@@ -5,6 +5,21 @@
  */
 
 const RoadmapEngine = {
+  deadlineScope: "saved",
+
+  setDeadlineScope(scope) {
+    this.deadlineScope = scope;
+    const profile = ProfileManager.get();
+    this.render("roadmap-tab-content", profile, CollegesEngine.getAll());
+  },
+
+  updateAppStatus(collegeId, status) {
+    const profile = ProfileManager.get();
+    if (!profile.application_tracker) profile.application_tracker = {};
+    profile.application_tracker[collegeId] = status;
+    ProfileManager.save(profile);
+  },
+
   render(containerId, profile, collegesData) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -13,6 +28,8 @@ const RoadmapEngine = {
     const eff = CollegesEngine.getEffectiveSat(profile);
     const studentSat = eff.score;
     const savedColleges = (collegesData || []).filter(c => (profile.saved_colleges || []).includes(c.id));
+    const trackerMap = profile.application_tracker || {};
+    const displayedColleges = this.deadlineScope === "all" ? (collegesData || []) : savedColleges;
 
     const gaps = {
       coursework: [],
@@ -96,29 +113,128 @@ const RoadmapEngine = {
       });
     }
 
+    if (savedColleges.length > 0) {
+      const earlySummary = savedColleges.map(c => `${c.short_name} (${c.early_deadline || c.regular_deadline})`).join(", ");
+      gaps.application.push({
+        title: `Meet Saved College Priority & Scholarship Cutoffs`,
+        desc: `Target early submission dates for your saved list: ${earlySummary}. Applying by the priority cutoff is required at many public flagships (such as UH, Purdue, Ohio State, and Georgia Tech) to qualify for automatic merit scholarships.`,
+        urgency: "gap-fix"
+      });
+    } else {
+      gaps.application.push({
+        title: "Prepare Early Action & Priority Deadlines (Oct 15 – Nov 30)",
+        desc: "Submit Common App, ApplyTexas, and state public university portals prior to priority deadlines (Oct 15 / Nov 1 for EA and Merit Scholarships, Nov 30 for University of California).",
+        urgency: "application"
+      });
+    }
+
     gaps.application.push({
-      title: "File FAFSA & CSS Profile for Financial Aid",
-      desc: "Complete the Free Application for Federal Student Aid (opens in December/January) and submit state grants prior to priority deadlines.",
+      title: "File FAFSA & State Tuition Grant Applications",
+      desc: "Complete the Free Application for Federal Student Aid and verify institutional free-tuition income guarantees (e.g., UT Austin Texas Advance Commitment, TAMU Aggie Assurance, Rice Investment, UC Blue & Gold).",
       urgency: "application"
     });
 
-    gaps.application.push({
-      title: "Prepare Early Action & Priority Deadlines (Nov 1 – Nov 30)",
-      desc: "Submit Common App, Coalition App, and state public university portals prior to priority deadlines (Nov 1 for EA/Priority, Nov 30 for University of California).",
-      urgency: "application"
-    });
+    const submittedCount = savedColleges.filter(c => trackerMap[c.id] === "submitted").length;
+    const inProgressCount = savedColleges.filter(c => trackerMap[c.id] === "in_progress").length;
 
     container.innerHTML = `
       <div class="section-header">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
           <div>
             <h2>What do I do next?</h2>
-            <p>Your grade-by-grade actionable timeline dynamically synthesized from your exact profile, test score gaps, and target university cutoffs.</p>
+            <p>Track exact Early Action, Regular Decision, and Merit Scholarship deadlines for your saved universities alongside your grade-by-grade roadmap.</p>
           </div>
-          <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.82rem;">
-            Current Status: <strong style="color: #60A5FA;">Grade ${currentGrade}</strong>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.82rem;">
+              Current Stage: <strong style="color: #60A5FA;">Grade ${currentGrade}</strong>
+            </div>
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.82rem;">
+              Applications: <strong style="color: var(--success);">${submittedCount}/${savedColleges.length} Submitted</strong> ${inProgressCount > 0 ? `<span style="color: var(--text-dim);">(${inProgressCount} drafting)</span>` : ''}
+            </div>
           </div>
         </div>
+      </div>
+
+      <!-- Saved College Deadlines & Merit Scholarship Tracker -->
+      <div class="card" style="margin-bottom: 2rem; padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+          <div>
+            <h3 style="font-size: 1.12rem; font-weight: 700; color: #FFFFFF;">
+              Institutional Deadlines & Merit Scholarship Tracker
+            </h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+              Official Early Action, Regular Decision, priority merit scholarship cutoffs, and tuition guarantee programs.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.4rem; align-items: center; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); padding: 3px;">
+            <button type="button" class="pill-btn ${this.deadlineScope === 'saved' ? 'active' : ''}" style="border: none; padding: 0.3rem 0.7rem; font-size: 0.75rem;" onclick="RoadmapEngine.setDeadlineScope('saved')">
+              My Saved Colleges (${savedColleges.length})
+            </button>
+            <button type="button" class="pill-btn ${this.deadlineScope === 'all' ? 'active' : ''}" style="border: none; padding: 0.3rem 0.7rem; font-size: 0.75rem;" onclick="RoadmapEngine.setDeadlineScope('all')">
+              All 20 Universities
+            </button>
+          </div>
+        </div>
+
+        ${displayedColleges.length === 0 ? `
+          <div style="text-align: center; padding: 2rem 1rem; color: var(--text-dim); background: rgba(255,255,255,0.02); border-radius: var(--radius-md);">
+            <p style="margin-bottom: 0.75rem;">No colleges saved yet. Save universities in the Colleges tab or view all 20 institutions.</p>
+            <div style="display: flex; gap: 0.5rem; justify-content: center;">
+              <button type="button" class="btn-primary" style="font-size: 0.8rem;" onclick="App.switchTab('colleges')">Browse & Save Colleges →</button>
+              <button type="button" class="btn-secondary" style="font-size: 0.8rem;" onclick="RoadmapEngine.setDeadlineScope('all')">Show All 20 Schools</button>
+            </div>
+          </div>
+        ` : `
+          <div class="credit-table-container">
+            <table class="credit-table">
+              <thead>
+                <tr>
+                  <th>University & Portal</th>
+                  <th>Early / Priority Cutoff</th>
+                  <th>Regular Decision</th>
+                  <th>Priority Scholarship Deadline</th>
+                  <th>Merit Scholarships & Tuition Guarantees</th>
+                  <th>Application Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${displayedColleges.map(col => {
+                  const status = trackerMap[col.id] || "not_started";
+                  const statusColor = status === "submitted" ? "var(--success)" : status === "in_progress" ? "#FBBF24" : "var(--text-dim)";
+                  return `
+                    <tr>
+                      <td>
+                        <strong style="color: #FFFFFF; display: block; font-size: 0.88rem;">${col.name}</strong>
+                        <span style="font-size: 0.72rem; color: var(--text-dim);">${col.application_portal || 'Common App'} · ${col.city}, ${col.state}</span>
+                      </td>
+                      <td>
+                        <span class="course-code-tag" style="background: rgba(59, 130, 246, 0.14); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.3);">
+                          ${col.early_deadline || 'See Regular'}
+                        </span>
+                      </td>
+                      <td style="font-weight: 700; color: #FFFFFF; font-size: 0.84rem; white-space: nowrap;">
+                        ${col.regular_deadline || 'Jan 1'}
+                      </td>
+                      <td style="font-size: 0.8rem; color: #FCD34D; font-weight: 600;">
+                        ${col.scholarship_deadline || col.early_deadline || col.regular_deadline}
+                      </td>
+                      <td style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; max-width: 310px;">
+                        ${col.merit_aid_note || 'Automatic merit & need-based review with admission.'}
+                      </td>
+                      <td>
+                        <select class="select-control" style="width: auto; font-size: 0.76rem; padding: 0.28rem 0.5rem; color: ${statusColor}; font-weight: 600;" onchange="RoadmapEngine.updateAppStatus('${col.id}', this.value)">
+                          <option value="not_started" ${status === 'not_started' ? 'selected' : ''}>Not Started</option>
+                          <option value="in_progress" ${status === 'in_progress' ? 'selected' : ''}>Drafting Essays</option>
+                          <option value="submitted" ${status === 'submitted' ? 'selected' : ''}>✓ Submitted</option>
+                        </select>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
       </div>
 
       <div class="roadmap-timeline">
