@@ -107,9 +107,14 @@ const StatusEngine = {
               <h3 style="font-size: 1.1rem; color: #FFFFFF; font-weight: 700;">Student Snapshot</h3>
               <p style="font-size: 0.75rem; color: var(--text-muted);">Grade ${profile.grade_level || "11"} · ${profile.residency || "US"} Resident</p>
             </div>
-            <button class="btn-secondary" onclick="App.openProfileModal()" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;">
-              Edit Profile
-            </button>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <button class="btn-primary" onclick="App.openExportModal()" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;">
+                Export Dossier
+              </button>
+              <button class="btn-secondary" onclick="App.openProfileModal()" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;">
+                Edit
+              </button>
+            </div>
           </div>
 
           <div class="stat-row">

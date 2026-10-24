@@ -419,6 +419,17 @@ const App = {
     if (modal) modal.classList.add("open");
   },
 
+  openExportModal() {
+    if (typeof DossierExporter !== "undefined") {
+      DossierExporter.open();
+    }
+  },
+
+  openJudgesModal() {
+    const modal = document.getElementById("judges-modal");
+    if (modal) modal.classList.add("open");
+  },
+
   closeModal(modalId) {
     const m = document.getElementById(modalId);
     if (m) m.classList.remove("open");
