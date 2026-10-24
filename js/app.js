@@ -43,6 +43,170 @@ const App = {
     });
   },
 
+  introCurrentSlide: 0,
+  introTotalSlides: 4,
+  introTimer: null,
+  introLabels: [
+    "Next: State Laws →",
+    "Next: Scorecard Data →",
+    "Next: Tuition ROI →",
+    "Create Free Account →"
+  ],
+
+  startIntroAnimation() {
+    this.setIntroSlide(0);
+    if (this.introTimer) clearInterval(this.introTimer);
+
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    this.introTimer = setInterval(() => {
+      if (this.introCurrentSlide < this.introTotalSlides - 1) {
+        this.setIntroSlide(this.introCurrentSlide + 1);
+      } else {
+        clearInterval(this.introTimer);
+      }
+    }, 6500);
+  },
+
+  setIntroSlide(index) {
+    this.introCurrentSlide = Math.max(0, Math.min(index, this.introTotalSlides - 1));
+
+    for (let i = 0; i < this.introTotalSlides; i++) {
+      const slide = document.getElementById(`intro-slide-${i}`);
+      const segBtn = document.getElementById(`intro-seg-${i}`);
+      const segFill = document.getElementById(`seg-fill-${i}`);
+
+      if (slide) {
+        if (i === this.introCurrentSlide) {
+          slide.classList.add("active");
+        } else {
+          slide.classList.remove("active");
+        }
+      }
+
+      if (segBtn && segFill) {
+        if (i < this.introCurrentSlide) {
+          segBtn.classList.remove("active");
+          segBtn.classList.add("completed");
+          segFill.style.width = "100%";
+        } else if (i === this.introCurrentSlide) {
+          segBtn.classList.add("active");
+          segBtn.classList.remove("completed");
+          segFill.style.width = "100%";
+        } else {
+          segBtn.classList.remove("active");
+          segBtn.classList.remove("completed");
+          segFill.style.width = "0%";
+        }
+      }
+    }
+
+    const prevBtn = document.getElementById("btn-intro-prev");
+    const nextBtn = document.getElementById("btn-intro-next");
+
+    if (prevBtn) {
+      prevBtn.style.visibility = this.introCurrentSlide === 0 ? "hidden" : "visible";
+    }
+
+    if (nextBtn) {
+      nextBtn.textContent = this.introLabels[this.introCurrentSlide] || "Next →";
+      if (this.introCurrentSlide === this.introTotalSlides - 1) {
+        nextBtn.style.background = "var(--success)";
+        nextBtn.style.borderColor = "var(--success)";
+      } else {
+        nextBtn.style.background = "";
+        nextBtn.style.borderColor = "";
+      }
+    }
+  },
+
+  nextIntroSlide() {
+    if (this.introCurrentSlide < this.introTotalSlides - 1) {
+      this.setIntroSlide(this.introCurrentSlide + 1);
+    } else {
+      this.showAuthStage("signup");
+    }
+  },
+
+  prevIntroSlide() {
+    if (this.introCurrentSlide > 0) {
+      this.setIntroSlide(this.introCurrentSlide - 1);
+    }
+  },
+
+  showAuthStage(mode = "signup") {
+    if (this.introTimer) clearInterval(this.introTimer);
+
+    const introStage = document.getElementById("intro-stage");
+    const authStage = document.getElementById("auth-stage");
+    const navBtnTour = document.getElementById("nav-btn-tour");
+    const navBtnAuth = document.getElementById("nav-btn-auth");
+
+    if (navBtnTour) navBtnTour.style.display = "inline-flex";
+    if (navBtnAuth) {
+      navBtnAuth.textContent = mode === "signin" ? "Create Account" : "Sign In";
+      navBtnAuth.onclick = () => {
+        this.showAuthStage(mode === "signin" ? "signup" : "signin");
+      };
+    }
+
+    if (introStage && authStage) {
+      introStage.style.opacity = "0";
+      introStage.style.transform = "translateY(-12px)";
+      introStage.style.transition = "all 0.25s ease";
+      setTimeout(() => {
+        introStage.style.display = "none";
+        authStage.style.display = "block";
+        authStage.style.opacity = "0";
+        authStage.style.transform = "translateY(12px)";
+        setTimeout(() => {
+          authStage.style.opacity = "1";
+          authStage.style.transform = "translateY(0)";
+          authStage.style.transition = "all 0.25s ease";
+          this.switchLandingAuthTab(mode);
+          const cardAnchor = document.getElementById("landing-auth-card-anchor");
+          if (cardAnchor) cardAnchor.scrollIntoView({ behavior: "smooth" });
+        }, 20);
+      }, 250);
+    } else {
+      this.switchLandingAuthTab(mode);
+    }
+  },
+
+  showIntroStage() {
+    const introStage = document.getElementById("intro-stage");
+    const authStage = document.getElementById("auth-stage");
+    const navBtnTour = document.getElementById("nav-btn-tour");
+    const navBtnAuth = document.getElementById("nav-btn-auth");
+
+    if (navBtnTour) navBtnTour.style.display = "none";
+    if (navBtnAuth) {
+      navBtnAuth.textContent = "Create Account";
+      navBtnAuth.onclick = () => this.showAuthStage("signup");
+    }
+
+    if (introStage && authStage) {
+      authStage.style.opacity = "0";
+      authStage.style.transform = "translateY(12px)";
+      authStage.style.transition = "all 0.25s ease";
+      setTimeout(() => {
+        authStage.style.display = "none";
+        introStage.style.display = "block";
+        introStage.style.opacity = "0";
+        introStage.style.transform = "translateY(-12px)";
+        setTimeout(() => {
+          introStage.style.opacity = "1";
+          introStage.style.transform = "translateY(0)";
+          introStage.style.transition = "all 0.25s ease";
+          this.startIntroAnimation();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 20);
+      }, 250);
+    }
+  },
+
   updateAppView() {
     const user = Auth.getCurrentUser();
     const authView = document.getElementById("view-auth");
@@ -57,6 +221,7 @@ const App = {
 
     if (!user) {
       setViews("block", "none", "none");
+      this.startIntroAnimation();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (!user.onboarding_completed) {
       setViews("none", "block", "none");
