@@ -19,14 +19,16 @@ const Auth = {
   USERS_KEY: "admit_registered_users_v2",
   SESSION_KEY: "admit_active_session_v2",
   GOOGLE_CLIENT_ID_KEY: "admit_google_client_id_v2",
+  DEFAULT_GOOGLE_CLIENT_ID: "566176172856-obadi71f69sju9v9q0gjvhov2o12a3ah.apps.googleusercontent.com",
 
   getGoogleClientId() {
     try {
       const stored = localStorage.getItem(this.GOOGLE_CLIENT_ID_KEY);
-      return (stored && stored.trim()) ? stored.trim() : "";
+      if (stored && stored.trim()) return stored.trim();
     } catch (e) {
-      return "";
+      console.warn("Could not read stored Google client ID:", e);
     }
+    return this.DEFAULT_GOOGLE_CLIENT_ID;
   },
 
   setGoogleClientId(clientId) {
