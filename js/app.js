@@ -16,6 +16,7 @@ const App = {
     this.collegesData = CollegesEngine.getAll();
     this.setupEventListeners();
     this.updateAppView();
+    this.initGoogleIdentityServices();
   },
 
   setupEventListeners() {
@@ -259,68 +260,171 @@ const App = {
     }
   },
 
-  openGoogleAuthModal() {
-    const modal = document.getElementById("google-auth-modal");
-    const loading = document.getElementById("google-auth-loading");
-    const picker = document.getElementById("google-auth-picker");
-    const customForm = document.getElementById("google-custom-account-form");
+  initGoogleIdentityServices() {
+    if (typeof window === "undefined") return;
+    const clientId = Auth.getGoogleClientId();
 
-    if (loading) loading.style.display = "none";
-    if (picker) picker.style.display = "block";
-    if (customForm) customForm.style.display = "none";
-    if (modal) modal.classList.add("open");
-  },
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      if (clientId) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: (res) => this.handleGoogleCredentialResponse(res),
+            auto_select: false,
+            cancel_on_tap_outside: true
+          });
 
-  closeGoogleAuthModal() {
-    const modal = document.getElementById("google-auth-modal");
-    if (modal) modal.classList.remove("open");
-  },
+          const container = document.getElementById("g_id_signin_container");
+          if (container) {
+            container.innerHTML = "";
+            window.google.accounts.id.renderButton(container, {
+              type: "standard",
+              shape: "rectangular",
+              theme: "outline",
+              text: "continue_with",
+              size: "large",
+              logo_alignment: "left",
+              width: 320
+            });
+          }
 
-  toggleCustomGoogleInput() {
-    const customForm = document.getElementById("google-custom-account-form");
-    if (!customForm) return;
-    const isHidden = customForm.style.display === "none";
-    customForm.style.display = isHidden ? "block" : "none";
-    if (isHidden) {
-      const nameInput = document.getElementById("google-custom-name");
-      if (nameInput) nameInput.focus();
+          try {
+            window.google.accounts.id.prompt();
+          } catch (promptErr) {
+            console.debug("Google One Tap prompt skipped:", promptErr);
+          }
+        } catch (err) {
+          console.warn("Google Identity Services initialization:", err);
+        }
+      }
+    } else {
+      if (document.readyState !== "complete") {
+        window.addEventListener("load", () => {
+          this.initGoogleIdentityServices();
+        }, { once: true });
+      }
     }
   },
 
-  handleCustomGoogleSubmit(e) {
-    e.preventDefault();
-    const name = document.getElementById("google-custom-name").value;
-    const email = document.getElementById("google-custom-email").value;
-    this.executeGoogleAuth(name, email);
+  handleGoogleButtonClick() {
+    const clientId = Auth.getGoogleClientId();
+    if (!clientId) {
+      this.openGoogleConfigModal();
+    } else if (window.google && window.google.accounts && window.google.accounts.id) {
+      window.google.accounts.id.prompt((notification) => {
+        if (notification && (notification.isNotDisplayed() || notification.isSkippedMoment())) {
+          this.openGoogleConfigModal();
+        }
+      });
+    } else {
+      this.openGoogleConfigModal();
+    }
   },
 
-  executeGoogleAuth(name, email, picture = null) {
-    const loading = document.getElementById("google-auth-loading");
-    const picker = document.getElementById("google-auth-picker");
+  parseJwt(token) {
+    try {
+      if (!token || typeof token !== "string") return null;
+      const parts = token.split(".");
+      if (parts.length < 2) return null;
+      const base64Url = parts[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error("Failed to parse Google JWT credential:", e);
+      return null;
+    }
+  },
 
-    if (picker) picker.style.display = "none";
-    if (loading) loading.style.display = "block";
+  handleGoogleCredentialResponse(response) {
+    if (!response || !response.credential) {
+      this.showToast("Google authentication did not return a credential.", "error");
+      return;
+    }
 
-    setTimeout(() => {
-      const res = Auth.loginWithGoogle({ name, email, picture });
-      this.closeGoogleAuthModal();
+    const payload = this.parseJwt(response.credential);
+    if (!payload || !payload.email) {
+      this.showToast("Could not extract student profile from Google credential.", "error");
+      return;
+    }
 
-      if (res.success) {
-        const firstName = (res.user.name || "Student").split(" ")[0];
-        if (res.isNewUser) {
-          this.showToast(`Google account linked! Welcome, ${firstName}.`, "success");
-        } else {
-          this.showToast(`Signed in with Google as ${firstName}!`, "success");
-        }
-        this.updateAppView();
+    const googleProfile = {
+      email: payload.email,
+      name: payload.name || payload.given_name || payload.email.split("@")[0],
+      picture: payload.picture || null
+    };
+
+    const res = Auth.loginWithGoogle(googleProfile);
+    if (res.success) {
+      const firstName = (res.user.name || "Student").split(" ")[0];
+      if (res.isNewUser) {
+        this.showToast(`Verified Google Sign-In: Welcome, ${firstName}!`, "success");
       } else {
-        const errBox = document.getElementById("landing-auth-error");
-        if (errBox) {
-          errBox.innerText = res.error || "Google authentication failed. Please try again.";
-          errBox.style.display = "block";
-        }
+        this.showToast(`Welcome back, ${firstName}!`, "success");
       }
-    }, 450);
+      this.updateAppView();
+    } else {
+      const errBox = document.getElementById("landing-auth-error");
+      if (errBox) {
+        errBox.innerText = res.error || "Google authentication failed. Please try again.";
+        errBox.style.display = "block";
+      }
+      this.showToast(res.error || "Google sign-in error", "error");
+    }
+  },
+
+  openGoogleConfigModal() {
+    const input = document.getElementById("google-client-id-input");
+    if (input) {
+      input.value = Auth.getGoogleClientId();
+    }
+    const modal = document.getElementById("google-config-modal");
+    if (modal) modal.classList.add("open");
+  },
+
+  closeGoogleConfigModal() {
+    const modal = document.getElementById("google-config-modal");
+    if (modal) modal.classList.remove("open");
+  },
+
+  saveGoogleClientId(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = document.getElementById("google-client-id-input");
+    const val = input ? input.value.trim() : "";
+
+    Auth.setGoogleClientId(val);
+    this.closeGoogleConfigModal();
+
+    if (val) {
+      this.showToast("Google OAuth Client ID saved! Initializing Google Sign-In...", "success");
+      this.initGoogleIdentityServices();
+    } else {
+      this.showToast("Google OAuth Client ID cleared.", "info");
+      const container = document.getElementById("g_id_signin_container");
+      if (container) {
+        container.innerHTML = `
+          <button type="button" class="btn-google-auth" id="btn-google-auth" onclick="App.handleGoogleButtonClick()">
+            <svg class="google-icon" width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span id="google-btn-label">Continue with Google (OAuth 2.0)</span>
+          </button>`;
+      }
+    }
+  },
+
+  clearGoogleClientId() {
+    const input = document.getElementById("google-client-id-input");
+    if (input) input.value = "";
+    this.saveGoogleClientId();
   },
 
   handleLoginSubmit(e) {

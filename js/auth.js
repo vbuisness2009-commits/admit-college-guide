@@ -5,7 +5,7 @@
  */
 
 function escapeHTML(str) {
-  if (str === null || str === undefined) return "";
+  if (str == null) return "";
   return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -18,6 +18,31 @@ window.escapeHTML = escapeHTML;
 const Auth = {
   USERS_KEY: "admit_registered_users_v2",
   SESSION_KEY: "admit_active_session_v2",
+  GOOGLE_CLIENT_ID_KEY: "admit_google_client_id_v2",
+
+  getGoogleClientId() {
+    try {
+      const stored = localStorage.getItem(this.GOOGLE_CLIENT_ID_KEY);
+      return (stored && stored.trim()) ? stored.trim() : "";
+    } catch (e) {
+      return "";
+    }
+  },
+
+  setGoogleClientId(clientId) {
+    try {
+      const trimmed = (clientId || "").trim();
+      if (!trimmed) {
+        localStorage.removeItem(this.GOOGLE_CLIENT_ID_KEY);
+      } else {
+        localStorage.setItem(this.GOOGLE_CLIENT_ID_KEY, trimmed);
+      }
+      return true;
+    } catch (e) {
+      console.error("Failed to persist Google Client ID", e);
+      return false;
+    }
+  },
 
   getUsers() {
     try {
@@ -138,7 +163,9 @@ const Auth = {
       users[idx] = user;
       try {
         localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
-      } catch (e) {}
+      } catch (err) {
+        console.warn("Failed to persist updated Google user profile:", err);
+      }
     } else {
       isNew = true;
       user = {
