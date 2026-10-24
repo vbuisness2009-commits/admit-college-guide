@@ -135,7 +135,7 @@ const CollegesEngine = {
           <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
             <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Score Adjustment:</span>
             <input type="range" id="sim-range-slider" min="-150" max="250" step="10" value="${this.simSatDelta}" style="flex: 1; min-width: 200px; accent-color: var(--primary); cursor: pointer;" oninput="CollegesEngine.setSimDelta(this.value)">
-            <span id="sim-delta-val" style="font-family: monospace; font-size: 0.92rem; font-weight: 700; color: #FFFFFF; min-width: 65px;">
+            <span id="sim-delta-val" style="font-family: var(--font-mono); font-size: 0.92rem; font-weight: 700; color: #FFFFFF; min-width: 65px;">
               ${this.simSatDelta >= 0 ? `+${this.simSatDelta}` : this.simSatDelta} pts
             </span>
           </div>

@@ -433,6 +433,27 @@ const App = {
       toast.style.transition = "all 0.25s ease";
       setTimeout(() => toast.remove(), 250);
     }, 3200);
+  },
+
+  animateNumber(element, start, end, duration = 400, prefix = "", suffix = "") {
+    if (!element) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      element.textContent = prefix + (typeof end === "number" ? end.toLocaleString() : end) + suffix;
+      return;
+    }
+    const startTime = performance.now();
+    const isFloat = String(end).includes(".");
+    function frame(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const val = start + (end - start) * ease;
+      element.textContent = prefix + (isFloat ? val.toFixed(1) : Math.round(val).toLocaleString()) + suffix;
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      }
+    }
+    requestAnimationFrame(frame);
   }
 };
 

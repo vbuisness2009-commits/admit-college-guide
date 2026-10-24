@@ -215,7 +215,7 @@
 .rule-title .statute {
   font-size: 0.75rem;
   color: #60A5FA;
-  font-family: monospace;
+  font-family: var(--font-mono);
   margin-top: 2px;
 }
 
@@ -496,7 +496,7 @@
   font-size: 0.68rem;
   color: var(--text-muted);
   transform: translateX(-50%);
-  font-family: monospace;
+  font-family: var(--font-mono);
 }
 
 .student-dot {
@@ -703,7 +703,7 @@
   color: #93C5FD;
   padding: 0.2rem 0.45rem;
   border-radius: var(--radius-sm);
-  font-family: monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   font-size: 0.82rem;
 }
@@ -1261,7 +1261,7 @@
 
 .dossier-ref-box {
   text-align: right;
-  font-family: monospace;
+  font-family: var(--font-mono);
 }
 
 .dossier-ref-box .ref-label {

@@ -170,7 +170,7 @@ const StatusEngine = {
                 return `
                   <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.8rem;">
                     <span>${c.short_name} (${c.state})</span>
-                    <span style="font-family: monospace; font-size: 0.75rem; color: var(--text-dim);">${(c.admit_rate * 100).toFixed(0)}% admit</span>
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">${(c.admit_rate * 100).toFixed(0)}% admit</span>
                   </div>
                 `;
               }).join('')}

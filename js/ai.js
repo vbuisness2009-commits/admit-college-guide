@@ -259,7 +259,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
                 <strong style="color: #FFFFFF; font-size: 0.92rem;">${q.title}</strong>
                 <span class="rule-status-badge qualified" style="font-size: 0.7rem; padding: 2px 6px;">Qualifies</span>
               </div>
-              <div style="font-size: 0.72rem; color: #60A5FA; font-family: monospace; margin: 2px 0 6px 0;">Statute: ${q.statute}</div>
+              <div style="font-size: 0.72rem; color: #60A5FA; font-family: var(--font-mono); margin: 2px 0 6px 0;">Statute: ${q.statute}</div>
               <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">${q.detail}</p>
             </div>
           `).join('')}
@@ -300,7 +300,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
                   <strong style="color: #FFFFFF; font-size: 0.92rem;">${d.title}</strong>
                   <span class="rule-status-badge not-qualified" style="font-size: 0.7rem; padding: 2px 6px;">Unmet</span>
                 </div>
-                <div style="font-size: 0.72rem; color: #FCA5A5; font-family: monospace; margin: 2px 0 4px 0;">Statute: ${d.statute}</div>
+                <div style="font-size: 0.72rem; color: #FCA5A5; font-family: var(--font-mono); margin: 2px 0 4px 0;">Statute: ${d.statute}</div>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;">${d.reason}</p>
                 <div style="font-size: 0.78rem; color: #FCD34D;"><strong>Action Needed:</strong> ${d.fix}</div>
               </div>

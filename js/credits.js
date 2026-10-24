@@ -143,17 +143,17 @@ const CreditsEngine = {
         </div>
 
         <div class="credit-stat-card">
-          <div class="number">${totalCreditsEarned}</div>
+          <div class="number" id="stat-credits-earned">${totalCreditsEarned}</div>
           <div class="desc">College Credits Earned</div>
         </div>
 
         <div class="credit-stat-card">
-          <div class="number">${semestersSaved}</div>
+          <div class="number" id="stat-semesters-saved">${semestersSaved}</div>
           <div class="desc">Semesters Skipped (~15 cr/sem)</div>
         </div>
 
         <div class="credit-stat-card">
-          <div class="number green">$${totalTuitionSaved.toLocaleString()}</div>
+          <div class="number green" id="stat-tuition-saved">$${totalTuitionSaved.toLocaleString()}</div>
           <div class="desc">Estimated Tuition Saved</div>
         </div>
       </div>
@@ -299,5 +299,14 @@ const CreditsEngine = {
         </p>
       </div>
     `;
+
+    if (typeof App !== "undefined" && App.animateNumber) {
+      const crEl = document.getElementById("stat-credits-earned");
+      const semEl = document.getElementById("stat-semesters-saved");
+      const tuiEl = document.getElementById("stat-tuition-saved");
+      if (crEl) App.animateNumber(crEl, 0, totalCreditsEarned, 300);
+      if (semEl) App.animateNumber(semEl, 0, parseFloat(semestersSaved) || 0, 300);
+      if (tuiEl) App.animateNumber(tuiEl, 0, totalTuitionSaved, 400, "$");
+    }
   }
 };
