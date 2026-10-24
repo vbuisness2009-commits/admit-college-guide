@@ -39,12 +39,10 @@ const ProfileManager = {
     const current = this.get();
     const merged = { ...current, ...updatedProfile };
 
-    // Auto-calculate sat_total
     if (merged.sat_rw !== null && merged.sat_m !== null && merged.sat_rw !== "" && merged.sat_m !== "") {
       merged.sat_total = parseInt(merged.sat_rw, 10) + parseInt(merged.sat_m, 10);
     }
 
-    // Auto-calculate class_percentile
     if (merged.class_rank && merged.class_size && merged.class_size > 0) {
       merged.class_percentile = parseFloat(((merged.class_rank / merged.class_size) * 100).toFixed(1));
     }

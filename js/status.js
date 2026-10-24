@@ -11,9 +11,11 @@ const StatusEngine = {
   async init() {
     try {
       const res = await fetch("data/state_rules.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this.rulesData = await res.json();
     } catch (e) {
-      console.error("Failed to load state rules data", e);
+      this.rulesData = [];
+      this.loadError = e.message;
     }
   },
 
@@ -226,7 +228,6 @@ const StatusEngine = {
     const rulesToDisplay = this.rulesData.filter(r => {
       if (filterState === "ALL") return true;
       if (filterState === "AUTO") {
-        // Show rules matching user state OR national rules
         return r.state_code === userState || r.state_code === "ALL";
       }
       return r.state_code === filterState || r.state_code === "ALL";

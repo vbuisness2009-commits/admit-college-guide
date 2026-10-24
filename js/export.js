@@ -41,18 +41,12 @@ const DossierExporter = {
     const studentGpa = profile.gpa_unweighted ? profile.gpa_unweighted.toFixed(2) : "Not entered";
     const rankStr = profile.class_rank ? `${profile.class_rank} / ${profile.class_size} (Top ${profile.class_percentile}%)` : "Unranked";
 
-    // 1. Evaluate State Statutory Rules
     const relevantRules = (rulesData || []).filter(r => r.state_code === residency || r.state_code === "ALL");
     const evaluatedRules = relevantRules.map(r => StatusEngine.evaluateRule(r, profile));
-
-    // 2. Evaluate Saved Colleges
     const savedColleges = (collegesData || []).filter(c => (profile.saved_colleges || []).includes(c.id));
-
-    // 3. Evaluate AP Credits
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
 
-    // Calculate maximum tuition savings across saved colleges
     let maxCredits = 0;
     let maxTuition = 0;
     let sampleCollegeName = "Public Universities";

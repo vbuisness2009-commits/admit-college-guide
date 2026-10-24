@@ -1218,9 +1218,7 @@
   align-items: center;
 }
 
-/* ========================================================== */
-/* Counselor & Parent Advisory Dossier & Print Architecture  */
-/* ========================================================== */
+/* Counselor & Parent Advisory Dossier & Print Architecture */
 .dossier-document {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);

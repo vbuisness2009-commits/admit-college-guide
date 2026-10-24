@@ -16,7 +16,6 @@ const AdmitAI = {
     const studentPercentile = profile.class_percentile || 10.0;
     const residency = profile.residency || "TX";
 
-    // 1. Evaluate Statutory Qualifications (Home State + National Standards)
     const qualifications = [];
     const disqualifications = [];
     const relevantRules = (rulesData || []).filter(r => r.state_code === residency || r.state_code === "ALL");
@@ -44,7 +43,6 @@ const AdmitAI = {
       }
     });
 
-    // 2. Evaluate College Scorecard Alignment (Saved Colleges)
     const savedColleges = (collegesData || []).filter(c => (profile.saved_colleges || []).includes(c.id));
     const competitiveReach = [];
     const middleTarget = [];
@@ -80,11 +78,9 @@ const AdmitAI = {
       }
     });
 
-    // 3. AP Credit Tuition ROI Audit
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
     
-    // Calculate total potential across saved schools
     let maxCreditsSaved = 0;
     let maxTuitionSaved = 0;
     let bestSchoolForCredits = null;
@@ -107,7 +103,6 @@ const AdmitAI = {
       }
     });
 
-    // 4. Executive AI Verdict Formulation
     const executiveSummary = {
       overallHealth: qualifications.length > 0 ? "EXCELLENT (Statutorily Protected)" : disqualifications.length === 0 ? "STRONG" : "NEEDS COURSEWORK / TESTING ACTION",
       keyStrengths: [
@@ -150,7 +145,6 @@ const AdmitAI = {
     const rank = profile.class_rank;
     const pct = profile.class_percentile;
 
-    // 1. "Do I qualify?" / "What do I qualify for?"
     if (q.includes("qualify") || q.includes("eligible") || q.includes("guarantee") || q.includes("auto")) {
       if (audit.qualifications.length === 0) {
         return `### Statutory Qualification Status\n\nBased on your current profile, **you do NOT currently qualify for automatic statutory admission**.\n\n**Key Missing Criteria:**\n${audit.disqualifications.map(d => `* **${d.title}:** ${d.reason}\n  * *Immediate Fix:* ${d.fix}`).join("\n\n")}\n\n*Note: Holistic admission is still possible, but you are not statutorily guaranteed admission.*`;
@@ -159,7 +153,6 @@ const AdmitAI = {
       }
     }
 
-    // 2. Questions about SAT / ACT / Scores
     if (q.includes("sat") || q.includes("act") || q.includes("score") || q.includes("test")) {
       const reaches = audit.competitiveReach.map(r => `* **${r.college.short_name}**: Your score (${studentSat}) is **${r.delta} points below** the 25th percentile (${r.college.sat_total_25}).`).join("\n");
       const targets = audit.middleTarget.map(t => `* **${t.college.short_name}**: Inside median band (${t.college.sat_total_25}–${t.college.sat_total_75}). You need **+${t.delta75} pts** to reach the 75th percentile.`).join("\n");
@@ -168,7 +161,6 @@ const AdmitAI = {
       return `### Test Score Analysis (SAT: ${studentSat})\n\nHere is how your standardized test score matches against your saved colleges:\n\n${anchors ? `**Academically Strong (>75th Percentile):**\n${anchors}\n\n` : ""}${targets ? `**Inside Middle-50% Admitted Range:**\n${targets}\n\n` : ""}${reaches ? `**Test Score Deficit (<25th Percentile):**\n${reaches}\n\n` : ""}\n**AI Recommendation:** If you retake the SAT, focus primarily on Math/ERW subscores to gain **+${audit.competitiveReach.length > 0 ? audit.competitiveReach[0].delta + 30 : 50} points**, which places you safely into the median band across your entire list.`;
     }
 
-    // 3. Questions about AP / IB / College Credits
     if (q.includes("ap") || q.includes("ib") || q.includes("credit") || q.includes("tuition") || q.includes("save") || q.includes("money")) {
       const completed = (profile.ap_exams || []).filter(e => e.status === "completed");
       const planned = (profile.ap_exams || []).filter(e => e.status === "planned");
@@ -176,12 +168,10 @@ const AdmitAI = {
       return `### AP/IB Credit & Tuition ROI Assessment\n\n* **Completed AP Exams:** ${completed.length} logged (${completed.map(e => `${e.name}: ${e.score}`).join(", ") || "None"}).\n* **Maximum Estimated Tuition Saved:** **$${audit.maxTuitionSaved.toLocaleString()}** (representing approx. **${audit.maxCreditsSaved} college credits** at ${audit.bestSchoolForCredits ? audit.bestSchoolForCredits.short_name : "your saved schools"}).\n* **Planned Exams:** ${planned.length} upcoming (${planned.map(e => e.name).join(", ") || "None"}).\n\n**High-Value Advice:** Under state law (such as Texas HB 1992 / TEC § 51.968), public universities cannot require more than a score of 3 for credit unless special exemptions apply. Scoring a 4 or 5 in planned exams like Calculus BC or Chemistry directly waives up to 8 credits per subject, bypassing introductory lab weed-out courses.`;
     }
 
-    // 4. Questions about single biggest fix / next steps
     if (q.includes("fix") || q.includes("do next") || q.includes("roadmap") || q.includes("priority") || q.includes("improve")) {
       return `### Priority Diagnostic: Your #1 Action Item\n\n**Primary Focus:**\n> **${audit.executiveSummary.immediateActionItem}**\n\n**Secondary Priorities:**\n${audit.executiveSummary.criticalVulnerabilities.slice(0, 3).map((v, i) => `${i + 1}. ${v}`).join("\n")}\n\nThis sequence addresses hard statutory barriers first, followed by score competitive positioning.`;
     }
 
-    // 5. Default Comprehensive Response
     return `### Academic Profile Diagnostics\n\n**Executive Health Rating:** ${audit.executiveSummary.overallHealth}\n\n**Top Strengths:**\n${audit.executiveSummary.keyStrengths.map(s => `* ${s}`).join("\n")}\n\n**Identified Deficits & Disqualifications:**\n${audit.executiveSummary.criticalVulnerabilities.length > 0 ? audit.executiveSummary.criticalVulnerabilities.map(v => `* ${v}`).join("\n") : "* No critical disqualifications detected."}\n\n**Recommended Immediate Action:**\n> ${audit.executiveSummary.immediateActionItem}\n\n*Tip: You can ask me specific questions like: "Do I qualify for Texas Top 10%?", "How do my SAT scores compare?", or "How much money do my APs save me?"*`;
   }
 };
@@ -419,13 +409,11 @@ AdmitAI.postUserMessage = function(text) {
   const container = document.getElementById("ai-chat-messages");
   if (!container) return;
 
-  // Append user bubble
   const userBubble = document.createElement("div");
   userBubble.style.cssText = "align-self: flex-end; background: var(--primary); color: #FFFFFF; border-radius: var(--radius-md); padding: 0.6rem 0.85rem; font-size: 0.84rem; max-width: 85%;";
   userBubble.innerText = text;
   container.appendChild(userBubble);
 
-  // Generate response instantly (no artificial wait slop)
   const profile = ProfileManager.get();
   const colleges = CollegesEngine.getAll();
   const rules = StatusEngine.rulesData;
@@ -436,7 +424,6 @@ AdmitAI.postUserMessage = function(text) {
   const botBubble = document.createElement("div");
   botBubble.style.cssText = "background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.5; color: var(--text-main); max-width: 95%;";
   
-  // Format simple markdown headings and lists
   const formattedHtml = answerMarkdown
     .replace(/### (.*?)\n/g, '<h4 style="color: #60A5FA; font-size: 0.95rem; margin-bottom: 0.4rem;">$1</h4>')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')

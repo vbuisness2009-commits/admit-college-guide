@@ -13,7 +13,6 @@ const RoadmapEngine = {
     const studentSat = profile.sat_total || 1200;
     const savedColleges = (collegesData || []).filter(c => (profile.saved_colleges || []).includes(c.id));
 
-    // Analyze gaps
     const gaps = {
       coursework: [],
       testing: [],
@@ -21,7 +20,6 @@ const RoadmapEngine = {
       application: []
     };
 
-    // Coursework gaps
     if (!profile.math_years_algebra2) {
       gaps.coursework.push({
         title: "Enroll in Algebra II and 4th Year Mathematics",
@@ -47,7 +45,6 @@ const RoadmapEngine = {
       });
     }
 
-    // Testing gaps
     if (savedColleges.length > 0) {
       const schoolsBelow = savedColleges.filter(s => studentSat < s.sat_total_25);
       const schoolsInMid = savedColleges.filter(s => studentSat >= s.sat_total_25 && studentSat < s.sat_total_75);
@@ -75,7 +72,6 @@ const RoadmapEngine = {
       });
     }
 
-    // AP Opportunities
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
     if (plannedExams.length > 0) {
       gaps.ap.push({
@@ -91,7 +87,6 @@ const RoadmapEngine = {
       });
     }
 
-    // Application items
     gaps.application.push({
       title: "File FAFSA & CSS Profile for Financial Aid",
       desc: "Complete the Free Application for Federal Student Aid (opens in December/January) and submit state grants prior to priority deadlines.",

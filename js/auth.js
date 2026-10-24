@@ -128,7 +128,7 @@ const Auth = {
         name: user.name
       }));
     } catch (e) {
-      console.error("Session storage failed", e);
+      this.sessionStorageFailed = true;
     }
     window.dispatchEvent(new CustomEvent("admit:auth-changed", { detail: user }));
   },

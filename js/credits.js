@@ -11,9 +11,11 @@ const CreditsEngine = {
   async init() {
     try {
       const res = await fetch("data/ap_credit_rules.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this.apData = await res.json();
     } catch (e) {
-      console.error("Failed to load AP credit data", e);
+      this.apData = { policies: {} };
+      this.loadError = e.message;
     }
   },
 
@@ -36,22 +38,17 @@ const CreditsEngine = {
     const college = colleges.find(c => c.id === this.selectedCollegeId) || colleges[0];
     if (!college) return;
 
-    // Get policies for this college
     const collegePolicy = this.apData.policies[college.id] || { rules: [], source_url: college.scorecard_source_url };
     const rules = collegePolicy.rules || [];
 
-    // Calculate earned credits for completed exams
     let totalCreditsEarned = 0;
     const earnedRows = [];
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
 
     for (const studentExam of completedExams) {
-      // Find matching rules for this exam
       const matchingRules = rules.filter(r => r.exam_id === studentExam.id && studentExam.score >= r.min_score);
-      // Pick rule that matches best score (highest min_score <= studentExam.score)
       if (matchingRules.length > 0) {
-        // sort by min_score descending
         matchingRules.sort((a, b) => b.min_score - a.min_score);
         const bestRule = matchingRules[0];
         totalCreditsEarned += bestRule.credit_hours;
@@ -61,8 +58,6 @@ const CreditsEngine = {
           qualifies: true
         });
       } else {
-        // Did not meet minimum score
-        // Find minimum score needed
         const minReqRule = rules.filter(r => r.exam_id === studentExam.id).sort((a, b) => a.min_score - b.min_score)[0];
         earnedRows.push({
           exam: studentExam,
@@ -73,7 +68,6 @@ const CreditsEngine = {
       }
     }
 
-    // Determine tuition rate (in-state vs out-of-state)
     const isResident = profile.residency === college.state;
     const costPerCredit = isResident ? college.cost_per_credit_hour_in_state : college.cost_per_credit_hour_out_of_state;
     const totalTuitionSaved = totalCreditsEarned * costPerCredit;

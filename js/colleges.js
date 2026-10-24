@@ -19,9 +19,11 @@ const CollegesEngine = {
   async init() {
     try {
       const res = await fetch("data/colleges.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       this.collegesData = await res.json();
     } catch (e) {
-      console.error("Failed to load colleges data", e);
+      this.collegesData = [];
+      this.loadError = e.message;
     }
   },
 
@@ -189,14 +191,11 @@ const CollegesEngine = {
     const baseScore = hasBaseScore ? profile.sat_total : null;
     const studentScore = hasBaseScore ? Math.min(1600, Math.max(400, baseScore + this.simSatDelta)) : null;
 
-    // Filter logic
     let filtered = this.collegesData.filter(c => {
-      // Search
       if (this.searchQuery) {
         const text = `${c.name} ${c.short_name} ${c.city} ${c.state}`.toLowerCase();
         if (!text.includes(this.searchQuery)) return false;
       }
-      // Filter pills
       if (this.activeFilter === "saved") {
         return (profile.saved_colleges || []).includes(c.id);
       }
@@ -350,7 +349,6 @@ const CollegesEngine = {
       `;
     }).join('');
 
-    // Update compare counter badge
     const badge = document.getElementById("compare-badge");
     if (badge) badge.innerText = (profile.saved_colleges || []).length;
   },
@@ -359,7 +357,6 @@ const CollegesEngine = {
     const isNowSaved = ProfileManager.toggleSavedCollege(collegeId);
     App.showToast(isNowSaved ? "Added to saved colleges" : "Removed from saved colleges", "success");
     this.renderCards();
-    // Also re-render status tab if open
     const profile = ProfileManager.get();
     StatusEngine.render("status-tab-content", profile, this.collegesData);
   },

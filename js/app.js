@@ -9,33 +9,25 @@ const App = {
   collegesData: [],
 
   async init() {
-    // 1. Initialize Engines
     await StatusEngine.init();
     await CollegesEngine.init();
     await CreditsEngine.init();
 
     this.collegesData = CollegesEngine.getAll();
-
-    // 2. Setup Global Listeners
     this.setupEventListeners();
-
-    // 3. Route Views based on Auth State
     this.updateAppView();
   },
 
   setupEventListeners() {
-    // Global profile change event
-    window.addEventListener("admit:profile-updated", (e) => {
+    window.addEventListener("admit:profile-updated", () => {
       this.updateHeaderUI();
       this.renderActiveTab();
     });
 
-    // Auth state changed event
-    window.addEventListener("admit:auth-changed", (e) => {
+    window.addEventListener("admit:auth-changed", () => {
       this.updateAppView();
     });
 
-    // Close modals on escape key or background click
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         this.closeAllModals();
@@ -58,20 +50,17 @@ const App = {
     const appView = document.getElementById("view-app");
 
     if (!user) {
-      // 1. Not logged in: Show landing / auth interface
       if (authView) authView.style.display = "block";
       if (onboardingView) onboardingView.style.display = "none";
       if (appView) appView.style.display = "none";
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (!user.onboarding_completed) {
-      // 2. Logged in but new account: Show dedicated onboarding wizard
       if (authView) authView.style.display = "none";
       if (onboardingView) onboardingView.style.display = "block";
       if (appView) appView.style.display = "none";
       Onboarding.start();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      // 3. Logged in and setup completed: Show main app dashboard
       if (authView) authView.style.display = "none";
       if (onboardingView) onboardingView.style.display = "none";
       if (appView) appView.style.display = "block";
@@ -80,7 +69,6 @@ const App = {
     }
   },
 
-  // Auth Tab Toggle (Sign In vs Create Account on Landing Page)
   switchLandingAuthTab(mode) {
     const tabSignIn = document.getElementById("landing-tab-signin");
     const tabSignUp = document.getElementById("landing-tab-signup");
@@ -216,7 +204,6 @@ const App = {
     const rankText = profile.class_percentile ? `Top ${profile.class_percentile}%` : (profile.class_rank ? `Rank ${profile.class_rank}` : 'Unranked');
     const satText = profile.sat_total ? `SAT ${profile.sat_total}` : (profile.act_composite ? `ACT ${profile.act_composite}` : 'No Test Score');
     
-    // Header Profile Pill
     const pill = document.getElementById("header-profile-pill");
     if (pill) {
       pill.innerHTML = `
@@ -226,7 +213,6 @@ const App = {
       `;
     }
 
-    // Header User Menu Widget
     const userContainer = document.getElementById("header-user-widget");
     if (userContainer && user) {
       const initials = user.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "ST";
@@ -237,7 +223,6 @@ const App = {
           <span style="font-size: 0.7rem; color: var(--text-dim);">▾</span>
         </div>
 
-        <!-- Dropdown menu -->
         <div id="user-dropdown-menu" style="display: none; position: absolute; right: 0; top: 2.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem; box-shadow: var(--shadow-lg); min-width: 220px; z-index: 60;">
           <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 0.4rem;">
             <strong style="color: #FFFFFF; font-size: 0.86rem; display: block;">${user.name}</strong>
@@ -264,7 +249,6 @@ const App = {
     }
   },
 
-  // Profile Modal Logic
   openProfileModal() {
     const profile = ProfileManager.get();
     const modal = document.getElementById("profile-modal");
@@ -462,7 +446,6 @@ const App = {
   }
 };
 
-// Start application when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
   App.init();
 });
