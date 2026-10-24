@@ -8,6 +8,20 @@ const CreditsEngine = {
   apData: null,
   selectedCollegeId: "ut-austin",
 
+  AVAILABLE_EXAMS: [
+    { id: "calc_ab", name: "AP Calculus AB" },
+    { id: "calc_bc", name: "AP Calculus BC" },
+    { id: "eng_lang", name: "AP English Language & Composition" },
+    { id: "eng_lit", name: "AP English Literature & Composition" },
+    { id: "chem", name: "AP Chemistry" },
+    { id: "bio", name: "AP Biology" },
+    { id: "phys_c_mech", name: "AP Physics C: Mechanics" },
+    { id: "ushist", name: "AP United States History" },
+    { id: "psych", name: "AP Psychology" },
+    { id: "csa", name: "AP Computer Science A" },
+    { id: "stats", name: "AP Statistics" }
+  ],
+
   async init() {
     try {
       const res = await fetch("data/ap_credit_rules.json");
@@ -17,6 +31,52 @@ const CreditsEngine = {
       this.apData = { policies: {} };
       this.loadError = e.message;
     }
+  },
+
+  calculateCollegeCredits(collegeId, completedExams) {
+    if (!this.apData || !this.apData.policies) return { credits: 0, rows: [] };
+    const policy = this.apData.policies[collegeId] || { rules: [] };
+    const rules = policy.rules || [];
+    let credits = 0;
+    const rows = [];
+
+    for (const exam of completedExams) {
+      const matches = rules.filter(r => r.exam_id === exam.id && exam.score >= r.min_score);
+      if (matches.length > 0) {
+        matches.sort((a, b) => b.min_score - a.min_score);
+        const best = matches[0];
+        credits += best.credit_hours;
+        rows.push({ exam, rule: best, qualifies: true });
+      } else {
+        const minReq = rules.filter(r => r.exam_id === exam.id).sort((a, b) => a.min_score - b.min_score)[0];
+        rows.push({ exam, rule: minReq || null, qualifies: false, minRequired: minReq ? minReq.min_score : 4 });
+      }
+    }
+    return { credits, rows };
+  },
+
+  calculateCollegeSavings(college, completedExams, residency) {
+    const { credits, rows } = this.calculateCollegeCredits(college.id, completedExams);
+    const isResident = residency === college.state;
+    const costPerCredit = isResident ? college.cost_per_credit_hour_in_state : college.cost_per_credit_hour_out_of_state;
+    const tuitionSaved = credits * costPerCredit;
+    return { credits, tuitionSaved, costPerCredit, isResident, rows };
+  },
+
+  calculateMaxSavings(collegesList, completedExams, residency) {
+    let maxCredits = 0;
+    let maxTuition = 0;
+    let bestCollege = null;
+
+    for (const col of collegesList) {
+      const result = this.calculateCollegeSavings(col, completedExams, residency);
+      if (result.tuitionSaved > maxTuition) {
+        maxTuition = result.tuitionSaved;
+        maxCredits = result.credits;
+        bestCollege = col;
+      }
+    }
+    return { maxCredits, maxTuition, bestCollege };
   },
 
   selectCollege(collegeId) {
@@ -41,37 +101,16 @@ const CreditsEngine = {
     const collegePolicy = this.apData.policies[college.id] || { rules: [], source_url: college.scorecard_source_url };
     const rules = collegePolicy.rules || [];
 
-    let totalCreditsEarned = 0;
-    const earnedRows = [];
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
+    const savings = this.calculateCollegeSavings(college, completedExams, profile.residency);
 
-    for (const studentExam of completedExams) {
-      const matchingRules = rules.filter(r => r.exam_id === studentExam.id && studentExam.score >= r.min_score);
-      if (matchingRules.length > 0) {
-        matchingRules.sort((a, b) => b.min_score - a.min_score);
-        const bestRule = matchingRules[0];
-        totalCreditsEarned += bestRule.credit_hours;
-        earnedRows.push({
-          exam: studentExam,
-          rule: bestRule,
-          qualifies: true
-        });
-      } else {
-        const minReqRule = rules.filter(r => r.exam_id === studentExam.id).sort((a, b) => a.min_score - b.min_score)[0];
-        earnedRows.push({
-          exam: studentExam,
-          rule: minReqRule || null,
-          qualifies: false,
-          minRequired: minReqRule ? minReqRule.min_score : 4
-        });
-      }
-    }
-
-    const isResident = profile.residency === college.state;
-    const costPerCredit = isResident ? college.cost_per_credit_hour_in_state : college.cost_per_credit_hour_out_of_state;
-    const totalTuitionSaved = totalCreditsEarned * costPerCredit;
-    const semestersSaved = (totalCreditsEarned / 15).toFixed(1); // Standard college semester = 15 credits
+    const totalCreditsEarned = savings.credits;
+    const earnedRows = savings.rows;
+    const isResident = savings.isResident;
+    const costPerCredit = savings.costPerCredit;
+    const totalTuitionSaved = savings.tuitionSaved;
+    const semestersSaved = (totalCreditsEarned / 15).toFixed(1);
 
     container.innerHTML = `
       <div class="section-header">

@@ -1,0 +1,13 @@
+# Deslop Configuration for Admit (Congressional App Challenge 2026)
+# https://github.com/marketplace/actions/deslop-live
+
+[defaults]
+exclude = [
+  "**/.deslop/**",
+  "**/archive/**",
+  "**/node_modules/**",
+  "**/scratch/**",
+]
+
+[threshold]
+max_duplication_percent = 5.0

@@ -47,25 +47,9 @@ const DossierExporter = {
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
 
-    let maxCredits = 0;
-    let maxTuition = 0;
-    let sampleCollegeName = "Public Universities";
-
-    savedColleges.forEach(col => {
-      const policy = (apData && apData.policies && apData.policies[col.id]) ? apData.policies[col.id].rules : [];
-      let cr = 0;
-      completedExams.forEach(exam => {
-        const match = policy.filter(r => r.exam_id === exam.id && exam.score >= r.min_score).sort((a,b) => b.min_score - a.min_score)[0];
-        if (match) cr += match.credit_hours;
-      });
-      const costPerCr = (profile.residency === col.state) ? col.cost_per_credit_hour_in_state : col.cost_per_credit_hour_out_of_state;
-      const dollar = cr * costPerCr;
-      if (dollar > maxTuition) {
-        maxTuition = dollar;
-        maxCredits = cr;
-        sampleCollegeName = col.short_name;
-      }
-    });
+    const { maxCredits, maxTuition, bestCollege } = 
+      CreditsEngine.calculateMaxSavings(savedColleges, completedExams, residency);
+    const sampleCollegeName = bestCollege ? bestCollege.short_name : "Public Universities";
 
     return `
       <div class="dossier-document" id="printable-dossier-area">

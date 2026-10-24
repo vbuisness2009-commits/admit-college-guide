@@ -81,27 +81,8 @@ const AdmitAI = {
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const plannedExams = (profile.ap_exams || []).filter(e => e.status === "planned");
     
-    let maxCreditsSaved = 0;
-    let maxTuitionSaved = 0;
-    let bestSchoolForCredits = null;
-
-    savedColleges.forEach(col => {
-      const policy = (apData && apData.policies && apData.policies[col.id]) ? apData.policies[col.id].rules : [];
-      let creditsEarned = 0;
-      completedExams.forEach(exam => {
-        const match = policy.filter(r => r.exam_id === exam.id && exam.score >= r.min_score).sort((a,b) => b.min_score - a.min_score)[0];
-        if (match) creditsEarned += match.credit_hours;
-      });
-
-      const costPerCr = (profile.residency === col.state) ? col.cost_per_credit_hour_in_state : col.cost_per_credit_hour_out_of_state;
-      const dollarVal = creditsEarned * costPerCr;
-
-      if (dollarVal > maxTuitionSaved) {
-        maxTuitionSaved = dollarVal;
-        maxCreditsSaved = creditsEarned;
-        bestSchoolForCredits = col;
-      }
-    });
+    const { maxCredits: maxCreditsSaved, maxTuition: maxTuitionSaved, bestCollege: bestSchoolForCredits } = 
+      CreditsEngine.calculateMaxSavings(savedColleges, completedExams, residency);
 
     const executiveSummary = {
       overallHealth: qualifications.length > 0 ? "EXCELLENT (Statutorily Protected)" : disqualifications.length === 0 ? "STRONG" : "NEEDS COURSEWORK / TESTING ACTION",

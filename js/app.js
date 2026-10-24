@@ -49,21 +49,21 @@ const App = {
     const onboardingView = document.getElementById("view-onboarding");
     const appView = document.getElementById("view-app");
 
+    const setViews = (auth, ob, app) => {
+      if (authView) authView.style.display = auth;
+      if (onboardingView) onboardingView.style.display = ob;
+      if (appView) appView.style.display = app;
+    };
+
     if (!user) {
-      if (authView) authView.style.display = "block";
-      if (onboardingView) onboardingView.style.display = "none";
-      if (appView) appView.style.display = "none";
+      setViews("block", "none", "none");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (!user.onboarding_completed) {
-      if (authView) authView.style.display = "none";
-      if (onboardingView) onboardingView.style.display = "block";
-      if (appView) appView.style.display = "none";
+      setViews("none", "block", "none");
       Onboarding.start();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      if (authView) authView.style.display = "none";
-      if (onboardingView) onboardingView.style.display = "none";
-      if (appView) appView.style.display = "block";
+      setViews("none", "none", "block");
       this.updateHeaderUI();
       this.renderActiveTab();
     }
@@ -278,20 +278,7 @@ const App = {
     const container = document.getElementById("modal-ap-list");
     if (!container) return;
 
-    const availableExams = [
-      { id: "calc_ab", name: "AP Calculus AB" },
-      { id: "calc_bc", name: "AP Calculus BC" },
-      { id: "eng_lang", name: "AP English Language & Composition" },
-      { id: "eng_lit", name: "AP English Literature & Composition" },
-      { id: "chem", name: "AP Chemistry" },
-      { id: "bio", name: "AP Biology" },
-      { id: "phys_c_mech", name: "AP Physics C: Mechanics" },
-      { id: "ushist", name: "AP United States History" },
-      { id: "psych", name: "AP Psychology" },
-      { id: "csa", name: "AP Computer Science A" },
-      { id: "stats", name: "AP Statistics" }
-    ];
-
+    const availableExams = CreditsEngine.AVAILABLE_EXAMS;
     const currentExams = profile.ap_exams || [];
 
     container.innerHTML = `

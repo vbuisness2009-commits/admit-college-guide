@@ -64,26 +64,7 @@ const Auth = {
       password: cleanPass, // client-side demo storage
       created_at: new Date().toISOString(),
       onboarding_completed: false,
-      profile: {
-        grade_level: 11,
-        residency: "TX",
-        high_school: "",
-        gpa_unweighted: 3.8,
-        gpa_weighted: 4.2,
-        class_rank: null,
-        class_size: null,
-        class_percentile: null,
-        sat_rw: null,
-        sat_m: null,
-        sat_total: null,
-        act_composite: null,
-        math_years_algebra2: true,
-        science_years: 4,
-        has_endorsement: true,
-        fl_prep_complete: false,
-        saved_colleges: [],
-        ap_exams: []
-      }
+      profile: ProfileManager.getBlankProfile()
     };
 
     users.push(newUser);

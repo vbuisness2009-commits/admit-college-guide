@@ -22,6 +22,7 @@ const StatusEngine = {
   evaluateRule(rule, profile) {
     let allMet = true;
     const evaluatedCriteria = [];
+    const checkField = f => (f === "science_years" ? (profile[f] || 0) >= 3 : !!profile[f]);
 
     for (const criterion of rule.criteria) {
       let isMet = false;
@@ -29,11 +30,7 @@ const StatusEngine = {
       if (criterion.subcriteria_type === "any") {
         for (const sub of criterion.subcriteria) {
           if (sub.operator === "all_true") {
-            const pass = sub.fields.every(f => {
-              if (f === "science_years") return (profile[f] || 0) >= 3;
-              return !!profile[f];
-            });
-            if (pass) { isMet = true; break; }
+            if (sub.fields.every(checkField)) { isMet = true; break; }
           } else if (sub.operator === "sat_benchmark_check") {
             const rw = profile.sat_rw || 0;
             const m = profile.sat_m || 0;
@@ -49,10 +46,7 @@ const StatusEngine = {
       } else if (criterion.operator === "gte") {
         isMet = (profile[criterion.field] !== undefined && profile[criterion.field] !== null) && profile[criterion.field] >= criterion.value;
       } else if (criterion.operator === "all_true") {
-        isMet = criterion.fields.every(f => {
-          if (f === "science_years") return (profile[f] || 0) >= 3;
-          return !!profile[f];
-        });
+        isMet = criterion.fields.every(checkField);
       }
 
       if (!isMet) allMet = false;

@@ -398,20 +398,7 @@ const Onboarding = {
         const currentExams = this.wizardData.ap_exams || [];
         const savedColleges = this.wizardData.saved_colleges || [];
         const collegesList = CollegesEngine.getAll();
-
-        const availableExamOptions = [
-          { id: "calc_ab", name: "AP Calculus AB" },
-          { id: "calc_bc", name: "AP Calculus BC" },
-          { id: "eng_lang", name: "AP English Language" },
-          { id: "eng_lit", name: "AP English Literature" },
-          { id: "chem", name: "AP Chemistry" },
-          { id: "bio", name: "AP Biology" },
-          { id: "phys_c_mech", name: "AP Physics C" },
-          { id: "ushist", name: "AP US History" },
-          { id: "psych", name: "AP Psychology" },
-          { id: "csa", name: "AP Computer Science A" },
-          { id: "stats", name: "AP Statistics" }
-        ];
+        const availableExamOptions = CreditsEngine.AVAILABLE_EXAMS;
 
         html = `
           <div class="onboarding-step-body">
