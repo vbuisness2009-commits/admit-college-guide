@@ -216,17 +216,20 @@ const App = {
     const userContainer = document.getElementById("header-user-widget");
     if (userContainer && user) {
       const initials = user.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "ST";
+      const safeName = escapeHTML(user.name);
+      const safeEmail = escapeHTML(user.email);
+      const firstName = escapeHTML(user.name.split(" ")[0]);
       userContainer.innerHTML = `
-        <div class="user-avatar-btn" onclick="App.toggleUserDropdown()" title="${user.name} (${user.email})">
+        <div class="user-avatar-btn" onclick="App.toggleUserDropdown()" title="${safeName} (${safeEmail})">
           <div class="avatar-circle">${initials}</div>
-          <span style="font-weight: 600;">${user.name.split(" ")[0]}</span>
+          <span style="font-weight: 600;">${firstName}</span>
           <span style="font-size: 0.7rem; color: var(--text-dim);">▾</span>
         </div>
 
         <div id="user-dropdown-menu" style="display: none; position: absolute; right: 0; top: 2.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem; box-shadow: var(--shadow-lg); min-width: 220px; z-index: 60;">
           <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 0.4rem;">
-            <strong style="color: #FFFFFF; font-size: 0.86rem; display: block;">${user.name}</strong>
-            <span style="font-size: 0.72rem; color: var(--text-dim); word-break: break-all;">${user.email}</span>
+            <strong style="color: #FFFFFF; font-size: 0.86rem; display: block;">${safeName}</strong>
+            <span style="font-size: 0.72rem; color: var(--text-dim); word-break: break-all;">${safeEmail}</span>
           </div>
           <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="App.openProfileModal(); App.toggleUserDropdown();">
             Edit Academic Stats

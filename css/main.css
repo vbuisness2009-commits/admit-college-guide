@@ -52,6 +52,12 @@
 body {
   font-family: var(--font-family);
   background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(37, 99, 235, 0.12), transparent 70%),
+    radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.05), transparent 40%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
   color: var(--text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -59,7 +65,24 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+}
+
+/* Accessible High-Contrast Focus Indicators (WCAG 2.4.7 + Anti-Slop Rule 10) */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.tab-btn:focus-visible,
+.profile-pill:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
 /* Number alignment */
@@ -357,12 +380,22 @@ body {
   flex-wrap: wrap;
 }
 
-.footer-links a {
+.footer-links a,
+.footer-link-btn {
   color: var(--text-muted);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  display: inline;
+  transition: color 0.15s ease;
 }
 
-.footer-links a:hover {
+.footer-links a:hover,
+.footer-link-btn:hover {
   color: var(--text-main);
 }
 
@@ -502,5 +535,39 @@ body {
     max-height: 100vh;
     border-radius: 0;
     border: none;
+  }
+  /* Mobile touch target minimum 44x44px (Anti-Slop Rule 8) */
+  .btn-primary,
+  .btn-secondary,
+  .tab-btn,
+  .profile-pill,
+  .modal-close,
+  .user-avatar-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Prevent iOS Safari auto-zoom on input focus */
+  .input-control,
+  .select-control,
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Accessibility: Honor User Motion Preferences (Anti-Slop Rule 3 & 10) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

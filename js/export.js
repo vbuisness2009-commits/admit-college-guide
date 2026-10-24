@@ -31,7 +31,7 @@ const DossierExporter = {
 
   generateDossierHTML(profile, collegesData, rulesData, apData) {
     const user = Auth.getCurrentUser();
-    const studentName = user ? user.name : "Student";
+    const studentName = escapeHTML(user ? user.name : "Student");
     const dateStr = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     const dossierId = "CAC-2026-" + Math.random().toString(36).substring(2, 8).toUpperCase();
 

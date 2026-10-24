@@ -4,6 +4,17 @@
  * and persistent session state.
  */
 
+function escapeHTML(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+window.escapeHTML = escapeHTML;
+
 const Auth = {
   USERS_KEY: "admit_registered_users_v2",
   SESSION_KEY: "admit_active_session_v2",
