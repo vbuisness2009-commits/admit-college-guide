@@ -117,6 +117,31 @@ const Auth = {
     return { success: true, user: newUser };
   },
 
+  continueAsGuest() {
+    let guestUser = this.getUsers().find(u => u.email === "guest@admitai.org");
+    if (!guestUser) {
+      guestUser = {
+        id: "usr_guest_" + Date.now(),
+        name: "Guest Student",
+        email: "guest@admitai.org",
+        password: "guest_session_token",
+        provider: "guest",
+        created_at: new Date().toISOString(),
+        onboarding_completed: true,
+        profile: ProfileManager.get()
+      };
+      const users = this.getUsers();
+      users.push(guestUser);
+      try {
+        localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+      } catch (e) {
+        console.warn("Failed to persist guest user to local storage", e);
+      }
+    }
+    this.setSession(guestUser);
+    return { success: true, user: guestUser };
+  },
+
   login(email, password) {
     const cleanEmail = (email || "").trim().toLowerCase();
     const cleanPass = (password || "").trim();

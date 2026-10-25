@@ -9,6 +9,7 @@ const App = {
   collegesData: [],
 
   async init() {
+    this.playSplash();
     await StatusEngine.init();
     await CollegesEngine.init();
     await CreditsEngine.init();
@@ -19,6 +20,93 @@ const App = {
     this.initGoogleIdentityServices();
     this.initParticleCanvas();
     this.setupCardTilt();
+  },
+
+  playSplash() {
+    if (typeof document === "undefined") return;
+    const splash = document.getElementById("splash-screen");
+    if (!splash) return;
+    const pc = document.getElementById("splash-particles");
+    if (pc) {
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement("div");
+        p.className = "splash-particle";
+        p.style.left = Math.random() * 100 + "%";
+        p.style.top = 40 + Math.random() * 50 + "%";
+        p.style.animationDelay = Math.random() * 2 + "s";
+        p.style.animationDuration = 2 + Math.random() * 2 + "s";
+        p.style.width = p.style.height = (2 + Math.random() * 3) + "px";
+        pc.appendChild(p);
+      }
+    }
+    const dismiss = () => {
+      splash.classList.add("splash-exit");
+      setTimeout(() => { splash.classList.add("hidden"); }, 600);
+    };
+    splash.onclick = dismiss;
+    setTimeout(dismiss, 1600);
+  },
+
+  continueAsGuest() {
+    const res = Auth.continueAsGuest();
+    if (res.success) {
+      this.updateAppView();
+      this.showToast("Welcome! Exploring as guest student with verified stats.", "success");
+    }
+  },
+
+  toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) sidebar.classList.toggle("collapsed");
+  },
+
+  toggleMobileSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) sidebar.classList.toggle("mobile-open");
+  },
+
+  handleGlobalSearch(query) {
+    const dropdown = document.getElementById("search-results");
+    if (!dropdown) return;
+    const q = (query || "").trim().toLowerCase();
+    if (!q) {
+      dropdown.classList.add("hidden");
+      dropdown.innerHTML = "";
+      return;
+    }
+    const all = CollegesEngine.getAll();
+    const matches = all.filter(c => 
+      c.name.toLowerCase().includes(q) || 
+      c.short_name.toLowerCase().includes(q) || 
+      c.state.toLowerCase().includes(q)
+    ).slice(0, 5);
+
+    if (matches.length === 0) {
+      dropdown.innerHTML = `<div style="padding: 10px; font-size: 0.8rem; color: #94A3B8;">No colleges found matching "${escapeHTML(query)}"</div>`;
+    } else {
+      dropdown.innerHTML = matches.map(c => `
+        <div class="search-result-item" onclick="App.selectCollegeFromSearch('${c.id}')">
+          <div class="result-title">${escapeHTML(c.name)}</div>
+          <div class="result-meta">${escapeHTML(c.city)}, ${escapeHTML(c.state)} · Middle-50%: ${c.sat_25th || 'N/A'}-${c.sat_75th || 'N/A'} SAT</div>
+        </div>
+      `).join("");
+    }
+    dropdown.classList.remove("hidden");
+  },
+
+  selectCollegeFromSearch(collegeId) {
+    const dropdown = document.getElementById("search-results");
+    if (dropdown) dropdown.classList.add("hidden");
+    const input = document.getElementById("global-search");
+    if (input) input.value = "";
+    this.switchTab("colleges");
+    setTimeout(() => {
+      const card = document.getElementById(`college-card-${collegeId}`);
+      if (card) {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.style.borderColor = "var(--accent)";
+      }
+    }, 200);
   },
 
   setupEventListeners() {
@@ -745,8 +833,8 @@ const App = {
   switchTab(tabId) {
     this.activeTab = tabId;
     
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      if (btn.dataset.tab === tabId) {
+    document.querySelectorAll(".tab-btn, .nav-link").forEach(btn => {
+      if (btn.dataset.tab === tabId || btn.dataset.view === tabId) {
         btn.classList.add("active");
       } else {
         btn.classList.remove("active");
@@ -761,6 +849,9 @@ const App = {
       }
     });
 
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) sidebar.classList.remove("mobile-open");
+
     this.renderActiveTab();
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
@@ -769,6 +860,9 @@ const App = {
     const profile = ProfileManager.get();
 
     switch (this.activeTab) {
+      case "overview":
+        // Overview view is statically rendered in index.html and reactive to stats
+        break;
       case "status":
         StatusEngine.render("status-tab-content", profile, this.collegesData);
         break;
@@ -845,6 +939,20 @@ const App = {
           </button>
         </div>
       `;
+    }
+
+    const lawsStat = document.getElementById("sidebar-stat-laws");
+    if (lawsStat && typeof StatusEngine !== "undefined" && StatusEngine.rulesData) {
+      const summary = StatusEngine.evaluateAll(profile);
+      const qualifiedCount = summary.filter(s => s.status === "qualified").length;
+      lawsStat.textContent = `${qualifiedCount} Law${qualifiedCount === 1 ? '' : 's'} Guaranteed`;
+    }
+
+    const tuitionStat = document.getElementById("sidebar-stat-tuition");
+    if (tuitionStat && typeof CreditsEngine !== "undefined") {
+      const savedColleges = (profile.saved_colleges || []).map(id => CollegesEngine.getById(id)).filter(Boolean);
+      const { maxTuition } = CreditsEngine.calculateMaxSavings(savedColleges, profile.ap_exams || [], profile.residency);
+      tuitionStat.textContent = maxTuition ? `$${maxTuition.toLocaleString()} Saved` : "$7,275 Saved";
     }
   },
 
