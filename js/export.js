@@ -58,8 +58,8 @@ const DossierExporter = {
         <div class="dossier-header">
           <div class="dossier-branding">
             <div class="dossier-logo" style="display:flex;align-items:center;gap:0.55rem;">
-              <img src="assets/admit-logo.svg" alt="AdmitAI" style="width:28px;height:28px;border-radius:7px;" />
-              <span>AdmitAI</span>
+              <img src="assets/admit-logo.svg" alt="ShipMates" style="width:28px;height:28px;border-radius:7px;" />
+              <span>ShipMates</span>
             </div>
             <div class="dossier-subtitle">Higher Education Academic Standing &amp; Credit Dossier</div>
             <div class="dossier-meta">Prepared for High School Guidance &amp; Academic Advising · Official Student Audit Dossier</div>
@@ -261,7 +261,7 @@ const DossierExporter = {
             <span>Data Sources: U.S. Dept. of Education College Scorecard (June 2026) · State Education Statutes · Institutional Registrar Testing Catalogs</span>
           </div>
           <div>
-            <span>Generated via AdmitAI Platform · 100% Deterministic Public Data Engine</span>
+            <span>Generated via ShipMates Platform · 100% Deterministic Public Data Engine</span>
           </div>
         </div>
       </div>

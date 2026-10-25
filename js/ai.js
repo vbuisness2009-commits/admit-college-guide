@@ -739,7 +739,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
         <div id="ai-chat-messages" class="tf-chat-viewport" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem;">
           <div style="background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: 14px; padding: 0.85rem; font-size: 0.83rem; line-height: 1.48; color: var(--text-main);">
-            <strong style="color: #60A5FA; display: block; margin-bottom: 0.2rem;">Admit AI Advisor:</strong>
+            <strong style="color: #60A5FA; display: block; margin-bottom: 0.2rem;">ShipMates AI Advisor:</strong>
             Hello ${userName}! I've calculated your acceptance chance bars for <strong>${audit.evaluatedColleges.length} universities</strong>. Ask me how to boost your acceptance percentage or unlock more scholarships!
           </div>
         </div>
@@ -840,7 +840,7 @@ AdmitAI.postUserMessage = function(text) {
     .replace(/\n\n/g, '<div style="margin-bottom: 0.6rem;"></div>');
 
   botBubble.innerHTML = `
-    <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">Admit AI Advisor:</strong>
+    <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">ShipMates AI Advisor:</strong>
     <div>${formattedHtml}</div>
   `;
 
@@ -855,7 +855,7 @@ AdmitAI.clearChat = function() {
   const userName = user ? user.name.split(" ")[0] : "Student";
   container.innerHTML = `
     <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.45; color: var(--text-main);">
-      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">Admit AI Advisor:</strong>
+      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">ShipMates AI Advisor:</strong>
       Chat cleared. Ask me any question about your statutory admission standing, score percentiles, or AP credit conversions.
     </div>
   `;

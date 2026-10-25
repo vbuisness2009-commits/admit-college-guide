@@ -75,8 +75,8 @@ const App = {
     const promptBanner = document.getElementById("landing-auth-prompt");
     if (promptBanner) {
       promptBanner.innerHTML = this.selectedTrack === "hs"
-        ? "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second High School Stats Survey so AdmitAI can generate your custom 4-Year Guide &amp; Scholarship Targets."
-        : "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second Academic Stats Survey so AdmitAI can generate your personalized Scholarship, Auto-Admit &amp; College Breakdown.";
+        ? "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second High School Stats Survey so ShipMates can generate your custom 4-Year Guide &amp; Scholarship Targets."
+        : "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second Academic Stats Survey so ShipMates can generate your personalized Scholarship, Auto-Admit &amp; College Breakdown.";
       promptBanner.style.display = "block";
     }
     const cardAnchor = document.getElementById("landing-auth-card-anchor");
