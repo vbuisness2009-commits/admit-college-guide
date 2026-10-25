@@ -420,8 +420,24 @@ const App = {
 
   initGoogleIdentityServices() {
     if (typeof window === "undefined") return;
-    const clientId = Auth.getGoogleClientId();
+    let hasCustomClientId = false;
+    try {
+      const stored = localStorage.getItem(Auth.GOOGLE_CLIENT_ID_KEY);
+      hasCustomClientId = !!(stored && stored.trim() && stored.trim() !== Auth.DEFAULT_GOOGLE_CLIENT_ID);
+    } catch (e) {
+      console.warn("Could not read custom Google Client ID:", e);
+    }
 
+    const container = document.getElementById("g_id_signin_container");
+    if (!hasCustomClientId) {
+      if (container) {
+        container.innerHTML = "";
+        container.style.display = "none";
+      }
+      return;
+    }
+
+    const clientId = Auth.getGoogleClientId();
     if (window.google && window.google.accounts && window.google.accounts.id) {
       if (clientId) {
         try {
@@ -432,8 +448,8 @@ const App = {
             cancel_on_tap_outside: true
           });
 
-          const container = document.getElementById("g_id_signin_container");
           if (container) {
+            container.style.display = "flex";
             container.innerHTML = "";
             window.google.accounts.id.renderButton(container, {
               type: "standard",
@@ -445,21 +461,9 @@ const App = {
               width: 320
             });
           }
-
-          try {
-            window.google.accounts.id.prompt();
-          } catch (promptErr) {
-            console.debug("Google One Tap prompt skipped:", promptErr);
-          }
         } catch (err) {
           console.warn("Google Identity Services initialization:", err);
         }
-      }
-    } else {
-      if (document.readyState !== "complete") {
-        window.addEventListener("load", () => {
-          this.initGoogleIdentityServices();
-        }, { once: true });
       }
     }
   },
