@@ -32,7 +32,7 @@ const DossierExporter = {
     const user = Auth.getCurrentUser();
     const studentName = escapeHTML(user ? user.name : "Student");
     const dateStr = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-    const dossierId = "SM-2026-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const dossierId = "ADMIT-2026-" + Math.random().toString(36).substring(2, 8).toUpperCase();
 
     const currentGrade = profile.grade_level || 11;
     const residency = profile.residency || "US";

@@ -121,12 +121,12 @@ const CollegesEngine = {
 
     container.innerHTML = `
       <div class="section-header">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div class="colleges-header-row">
           <div>
             <h2>What should I aim for?</h2>
             <p>Compare your test scores against official middle-50% published ranges from the U.S. Dept. of Education College Scorecard.</p>
           </div>
-          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <div class="colleges-header-actions">
             <button class="btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.85rem;" onclick="CollegesEngine.toggleSimulator()">
               ${this.simulatorActive ? 'Close Goal Simulator' : 'What-If Goal Simulator'}
             </button>
@@ -140,29 +140,29 @@ const CollegesEngine = {
 
       <!-- What-If Scenario Simulator Panel (Conditional) -->
       ${this.simulatorActive ? `
-        <div class="simulator-panel" style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: var(--radius-lg); padding: 1.15rem 1.35rem; margin-bottom: 1.25rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+        <div class="simulator-panel tf-simulator-panel">
+          <div class="tf-sim-header">
             <div>
-              <strong style="color: #FFFFFF; font-size: 0.95rem;">Interactive What-If Goal Simulator</strong>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">Simulate score adjustments to see real-time shifts in university range alignment and eligibility.</div>
+              <strong class="tf-sim-title">Interactive What-If Goal Simulator</strong>
+              <div class="tf-sim-desc">Simulate score adjustments to see real-time shifts in university range alignment and eligibility.</div>
             </div>
             <div style="display: flex; gap: 0.75rem; align-items: center;">
-              <span id="sim-effective-score" style="font-size: 0.88rem; font-weight: 700; color: #93C5FD; background: rgba(59, 130, 246, 0.15); padding: 3px 10px; border-radius: var(--radius-full); border: 1px solid rgba(59, 130, 246, 0.3);">
+              <span id="sim-effective-score" class="tf-sim-badge">
                 Simulated SAT: ${effectiveScore}
               </span>
               <button class="btn-secondary" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="CollegesEngine.setSimDelta(0); document.getElementById('sim-range-slider').value = 0;">Reset</button>
             </div>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <div class="tf-sim-controls">
             <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Score Adjustment:</span>
-            <input type="range" id="sim-range-slider" min="-150" max="250" step="10" value="${this.simSatDelta}" style="flex: 1; min-width: 200px; accent-color: var(--primary); cursor: pointer;" oninput="CollegesEngine.setSimDelta(this.value)">
-            <span id="sim-delta-val" style="font-family: var(--font-mono); font-size: 0.92rem; font-weight: 700; color: #FFFFFF; min-width: 65px;">
+            <input type="range" id="sim-range-slider" min="-150" max="250" step="10" value="${this.simSatDelta}" class="tf-sim-slider" oninput="CollegesEngine.setSimDelta(this.value)">
+            <span id="sim-delta-val" class="tf-sim-delta">
               ${this.simSatDelta >= 0 ? `+${this.simSatDelta}` : this.simSatDelta} pts
             </span>
           </div>
 
-          <div id="sim-unlocked-summary" style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-main); border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.65rem;">
+          <div id="sim-unlocked-summary" class="tf-sim-footer">
             <span>Range Impact: <strong>${this.collegesData.filter(c => effectiveScore >= c.sat_total_25 && effectiveScore <= c.sat_total_75).length}</strong> of 20 universities inside median band</span>
           </div>
         </div>
@@ -185,11 +185,11 @@ const CollegesEngine = {
         </div>
 
         <!-- Equity Metric Toggle: Sticker vs Net Price -->
-        <div style="display: flex; align-items: center; gap: 0.4rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); padding: 2px;">
-          <button class="pill-btn ${this.costMetric === 'tuition' ? 'active' : ''}" style="border: none; padding: 0.35rem 0.65rem; font-size: 0.74rem;" onclick="CollegesEngine.setCostMetric('tuition')">
+        <div class="colleges-cost-toggle">
+          <button class="pill-btn colleges-cost-btn ${this.costMetric === 'tuition' ? 'active' : ''}" onclick="CollegesEngine.setCostMetric('tuition')">
             Sticker Tuition
           </button>
-          <button class="pill-btn ${this.costMetric === 'net_price' ? 'active' : ''}" style="border: none; padding: 0.35rem 0.65rem; font-size: 0.74rem;" onclick="CollegesEngine.setCostMetric('net_price')">
+          <button class="pill-btn colleges-cost-btn ${this.costMetric === 'net_price' ? 'active' : ''}" onclick="CollegesEngine.setCostMetric('net_price')">
             Avg Net Cost (After Grants)
           </button>
         </div>
@@ -236,8 +236,8 @@ const CollegesEngine = {
 
     if (filtered.length === 0) {
       grid.innerHTML = `
-        <div style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-dim);">
-          <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No universities found matching your filter.</p>
+        <div class="colleges-empty-state">
+          <p>No universities found matching your filter.</p>
           <button class="btn-secondary" onclick="CollegesEngine.setFilter('all'); CollegesEngine.setSearch('');">Clear Filters</button>
         </div>
       `;
@@ -302,13 +302,13 @@ const CollegesEngine = {
       `;
 
       return `
-        <div class="college-card" id="college-card-${col.id}">
+        <div class="college-card tf-college-card" id="college-card-${col.id}">
           <div class="college-card-header">
             <div class="college-title">
               <h3>${col.name}</h3>
               <div class="college-location">${col.city}, ${col.state} · ${col.type}</div>
             </div>
-            <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+            <div class="tf-college-actions">
               ${isSaved ? `
                 <button class="ob-score-pill ${appStatus === 'working' ? 'active' : ''}" onclick="AdmitAI.setCollegeStatus('${col.id}', 'working'); CollegesEngine.renderCards();" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
                   🛠️ Working On It
@@ -324,16 +324,16 @@ const CollegesEngine = {
           </div>
 
           <!-- Personalized Scholarship & EC/Awards Earnings Box -->
-          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(52, 211, 153, 0.32); border-radius: 10px; padding: 0.65rem 0.8rem; margin-bottom: 0.75rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.3rem;">
-              <strong style="font-size: 0.82rem; color: #34D399;">
+          <div class="tf-sch-earnings-box">
+            <div class="tf-sch-earnings-header">
+              <strong class="tf-sch-earnings-val">
                 💰 Est. Scholarship for You: $${sch.totalPerYr.toLocaleString()}/yr ($${sch.total4YrValue.toLocaleString()} 4-Yr)
               </strong>
-              <span style="font-size: 0.7rem; color: #FDE68A; font-weight: 700;">
+              <span class="tf-sch-earnings-ec">
                 🏅 ECs &amp; Awards: +$${sch.ecAwardsPerYr.toLocaleString()}/yr
               </span>
             </div>
-            <div style="font-size: 0.72rem; color: #CBD5E1;">
+            <div class="tf-sch-earnings-detail">
               📊 Stats Merit: $${sch.statsMeritPerYr.toLocaleString()}/yr${sch.psatMeritPerYr > 0 ? ` · 🎓 PSAT Bonus: +$${sch.psatMeritPerYr.toLocaleString()}/yr` : ''} · ${sch.programName}
             </div>
           </div>
@@ -388,7 +388,7 @@ const CollegesEngine = {
           </div>
 
           <!-- Tuition / Net Cost & Scorecard Source -->
-          <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem;">
+          <div class="college-card-footer">
             ${costHtml}
             <a href="${col.scorecard_source_url}" target="_blank" rel="noopener noreferrer" class="badge-source">
               Dept. of Ed Scorecard ↗
@@ -397,7 +397,7 @@ const CollegesEngine = {
 
           <!-- Card Actions -->
           <div class="college-card-actions">
-            <button class="btn-secondary" style="font-size: 0.78rem; width: 100%; justify-content: center;" onclick="App.switchToCreditsTabForCollege('${col.id}')">
+            <button class="btn-secondary colleges-view-credits-btn" onclick="App.switchToCreditsTabForCollege('${col.id}')">
               View AP/IB Credit Policy & Tuition Saved →
             </button>
           </div>

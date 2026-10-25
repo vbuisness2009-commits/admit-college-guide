@@ -1,6 +1,6 @@
 /**
- * ShipMates: Profile Checkup & Admissions Advisor
- * Evaluates student stats against state admission rules,
+ * Admit AI: Comprehensive Diagnostic Engine & Interactive Admissions Advisor
+ * Performs deterministic multi-vector analysis across student stats, statutory admission laws,
  * College Scorecard percentile bands, and university AP credit policies.
  */
 
@@ -112,7 +112,7 @@ const AdmitAI = {
         insight: "Top CS programs look for discrete math/calculus rigor and verifiable software or algorithm projects outside the classroom."
       },
       "Business, Finance & Economics": {
-        recommendedAps: ["macro_econ", "micro_econ", "stats", "calc_ab"],
+        recommendedAps: ["macro", "micro", "stats", "calc_ab"],
         apNames: "AP Macroeconomics, AP Microeconomics, AP Statistics, and AP Calculus",
         opportunities: "DECA, FBLA, Wharton Global High School Investment Competition, Diamond Challenge entrepreneurship pitch, or founding a local micro-business.",
         insight: "Flagship business schools (like McCombs, Ross, and Warrington) value quantitative calculus/statistics preparation paired with leadership impact."
@@ -124,7 +124,7 @@ const AdmitAI = {
         insight: "Pre-med tracks require strong lab science foundations; earning AP credit in Statistics and Psychology frees up schedule space for Organic Chemistry."
       },
       "Humanities, Law & Social Sciences": {
-        recommendedAps: ["eng_lang", "ushist", "us_gov", "eng_lit"],
+        recommendedAps: ["eng_lang", "ushist", "gov", "eng_lit"],
         apNames: "AP English Language, AP U.S. History, and AP U.S. Government",
         opportunities: "Mock Trial, Speech & Debate (NSDA), Model UN, Scholastic Writing Awards, Senate Page programs, or publishing in The Concord Review.",
         insight: "Selective liberal arts and pre-law programs prioritize analytical writing awards, debate leadership, and civic engagement."
@@ -193,9 +193,9 @@ const AdmitAI = {
           ? `You Qualify for ${scholarshipsUnlocked.length} Automatic Merit Programs`
           : `Unlock Automatic GPA & SAT Merit Scholarship Tiers`,
         body: scholarshipsUnlocked.length > 0
-          ? `Your stats currently unlock **${scholarshipsUnlocked.map(s => `${s.name} (${s.award})`).slice(0, 2).join(" & ")}**. ${scholarshipsStretch.length > 0 ? `Next stretch target: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText || (scholarshipsStretch[0].missing || []).join(" · ")}.` : 'Submit applications before priority merit deadlines!'}`
+          ? `Your stats currently unlock **${scholarshipsUnlocked.map(s => `${s.name} (${s.award})`).slice(0, 2).join(" & ")}**. ${scholarshipsStretch.length > 0 ? `Next stretch target: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText}.` : 'Submit applications before priority merit deadlines!'}`
           : scholarshipsStretch.length > 0
-            ? `Closest merit tier: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText || (scholarshipsStretch[0].missing || []).join(" · ")}.`
+            ? `Closest merit tier: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText}.`
             : `Log both GPA and SAT/ACT scores in your survey to unlock automatic institutional scholarship tiers.`,
         actionLabel: `View All Scholarships & Cutoffs →`,
         actionOnClick: `App.switchTab('status')`
@@ -324,7 +324,7 @@ const AdmitAI = {
 
     // 3. PSAT / National Merit Scholarship Bonus at this college ($/yr)
     let psatMeritPerYr = 0;
-    const nmsSponsorIds = ["tamu", "uf", "purdue", "ut-austin", "gatech", "uga", "gt"];
+    const nmsSponsorIds = ["tamu", "uf", "purdue", "ut-austin", "uga", "gt"];
     if (nmStatus === "semifinalist" || psat >= 1470) {
       psatMeritPerYr = nmsSponsorIds.includes(college.id) ? 10500 : 2500;
     } else if (nmStatus === "commended" || psat >= 1400) {
@@ -340,7 +340,6 @@ const AdmitAI = {
       "ut-austin": "Texas Exes Forty Acres & Presidential Achievement Awards",
       "tamu": "President's Endowed, Brown Foundation & National Merit Package",
       "uf": "UF Presidential, Lombardi & Bright Futures Honors Package",
-      "gatech": "Stamps President's Scholars & Provost Leadership Award",
       "uga": "UGA Charter, Foundation Fellowship & Zell Miller Merit",
       "purdue": "Purdue Trustees, Presidential & Engineering Leadership Grant",
       "gt": "Stamps President's Scholars & Provost Leadership Award",
@@ -620,30 +619,30 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
   const formatSuggestionBody = (str) => str.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#F8FAFC;">$1</strong>');
 
   container.innerHTML = `
-    <div class="section-header" style="margin-bottom: 1.15rem;">
+    <div class="section-header" style="margin-bottom: 1.25rem;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
         <div>
-          <div style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #60A5FA; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(59, 130, 246, 0.32); padding: 0.28rem 0.7rem; border-radius: 999px; margin-bottom: 0.45rem;">
-            📊 Profile Evaluation · ${audit.major} · ${gpaUw} / ${gpaW} GPA · ${eff.score ? eff.label : 'Test-Optional'} · ${audit.psatScore ? `${audit.psatScore} PSAT` : 'PSAT Ready'} · ${pctText}
+          <div class="tf-badge tf-badge-blue" style="margin-bottom: 0.5rem;">
+            ✨ AI Survey Evaluation · ${audit.major} · ${gpaUw} / ${gpaW} GPA · ${eff.score ? eff.label : 'Test-Optional'} · ${audit.psatScore ? `${audit.psatScore} PSAT` : 'PSAT Ready'} · ${pctText}
           </div>
-          <h2>${userName}'s Stats Breakdown &amp; Personalized Suggestions</h2>
+          <h2>${userName}'s AI Stats Breakdown &amp; Personalized Suggestions</h2>
           <p>See how much scholarship money your GPA/SAT, PSAT, Extracurriculars, and Awards can earn you at every selected college — and mark each college as <strong>Working On It</strong> or <strong>Submitted</strong>.</p>
         </div>
         <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
-          <button class="btn-secondary" style="font-size: 0.85rem; padding: 0.55rem 1rem;" onclick="Onboarding.open()">
+          <button class="btn-secondary" onclick="Onboarding.open()">
             📋 Retake / Edit Stats Survey
           </button>
-          <button class="btn-primary" style="font-size: 0.85rem; padding: 0.55rem 1rem;" onclick="App.openProfileModal()">
+          <button class="btn-primary" onclick="App.openProfileModal()">
             ⚡ Quick Adjust Stats
           </button>
         </div>
       </div>
     </div>
 
-    <!-- MAIN 2-COLUMN VISUAL HUB: LEFT SIDE (User Scholarship, EC/Award Earnings, App Tracker) | RIGHT SIDE (College Standing & Scholarship Bars) -->
+    <!-- MAIN 2-COLUMN VISUAL HUB: LEFT SIDE (User Scholarship, EC/Award Earnings, App Tracker) | RIGHT SIDE (College Acceptance & Scholarship Bars) -->
     <div class="ai-layout-grid" style="display: grid; grid-template-columns: 345px 1fr; gap: 1.35rem; align-items: start; margin-bottom: 1.6rem;">
       
-      <!-- LEFT SIDE COLUMN: User-Focused Scholarship & EC Earnings Cards -->
+      <!-- LEFT SIDE COLUMN: 21st.dev [4237] User-Focused Scholarship & EC Earnings Cards -->
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         
         <!-- 1. __ Scholarships & Total 4-Yr Package Potential Card -->
@@ -655,18 +654,18 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           </svg>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
             <span class="tf-stat-badge" style="background: rgba(37, 99, 235, 0.2); color: #93C5FD;">💰 Merit Scholarships</span>
-            <span style="font-size: 0.72rem; color: #93C5FD; font-weight: 700;">View All →</span>
+            <span style="font-size: 0.74rem; color: #93C5FD; font-weight: 700;">View All →</span>
           </div>
-          <div style="font-size: 2.05rem; font-weight: 900; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.02em;">
+          <div class="tf-kpi-title">
             ${audit.scholarshipsUnlocked.length} Scholarships
           </div>
-          <div style="font-size: 0.82rem; color: #34D399; font-weight: 700; margin-top: 0.25rem; margin-bottom: 0.65rem;">
+          <div class="tf-kpi-subtitle" style="color: #34D399;">
             ${audit.scholarshipsUnlocked.length > 0 ? `Automatic Merit Scholarships Unlocked · Up to $${audit.maxCollege4YrValue.toLocaleString()} 4-Yr Potential` : `Up to $${audit.maxCollege4YrValue.toLocaleString()} 4-Yr Scholarship & Aid Potential`}
           </div>
           ${audit.scholarshipsUnlocked.length > 0 ? `
-            <div style="display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.08);">
+            <div style="display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08);">
               ${audit.scholarshipsUnlocked.slice(0, 3).map(s => `
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.22); padding: 0.42rem 0.65rem; border-radius: 10px;">
+                <div class="tf-kpi-entry">
                   <span style="color: #F8FAFC; font-weight: 600;">${s.name.split("—")[0].trim()}</span>
                   <strong style="color: #34D399;">${s.award}</strong>
                 </div>
@@ -683,12 +682,12 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           </svg>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
             <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.2); color: #FDE68A;">🏅 Your ECs, Awards &amp; PSAT Value</span>
-            <button type="button" class="ob-score-pill" style="font-size: 0.7rem; padding: 0.18rem 0.5rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">+ Add More</button>
+            <button type="button" class="ob-score-pill" style="font-size: 0.7rem; padding: 0.2rem 0.55rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">+ Add More</button>
           </div>
-          <div style="font-size: 1.9rem; font-weight: 900; color: #FCD34D; line-height: 1.1; letter-spacing: -0.02em;">
+          <div class="tf-kpi-title" style="color: #FCD34D;">
             +$${audit.avgEcAwardsPerYr.toLocaleString()} / yr
           </div>
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.22rem;">
+          <div style="font-size: 0.8rem; color: var(--muted-foreground); margin-top: 0.3rem;">
             Up to <strong style="color: #FFFFFF;">+$${audit.maxEcAwards4Yr.toLocaleString()} over 4 yrs</strong> from your Activities, ${audit.selectedAwards.length} Award(s), ${audit.serviceHours} Service Hrs${audit.psatScore ? ` &amp; ${audit.psatScore} PSAT` : ''}
           </div>
         </div>
@@ -702,22 +701,22 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
             <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.18); color: #6EE7B7;">📋 Guarantees, APs &amp; App Status</span>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">
-            <div style="font-size: 1.65rem; font-weight: 900; color: #FFFFFF; line-height: 1.1;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-top: 0.2rem;">
+            <div style="font-size: 1.7rem; font-weight: 900; color: #FFFFFF; line-height: 1.1;">
               ${audit.qualifications.length} Auto-Admits
             </div>
-            <div style="font-size: 1.15rem; font-weight: 900; color: #A5B4FC;">
+            <div style="font-size: 1.2rem; font-weight: 900; color: #A5B4FC; font-family: var(--font-mono);">
               $${audit.maxTuitionSaved.toLocaleString()} Saved
             </div>
           </div>
-          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">
+          <div style="font-size: 0.8rem; color: var(--muted-foreground); margin-top: 0.3rem;">
             ${audit.maxCreditsSaved} AP Credits Waived · ${audit.strongAnchor.length + audit.middleTarget.length} Colleges In Range
           </div>
-          <div style="display: flex; gap: 0.45rem; margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08);">
-            <span style="flex: 1; text-align: center; font-size: 0.76rem; font-weight: 800; padding: 0.35rem 0.5rem; border-radius: 8px; background: rgba(59, 130, 246, 0.16); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.3);">
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08);">
+            <span class="tf-badge tf-badge-blue" style="flex: 1; justify-content: center; padding: 0.4rem;">
               🛠️ ${audit.workingCount} Working On It
             </span>
-            <span style="flex: 1; text-align: center; font-size: 0.76rem; font-weight: 800; padding: 0.35rem 0.5rem; border-radius: 8px; background: rgba(16, 185, 129, 0.16); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);">
+            <span class="tf-badge tf-badge-emerald" style="flex: 1; justify-content: center; padding: 0.4rem;">
               ✅ ${audit.submittedCount} Submitted
             </span>
           </div>
@@ -725,33 +724,33 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
         <!-- 4. Interactive User ECs, Awards & PSAT Live Portfolio Card -->
         <div class="card tf-stat-card" style="border-left: 4px solid #818CF8 !important;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.55rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
             <span class="tf-stat-badge" style="background: rgba(129, 140, 248, 0.2); color: #C7D2FE;">✍️ Your Personal ECs, Awards &amp; PSAT</span>
             <button type="button" class="ob-score-pill" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">Full Editor</button>
           </div>
-          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.4rem;">
-            <strong style="color: #93C5FD;">Extracurriculars:</strong> ${audit.ecDetailsText ? escapeHTML(audit.ecDetailsText) : `<span style="color: var(--text-muted);">Tier: ${profile.extracurricular_tier || 'strong'} — add your clubs &amp; roles below</span>`}
+          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.5; margin-bottom: 0.45rem;">
+            <strong style="color: #93C5FD;">Extracurriculars:</strong> ${audit.ecDetailsText ? escapeHTML(audit.ecDetailsText) : `<span style="color: var(--muted-foreground);">Tier: ${profile.extracurricular_tier || 'strong'} — add your clubs &amp; roles below</span>`}
           </div>
-          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.4rem;">
-            <strong style="color: #FCD34D;">Awards &amp; Honors:</strong> ${audit.awardsDetailsText ? escapeHTML(audit.awardsDetailsText) : (audit.selectedAwards.length > 0 ? escapeHTML(audit.selectedAwards.join(", ")) : `<span style="color: var(--text-muted);">Add your awards below to boost college $</span>`)}
+          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.5; margin-bottom: 0.45rem;">
+            <strong style="color: #FCD34D;">Awards &amp; Honors:</strong> ${audit.awardsDetailsText ? escapeHTML(audit.awardsDetailsText) : (audit.selectedAwards.length > 0 ? escapeHTML(audit.selectedAwards.join(", ")) : `<span style="color: var(--muted-foreground);">Add your awards below to boost college $</span>`)}
           </div>
-          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.4rem;">
-            <strong style="color: #38BDF8;">PSAT / NMSQT:</strong> ${audit.psatScore ? `${audit.psatScore} Total (${audit.psatIndex || ''} Selection Index)` : `<span style="color: var(--text-muted);">Not entered — add PSAT below</span>`}
+          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.5; margin-bottom: 0.45rem;">
+            <strong style="color: #38BDF8;">PSAT / NMSQT:</strong> ${audit.psatScore ? `${audit.psatScore} Total (${audit.psatIndex || ''} Selection Index)` : `<span style="color: var(--muted-foreground);">Not entered — add PSAT below</span>`}
           </div>
-          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.65rem;">
-            <strong style="color: #6EE7B7;">#1 Priority Goal:</strong> ${audit.goalDetailsText ? escapeHTML(audit.goalDetailsText) : `<span style="color: var(--text-muted);">${audit.primaryGoal}</span>`}
+          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.5; margin-bottom: 0.75rem;">
+            <strong style="color: #6EE7B7;">#1 Priority Goal:</strong> ${audit.goalDetailsText ? escapeHTML(audit.goalDetailsText) : `<span style="color: var(--muted-foreground);">${audit.primaryGoal}</span>`}
           </div>
 
           <!-- Interactive 1-Click Live Update Inputs Right on the Dashboard -->
-          <div style="padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 0.45rem;">
-            <div style="font-size: 0.73rem; font-weight: 800; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.04em;">
+          <div style="padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.04em;">
               ⚡ Live Update Your ECs, Awards or PSAT:
             </div>
-            <input type="text" id="dash-quick-ec" class="input-control" style="font-size: 0.8rem; padding: 0.42rem 0.65rem;" value="${escapeHTML(audit.ecDetailsText)}" placeholder="Your ECs (e.g. TSA Webmaster, Robotics President)...">
-            <input type="text" id="dash-quick-awards" class="input-control" style="font-size: 0.8rem; padding: 0.42rem 0.65rem;" value="${escapeHTML(audit.awardsDetailsText)}" placeholder="Your Awards (e.g. TSA State Finalist, AP Scholar)...">
-            <div style="display: flex; gap: 0.4rem; align-items: center;">
-              <input type="number" id="dash-quick-psat" class="input-control" style="font-size: 0.8rem; padding: 0.42rem 0.65rem; flex: 1;" min="320" max="1520" step="10" value="${audit.psatScore || ''}" placeholder="PSAT Score (320-1520)">
-              <button type="button" class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.8rem;" onclick="AdmitAI.saveQuickUserFocus()">
+            <input type="text" id="dash-quick-ec" class="input-control tf-input" style="font-size: 0.82rem;" value="${escapeHTML(audit.ecDetailsText)}" placeholder="Your ECs (e.g. TSA Webmaster, Robotics President)...">
+            <input type="text" id="dash-quick-awards" class="input-control tf-input" style="font-size: 0.82rem;" value="${escapeHTML(audit.awardsDetailsText)}" placeholder="Your Awards (e.g. TSA State Finalist, AP Scholar)...">
+            <div style="display: flex; gap: 0.45rem; align-items: center;">
+              <input type="number" id="dash-quick-psat" class="input-control tf-input" style="font-size: 0.82rem; flex: 1;" min="320" max="1520" step="10" value="${audit.psatScore || ''}" placeholder="PSAT Score (320-1520)">
+              <button type="button" class="btn-primary" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; white-space: nowrap;" onclick="AdmitAI.saveQuickUserFocus()">
                 Update $ Value
               </button>
             </div>
@@ -760,69 +759,69 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
       </div>
 
-      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as Admission Standing + Scholarship Dollar Bars -->
-      <div class="card tf-bento-card" style="padding: 1.55rem;">
+      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as Acceptance Chance + Scholarship Dollar Bars -->
+      <div class="card tf-bento-card" style="padding: 1.65rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
           <div>
-            <h3 style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; margin: 0;">
-              🏛️ Your Selected Colleges — Admission Standing &amp; Scholarship Value
+            <h3 style="font-size: 1.35rem; font-weight: 800; color: #FFFFFF; margin: 0;">
+              🏛️ Your Selected Colleges — AI Acceptance Chance Bars &amp; Scholarship Value
             </h3>
-            <p style="font-size: 0.86rem; color: var(--text-muted); margin-top: 0.25rem;">
-              Every selected college shows your admission match standing, how much scholarship money your <strong>GPA/SAT, ECs, Awards &amp; PSAT</strong> can earn you there, and lets you mark it as <strong>Working On It</strong> or <strong>Submitted</strong>.
+            <p style="font-size: 0.88rem; color: var(--muted-foreground); margin-top: 0.35rem; line-height: 1.5;">
+              Every selected college shows your AI acceptance probability, how much scholarship money your <strong>GPA/SAT, ECs, Awards &amp; PSAT</strong> can earn you there, and lets you mark it as <strong>Working On It</strong> or <strong>Submitted</strong>.
             </p>
           </div>
-          <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.48rem 0.95rem;" onclick="Onboarding.open(); Onboarding.goToStep(5);">
+          <button type="button" class="btn-secondary" onclick="Onboarding.open(); Onboarding.goToStep(5);">
             + Add / Change Colleges
           </button>
         </div>
 
         <!-- Legend Pills -->
-        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
-          <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.14); color: #34D399; border-color: rgba(16, 185, 129, 0.32);">
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.35rem;">
+          <span class="tf-badge tf-badge-emerald">
             🟢 72%–97% Likely / Auto-Admit
           </span>
-          <span class="tf-stat-badge" style="background: rgba(59, 130, 246, 0.14); color: #93C5FD; border-color: rgba(59, 130, 246, 0.32);">
+          <span class="tf-badge tf-badge-blue">
             🔵 48%–71% Target Match
           </span>
-          <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.14); color: #FCD34D; border-color: rgba(245, 158, 11, 0.32);">
+          <span class="tf-badge tf-badge-amber">
             🟡 28%–47% Competitive Reach
           </span>
-          <span class="tf-stat-badge" style="background: rgba(239, 68, 68, 0.14); color: #FCA5A5; border-color: rgba(239, 68, 68, 0.32);">
+          <span class="tf-badge tf-badge-rose">
             🔴 &lt;28% High Reach
           </span>
         </div>
 
-        <!-- College Admission Standing Horizontal Bars List -->
-        <div id="ai-college-bars-list" style="display: flex; flex-direction: column; gap: 1.1rem;">
+        <!-- College Acceptance Chance Horizontal Bars List (21st.dev [23549] Specular Progress Bar Package) -->
+        <div id="ai-college-bars-list" style="display: flex; flex-direction: column; gap: 1.15rem;">
           ${audit.evaluatedColleges.map(item => `
             <div class="tf-progress-card">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.6rem;">
-                <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
-                  <strong style="font-size: 1.1rem; font-weight: 800; color: #FFFFFF;">${item.college.name}</strong>
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <strong class="tf-col-bar-title">${item.college.name}</strong>
                   <span class="tf-stat-badge" style="background: ${item.badgeBg}; color: ${item.badgeColor};">
                     ${item.tierLabel}
                   </span>
                 </div>
 
                 <!-- Interactive 1-Click Application Status Toggles (Working On It / Submitted) -->
-                <div style="display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;">
-                  <div style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(7, 13, 25, 0.85); border: 1px solid rgba(148, 163, 184, 0.2); padding: 0.22rem; border-radius: 999px;">
-                    <button type="button" class="ob-score-pill ${item.appStatus === 'working' ? 'active' : ''}" style="border-radius: 999px; font-size: 0.72rem; padding: 0.22rem 0.65rem; border: none;" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'working')">
+                <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
+                  <div style="display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(7, 13, 25, 0.88); border: 1px solid rgba(148, 163, 184, 0.2); padding: 0.25rem; border-radius: var(--radius-full);">
+                    <button type="button" class="ob-score-pill ${item.appStatus === 'working' ? 'active' : ''}" style="border-radius: var(--radius-full); font-size: 0.74rem; padding: 0.25rem 0.75rem; border: none;" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'working')">
                       🛠️ Working On It
                     </button>
-                    <button type="button" class="ob-score-pill ${item.appStatus === 'submitted' ? 'active' : ''}" style="border-radius: 999px; font-size: 0.72rem; padding: 0.22rem 0.65rem; border: none; ${item.appStatus === 'submitted' ? 'background: #059669; color: #FFFFFF;' : ''}" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'submitted')">
+                    <button type="button" class="ob-score-pill ${item.appStatus === 'submitted' ? 'active' : ''}" style="border-radius: var(--radius-full); font-size: 0.74rem; padding: 0.25rem 0.75rem; border: none; ${item.appStatus === 'submitted' ? 'background: #059669; color: #FFFFFF;' : ''}" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'submitted')">
                       ✅ Submitted
                     </button>
                   </div>
 
-                  <div style="display: flex; align-items: baseline; gap: 0.3rem;">
-                    <span style="font-size: 1.4rem; font-weight: 900; color: ${item.badgeColor};">${item.chancePct}%</span>
-                    <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Match Score</span>
+                  <div style="display: flex; align-items: baseline; gap: 0.35rem;">
+                    <span class="tf-col-bar-chance" style="color: ${item.badgeColor};">${item.chancePct}%</span>
+                    <span style="font-size: 0.72rem; font-weight: 800; color: var(--muted-foreground); text-transform: uppercase;">AI Chance</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Specular Progress Bar -->
+              <!-- 21st.dev [23549] Recessed Specular Progress Bar -->
               <div class="tf-progress-shell" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${item.chancePct}">
                 <div class="tf-progress-fill" style="width: ${item.chancePct}%; background: ${item.barGradient};">
                   <span style="font-size: 0.74rem; font-weight: 900; color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,0.65);">${item.chancePct}%</span>
@@ -830,34 +829,34 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
               </div>
 
               <!-- Personalized Scholarship & EC/Award Dollar Earnings Breakdown at This College -->
-              <div style="margin-top: 0.65rem; background: rgba(9, 15, 29, 0.78); border: 1px solid rgba(96, 165, 250, 0.22); border-radius: 12px; padding: 0.7rem 0.9rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.45rem;">
-                  <span style="font-size: 0.84rem; font-weight: 800; color: #34D399;">
+              <div class="tf-col-financials-panel">
+                <div class="tf-col-financials-header">
+                  <span style="font-size: 0.88rem; font-weight: 800; color: #34D399;">
                     💰 Est. Scholarship &amp; Aid at ${item.college.short_name}: $${item.scholarship.totalPerYr.toLocaleString()}/yr ($${item.scholarship.total4YrValue.toLocaleString()} 4-Yr Total)
                   </span>
-                  <span style="font-size: 0.74rem; font-weight: 700; color: #93C5FD;">
+                  <span style="font-size: 0.76rem; font-weight: 700; color: #93C5FD;">
                     Merit Cutoff: ${item.college.scholarship_deadline || item.college.early_deadline || 'Nov 1'}
                   </span>
                 </div>
-                <div style="display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
-                  <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(245, 158, 11, 0.16); color: #FDE68A; border: 1px solid rgba(245, 158, 11, 0.3);">
+                <div class="tf-col-financials-badges">
+                  <span class="tf-badge tf-badge-amber">
                     🏅 Your ECs &amp; Awards Earn: +$${item.scholarship.ecAwardsPerYr.toLocaleString()}/yr ($${(item.scholarship.ecAwardsPerYr * 4).toLocaleString()} 4-Yr)
                   </span>
-                  <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(37, 99, 235, 0.16); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.3);">
+                  <span class="tf-badge tf-badge-blue">
                     📊 GPA/SAT Merit: $${item.scholarship.statsMeritPerYr.toLocaleString()}/yr
                   </span>
                   ${item.scholarship.psatMeritPerYr > 0 ? `
-                    <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(56, 189, 248, 0.16); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.3);">
+                    <span class="tf-badge" style="background: rgba(56, 189, 248, 0.16); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.3);">
                       🎓 PSAT / Natl Merit: +$${item.scholarship.psatMeritPerYr.toLocaleString()}/yr
                     </span>
                   ` : ''}
                   ${item.savings.tuitionSaved > 0 ? `
-                    <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <span class="tf-badge tf-badge-emerald">
                       💵 AP Credits: +$${item.savings.tuitionSaved.toLocaleString()} Waived
                     </span>
                   ` : ''}
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.77rem; color: #CBD5E1;">
+                <div class="tf-col-financials-footer">
                   <span>🎯 <strong>${item.scholarship.programName}</strong> · Driven by your ${item.scholarship.userDriversLabel}</span>
                   <span style="color: #93C5FD; font-weight: 700;">Middle-50% SAT: ${item.college.sat_total_25}–${item.college.sat_total_75}</span>
                 </div>
@@ -867,13 +866,13 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         </div>
 
         ${audit.recommendedColleges.length > 0 ? `
-          <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;">
-            <span style="font-size: 0.82rem; color: var(--text-muted);">
+          <div style="margin-top: 1.35rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;">
+            <span style="font-size: 0.84rem; color: var(--muted-foreground);">
               💡 <strong>Quick Add More Colleges to Your Bars:</strong>
             </span>
-            <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
               ${audit.recommendedColleges.map(c => `
-                <button class="pill-btn" style="font-size: 0.76rem; padding: 0.32rem 0.75rem;" onclick="AdmitAI.addRecommendedCollege('${c.id}')">
+                <button class="pill-btn" onclick="AdmitAI.addRecommendedCollege('${c.id}')">
                   + Add ${c.short_name} (${c.sat_total_25}–${c.sat_total_75} SAT)
                 </button>
               `).join('')}
@@ -884,33 +883,33 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
     </div>
 
-    <!-- CLEAN 2-COLUMN BOTTOM SECTION: Personalized Suggestions | Quick Advisor Chat -->
+    <!-- CLEAN 2-COLUMN BOTTOM SECTION: AI Personalized Suggestions | Quick AI Advisor Chat -->
     <div class="ai-layout-grid" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.35rem; align-items: start;">
       
-      <!-- Personalized Suggestions & Opportunities Grid -->
-      <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
-        <div style="margin-bottom: 1rem;">
-          <h3 style="font-size: 1.12rem; color: #FFFFFF; font-weight: 800;">
-            🚀 Personalized Suggestions, Opportunities &amp; Next Steps
+      <!-- AI Personalized Suggestions & Opportunities Grid -->
+      <div class="card tf-bento-card" style="padding: 1.5rem;">
+        <div style="margin-bottom: 1.15rem;">
+          <h3 style="font-size: 1.18rem; color: #FFFFFF; font-weight: 800; margin: 0 0 0.35rem 0;">
+            🚀 AI Personalized Suggestions, Opportunities & Next Steps
           </h3>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">
+          <span style="font-size: 0.82rem; color: var(--muted-foreground);">
             Tailored to your <strong>${audit.major}</strong> major, activities, and priority goal
           </span>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
           ${audit.personalizedSuggestions.map(s => `
-            <div style="background: rgba(15, 23, 42, 0.72); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem;">
+            <div class="tf-progress-card" style="display: flex; flex-direction: column; justify-content: space-between; gap: 0.85rem; padding: 1.15rem;">
               <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
-                  <span style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #60A5FA;">${s.category}</span>
-                  <span style="font-size: 0.66rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; background: rgba(59, 130, 246, 0.14); color: #93C5FD;">${s.badge}</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem;">
+                  <span style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #60A5FA;">${s.category}</span>
+                  <span class="tf-badge tf-badge-blue">${s.badge}</span>
                 </div>
-                <h4 style="font-size: 0.94rem; font-weight: 700; color: #FFFFFF; margin-bottom: 0.35rem;">${s.title}</h4>
-                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.48;">${formatSuggestionBody(s.body)}</p>
+                <h4 style="font-size: 0.98rem; font-weight: 700; color: #FFFFFF; margin-bottom: 0.4rem; line-height: 1.35;">${s.title}</h4>
+                <p style="font-size: 0.82rem; color: var(--muted-foreground); line-height: 1.5; margin: 0;">${formatSuggestionBody(s.body)}</p>
               </div>
-              <div>
-                <button class="btn-secondary" style="font-size: 0.76rem; padding: 0.38rem 0.75rem;" onclick="${s.actionOnClick}">
+              <div style="padding-top: 0.65rem;">
+                <button class="btn-secondary" style="font-size: 0.78rem;" onclick="${s.actionOnClick}">
                   ${s.actionLabel}
                 </button>
               </div>
@@ -919,43 +918,43 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         </div>
       </div>
 
-      <!-- Interactive Advisor Chat Interface -->
-      <div class="card tf-bento-card" style="display: flex; flex-direction: column; height: 485px; padding: 1.25rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.65rem; margin-bottom: 0.65rem;">
+      <!-- Interactive AI Advisor Chat Interface (21st.dev [28186] Joyco Composable Chat Package) -->
+      <div class="card tf-bento-card" style="display: flex; flex-direction: column; height: 510px; padding: 1.35rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
           <div>
-            <h3 style="font-size: 1.04rem; font-weight: 800; color: #FFFFFF;">
-              💬 Ask Your Admissions Advisor
+            <h3 style="font-size: 1.08rem; font-weight: 800; color: #FFFFFF; margin: 0;">
+              💬 Ask Your AI Admissions Advisor
             </h3>
-            <span style="font-size: 0.74rem; color: var(--text-muted);">Ask anything about your standing, scholarships, or APs</span>
+            <span style="font-size: 0.76rem; color: var(--muted-foreground);">Ask anything about your bars, scholarships, or APs</span>
           </div>
-          <button class="btn-secondary" style="font-size: 0.7rem; padding: 0.22rem 0.55rem;" onclick="AdmitAI.clearChat()">
+          <button class="btn-secondary" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="AdmitAI.clearChat()">
             Clear
           </button>
         </div>
 
-        <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.65rem;">
-          <button class="pill-btn" style="font-size: 0.72rem; padding: 0.24rem 0.55rem;" onclick="AdmitAI.askQuickQuestion('What opportunities and suggestions fit my major?')">
+        <div class="tf-quick-add-strip">
+          <button class="pill-btn" onclick="AdmitAI.askQuickQuestion('What opportunities and suggestions fit my major?')">
             "Opportunities for my major?"
           </button>
-          <button class="pill-btn" style="font-size: 0.72rem; padding: 0.24rem 0.55rem;" onclick="AdmitAI.askQuickQuestion('What scholarships do I qualify for right now?')">
+          <button class="pill-btn" onclick="AdmitAI.askQuickQuestion('What scholarships do I qualify for right now?')">
             "What scholarships do I unlock?"
           </button>
-          <button class="pill-btn" style="font-size: 0.72rem; padding: 0.24rem 0.55rem;" onclick="AdmitAI.askQuickQuestion('What is my single biggest fix to qualify for more schools?')">
-            "How do I boost my standing?"
+          <button class="pill-btn" onclick="AdmitAI.askQuickQuestion('What is my single biggest fix to qualify for more schools?')">
+            "How do I boost my chances?"
           </button>
         </div>
 
         <div id="ai-chat-messages" class="tf-chat-viewport" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem;">
-          <div style="background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: 14px; padding: 0.85rem; font-size: 0.83rem; line-height: 1.48; color: var(--text-main);">
-            <strong style="color: #60A5FA; display: block; margin-bottom: 0.2rem;">ShipMates Advisor:</strong>
-            Hello ${userName}! I've evaluated your admission standing and scholarship value for <strong>${audit.evaluatedColleges.length} universities</strong>. Ask me how to strengthen your match standing or unlock more scholarships!
+          <div style="background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: var(--radius-md); padding: 0.95rem; font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
+            <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">ShipMates AI Advisor:</strong>
+            Hello ${userName}! I've calculated your acceptance chance bars for <strong>${audit.evaluatedColleges.length} universities</strong>. Ask me how to boost your acceptance percentage or unlock more scholarships!
           </div>
         </div>
 
         <form id="ai-chat-form" class="tf-chat-input-group" onsubmit="event.preventDefault(); AdmitAI.handleChatSubmit();">
-          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask about your colleges, scholarships, or AP credits..." style="font-size: 0.85rem;" autocomplete="off" required>
-          <button type="submit" class="btn-primary tf-shimmer-btn" style="padding: 0.48rem 1rem; font-size: 0.82rem; border-radius: 999px; white-space: nowrap;">
-            Ask ↑
+          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask how to boost your acceptance bar..." style="font-size: 0.88rem;" autocomplete="off" required>
+          <button type="submit" class="btn-primary tf-shimmer-btn" style="padding: 0.5rem 1.15rem; font-size: 0.84rem; border-radius: var(--radius-full); white-space: nowrap;">
+            Ask AI ↑
           </button>
         </form>
       </div>
@@ -1076,7 +1075,7 @@ AdmitAI.postUserMessage = function(text) {
     .replace(/\n\n/g, '<div style="margin-bottom: 0.6rem;"></div>');
 
   botBubble.innerHTML = `
-    <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">ShipMates Advisor:</strong>
+    <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">ShipMates AI Advisor:</strong>
     <div>${formattedHtml}</div>
   `;
 
@@ -1091,10 +1090,8 @@ AdmitAI.clearChat = function() {
   const userName = user ? user.name.split(" ")[0] : "Student";
   container.innerHTML = `
     <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.45; color: var(--text-main);">
-      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">ShipMates Advisor:</strong>
+      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">ShipMates AI Advisor:</strong>
       Chat cleared. Ask me any question about your statutory admission standing, score percentiles, or AP credit conversions.
     </div>
   `;
 };
-
-window.CheckupEngine = AdmitAI;

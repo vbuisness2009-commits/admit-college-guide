@@ -181,7 +181,7 @@ const App = {
     });
 
     if (itemsHtml.length === 0) {
-      dropdown.innerHTML = `<div style="padding: 10px; font-size: 0.8rem; color: #94A3B8;">No scholarships, colleges, or AP exams found matching "${escapeHTML(query)}"</div>`;
+      dropdown.innerHTML = `<div class="tf-search-empty">No scholarships, colleges, or AP exams found matching "${escapeHTML(query)}"</div>`;
     } else {
       dropdown.innerHTML = itemsHtml.join("");
     }
@@ -843,21 +843,21 @@ const App = {
           <span style="font-size: 0.7rem; color: var(--text-dim);">▾</span>
         </div>
 
-        <div id="user-dropdown-menu" style="display: none; position: absolute; right: 0; top: 2.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem; box-shadow: var(--shadow-lg); min-width: 230px; z-index: 60;">
-          <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 0.4rem;">
+        <div id="user-dropdown-menu" class="tf-user-menu" style="display: none;">
+          <div class="tf-user-menu-header">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
               <strong style="color: #FFFFFF; font-size: 0.86rem; display: block;">${safeName}</strong>
               ${providerBadge}
             </div>
             <span style="font-size: 0.72rem; color: var(--text-dim); word-break: break-all;">${safeEmail}</span>
           </div>
-          <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="App.openProfileModal(); App.toggleUserDropdown();">
+          <button class="tf-user-menu-btn" onclick="App.openProfileModal(); App.toggleUserDropdown();">
             Edit Academic Stats
           </button>
-          <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; margin-bottom: 0.25rem;" onclick="Onboarding.open(); App.toggleUserDropdown();">
+          <button class="tf-user-menu-btn" onclick="Onboarding.open(); App.toggleUserDropdown();">
             Re-run Setup Wizard
           </button>
-          <button class="btn-secondary" style="width: 100%; justify-content: flex-start; border: none; color: #F87171;" onclick="App.handleLogout()">
+          <button class="tf-user-menu-btn" style="color: #F87171;" onclick="App.handleLogout()">
             Sign Out
           </button>
         </div>
@@ -927,7 +927,7 @@ const App = {
     const currentExams = profile.ap_exams || [];
 
     container.innerHTML = `
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.65rem; margin-top: 0.75rem;">
+      <div class="tf-modal-exam-grid">
         ${availableExams.map(ae => {
           const idx = currentExams.findIndex(e => e.id === ae.id);
           const exam = idx > -1 ? currentExams[idx] : null;

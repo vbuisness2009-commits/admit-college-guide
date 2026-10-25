@@ -259,15 +259,15 @@ const Onboarding = {
     ];
 
     const stepNavHtml = `
-      <div class="ob-step-nav">
+      <div class="ob-step-nav" role="tablist">
         ${stepTitles.map(st => `
           <button type="button" class="ob-step-pill ${st.num === step ? 'active' : (st.num < step ? 'completed' : '')}" onclick="Onboarding.goToStep(${st.num})">
-            <div style="width: 26px; height: 26px; border-radius: 50%; background: ${st.num === step ? '#2563EB' : (st.num < step ? '#059669' : 'rgba(255,255,255,0.08)')}; color: #FFFFFF; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <div class="tf-step-icon ${st.num === step ? 'tf-step-icon-active' : (st.num < step ? 'tf-step-icon-completed' : 'tf-step-icon-inactive')}">
               ${st.num < step ? '✓' : st.num}
             </div>
             <div>
-              <div style="font-size: 0.82rem; font-weight: 800; line-height: 1.15; color: #FFFFFF;">${st.title}</div>
-              <div style="font-size: 0.7rem; color: var(--text-muted);">${st.sub}</div>
+              <div class="tf-card-title" style="font-size: 0.82rem;">${st.title}</div>
+              <div class="tf-card-desc" style="font-size: 0.7rem; margin-top: 0.1rem;">${st.sub}</div>
             </div>
           </button>
         `).join('')}
@@ -303,14 +303,14 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             ${stepNavHtml}
-            <div class="step-title-group">
+            <div class="tf-step-header">
               <h3>1. Your Grade Level, Location & Intended Major</h3>
               <p>Click any card below to set your grade track, intended major, and state in seconds.</p>
             </div>
 
             <!-- 1-Click Grade Level Cards -->
             <div style="margin-bottom: 1.5rem;">
-              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+              <label class="tf-section-label">
                 Select Your Current Grade Level (1-Click):
               </label>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
@@ -322,12 +322,12 @@ const Onboarding = {
                 ].map(item => `
                   <button type="button" class="ob-choice-card ${currentGrade === item.g ? 'selected' : ''}" onclick="Onboarding.selectGradeTrack(${item.g})">
                     <div>
-                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                        <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #60A5FA;">${item.badge}</span>
-                        ${currentGrade === item.g ? '<span style="color: #34D399; font-weight: 800; font-size: 0.85rem;">✓ Selected</span>' : ''}
+                      <div class="tf-card-eyebrow">
+                        <span class="tf-card-tag">${item.badge}</span>
+                        ${currentGrade === item.g ? '<span class="tf-card-check">✓ Selected</span>' : ''}
                       </div>
-                      <div style="font-size: 1rem; font-weight: 800; color: #FFFFFF;">${item.title}</div>
-                      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">${item.desc}</div>
+                      <div class="tf-card-title">${item.title}</div>
+                      <div class="tf-card-desc">${item.desc}</div>
                     </div>
                   </button>
                 `).join('')}
@@ -342,19 +342,19 @@ const Onboarding = {
 
             <!-- 1-Click Intended Major Cards -->
             <div style="margin-bottom: 1.5rem;">
-              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+              <label class="tf-section-label">
                 Select Your Intended Major / Career Interest (1-Click):
               </label>
               <div class="ob-choice-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
                 ${majorsList.map(m => `
                   <button type="button" class="ob-choice-card ${currentMajor === m.val ? 'selected' : ''}" onclick="Onboarding.selectMajor('${m.val}')">
                     <div>
-                      <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 1.25rem;">${m.icon}</span>
-                        ${currentMajor === m.val ? '<span style="color: #34D399; font-weight: 800; font-size: 0.82rem;">✓ Active</span>' : ''}
+                      <div class="tf-card-eyebrow">
+                        <span style="font-size: 1.35rem;">${m.icon}</span>
+                        ${currentMajor === m.val ? '<span class="tf-card-check">✓ Active</span>' : ''}
                       </div>
-                      <div style="font-size: 1rem; font-weight: 800; color: #FFFFFF; margin-top: 0.3rem;">${m.title}</div>
-                      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem;">${m.sub}</div>
+                      <div class="tf-card-title" style="margin-top: 0.35rem;">${m.title}</div>
+                      <div class="tf-card-desc">${m.sub}</div>
                     </div>
                   </button>
                 `).join('')}
@@ -436,8 +436,8 @@ const Onboarding = {
             </div>
 
             <!-- 1-Click Popular State Buttons -->
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem;">
-              <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Quick State Tap:</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.85rem;">
+              <span class="tf-quick-add-tag">Quick State Tap:</span>
               ${quickStates.map(st => `
                 <button type="button" class="ob-score-pill ${currentRes === st.code ? 'active' : ''}" onclick="Onboarding.selectResidency('${st.code}')">
                   ${st.label}
@@ -455,13 +455,13 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             ${stepNavHtml}
-            <div class="step-title-group">
+            <div class="tf-step-header">
               <h3>2. Your GPA & Class Rank Standing</h3>
               <p>Click a 1-click GPA preset card below, or fine-tune your exact GPA and class rank.</p>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+              <label class="tf-section-label">
                 Quick GPA & Class Rank Presets (1-Click):
               </label>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 0.8rem;">
@@ -473,12 +473,12 @@ const Onboarding = {
                 ].map(p => `
                   <button type="button" class="ob-choice-card ${Math.abs(curUw - p.uw) < 0.03 ? 'selected' : ''}" onclick="Onboarding.setGpaPreset(${p.uw}, ${p.w}, ${p.r}, ${p.s})">
                     <div>
-                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                        <span style="font-size: 0.72rem; font-weight: 800; color: #60A5FA;">${p.badge}</span>
-                        ${Math.abs(curUw - p.uw) < 0.03 ? '<span style="color: #34D399; font-weight: 800; font-size: 0.8rem;">✓ Active</span>' : ''}
+                      <div class="tf-card-eyebrow">
+                        <span class="tf-card-tag">${p.badge}</span>
+                        ${Math.abs(curUw - p.uw) < 0.03 ? '<span class="tf-card-check">✓ Active</span>' : ''}
                       </div>
-                      <div style="font-size: 1rem; font-weight: 800; color: #FFFFFF;">${p.title}</div>
-                      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">${p.desc}</div>
+                      <div class="tf-card-title">${p.title}</div>
+                      <div class="tf-card-desc">${p.desc}</div>
                     </div>
                   </button>
                 `).join('')}
@@ -507,9 +507,9 @@ const Onboarding = {
               </div>
             </div>
 
-            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(96, 165, 250, 0.3); border-radius: 12px; padding: 1.1rem 1.35rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem;">
-              <span style="font-size: 0.95rem; color: #E2E8F0; font-weight: 600;">Calculated Class Standing Percentile:</span>
-              <strong style="color: #60A5FA; font-size: 1.25rem; font-weight: 800;" id="ob-percentile-live">${pct ? `Top ${pct}%` : 'Enter rank & size above'}</strong>
+            <div class="tf-metric-box">
+              <span class="tf-metric-label">Calculated Class Standing Percentile:</span>
+              <strong class="tf-metric-val" id="ob-percentile-live">${pct ? `Top ${pct}%` : 'Enter rank & size above'}</strong>
             </div>
           </div>
         `;
@@ -532,13 +532,13 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             ${stepNavHtml}
-            <div class="step-title-group">
+            <div class="tf-step-header">
               <h3>3. Standardized Testing: SAT, ACT & PSAT / National Merit</h3>
               <p>Click any 1-click SAT/ACT preset and PSAT/NMSQT preset below to calculate automatic merit and National Merit scholarships.</p>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+              <label class="tf-section-label">
                 Quick Score Presets (1-Click):
               </label>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem;">
@@ -550,16 +550,18 @@ const Onboarding = {
                 ].map(p => `
                   <button type="button" class="ob-choice-card ${(!this.wizardData.no_test_checked && (this.wizardData.sat_rw + this.wizardData.sat_m) === (p.rw + p.m)) ? 'selected' : ''}" onclick="Onboarding.setScorePreset(${p.rw}, ${p.m}, ${p.act})">
                     <div>
-                      <div style="font-size: 0.72rem; font-weight: 800; color: #60A5FA; margin-bottom: 0.2rem;">${p.badge}</div>
-                      <div style="font-size: 1.02rem; font-weight: 800; color: #FFFFFF;">${p.title}</div>
-                      <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.2rem;">${p.desc}</div>
+                      <div class="tf-card-eyebrow">
+                        <span class="tf-card-tag">${p.badge}</span>
+                      </div>
+                      <div class="tf-card-title">${p.title}</div>
+                      <div class="tf-card-desc">${p.desc}</div>
                     </div>
                   </button>
                 `).join('')}
               </div>
             </div>
 
-            <label class="checkbox-group" style="margin-bottom: 1.25rem; padding: 1rem 1.15rem; border-radius: 12px; cursor: pointer;">
+            <label class="checkbox-group" style="margin-bottom: 1.25rem; padding: 1rem 1.15rem; border-radius: var(--radius-md); cursor: pointer;">
               <input type="checkbox" id="ob-no-test" style="width: 20px; height: 20px;" onchange="Onboarding.toggleTestInputs(this.checked)" ${this.wizardData.no_test_checked ? 'checked' : ''}>
               <div class="checkbox-label">
                 <strong style="font-size: 0.98rem;">I haven't taken the SAT or ACT yet (Test-Optional / Future Tester)</strong>
@@ -585,29 +587,29 @@ const Onboarding = {
                 </div>
               </div>
 
-              <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(52, 211, 153, 0.35); border-radius: 12px; padding: 1.1rem 1.35rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem;">
-                <span style="font-size: 0.95rem; color: #E2E8F0; font-weight: 600;">Combined Total SAT Score:</span>
-                <strong style="color: #34D399; font-size: 1.35rem; font-weight: 800;" id="ob-sat-total-live">${totalSat}</strong>
+              <div class="tf-metric-box">
+                <span class="tf-metric-label">Combined Total SAT Score:</span>
+                <strong class="tf-metric-val" style="color: #34D399;" id="ob-sat-total-live">${totalSat}</strong>
               </div>
             </div>
 
             <!-- Interactive PSAT / NMSQT & National Merit Scholarship Section -->
-            <div style="margin-top: 1.65rem; background: rgba(15, 23, 42, 0.82); border: 1.5px solid rgba(96, 165, 250, 0.4); border-radius: 16px; padding: 1.25rem 1.35rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <div class="tf-bento-card" style="margin-top: 1.65rem; padding: 1.35rem 1.45rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem;">
                 <div>
                   <h4 style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF; margin: 0;">
                     🎓 PSAT / NMSQT Score & National Merit Scholarship Calculator (1-Click)
                   </h4>
-                  <span style="font-size: 0.8rem; color: var(--text-muted);">
+                  <span style="font-size: 0.8rem; color: var(--muted-foreground);">
                     Did you take the PSAT/NMSQT or PSAT 10? National Merit & College Board Recognition unlock $2,500/yr to Full-Ride university packages!
                   </span>
                 </div>
-                <span style="font-size: 0.74rem; font-weight: 800; color: #FCD34D; background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.35); padding: 0.25rem 0.65rem; border-radius: 999px;">
+                <span class="tf-badge tf-badge-amber">
                   💰 Up to $140,000+ National Merit Value
                 </span>
               </div>
 
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr)); gap: 0.7rem; margin-bottom: 1rem;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
                 ${[
                   { psat: 1490, idx: 224, status: "semifinalist", badge: "🏆 Semifinalist / Finalist", title: "1480–1520 PSAT (222+ Index)", desc: "Unlocks Full-Tuition / $28k/yr National Merit packages" },
                   { psat: 1430, idx: 215, status: "commended", badge: "⭐ Commended / Recognition", title: "1400–1470 PSAT (212–221)", desc: "Unlocks +$2,500–$6,000/yr Honors & Recognition awards" },
@@ -616,9 +618,11 @@ const Onboarding = {
                 ].map(p => `
                   <button type="button" class="ob-choice-card ${(curPsat === p.psat || (p.psat === 0 && !curPsat)) ? 'selected' : ''}" style="padding: 0.85rem 1rem;" onclick="Onboarding.setPsatPreset(${p.psat}, ${p.idx}, '${p.status}')">
                     <div>
-                      <div style="font-size: 0.72rem; font-weight: 800; color: #93C5FD; margin-bottom: 0.18rem;">${p.badge}</div>
-                      <div style="font-size: 0.96rem; font-weight: 800; color: #FFFFFF;">${p.title}</div>
-                      <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.18rem;">${p.desc}</div>
+                      <div class="tf-card-eyebrow">
+                        <span class="tf-card-tag">${p.badge}</span>
+                      </div>
+                      <div class="tf-card-title" style="font-size: 0.95rem;">${p.title}</div>
+                      <div class="tf-card-desc">${p.desc}</div>
                     </div>
                   </button>
                 `).join('')}
@@ -647,7 +651,7 @@ const Onboarding = {
                 </div>
               </div>
 
-              <div id="ob-psat-live-banner" style="background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.32); border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.84rem; color: #DBEAFE; font-weight: 600;">
+              <div id="ob-psat-live-banner" class="tf-badge-blue" style="border-radius: var(--radius-md); padding: 0.8rem 1.1rem; font-size: 0.84rem; font-weight: 600; line-height: 1.45; display: block; border: 1px solid rgba(96, 165, 250, 0.35);">
                 ${psatBannerMsg}
               </div>
             </div>
@@ -719,14 +723,14 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             ${stepNavHtml}
-            <div class="step-title-group">
+            <div class="tf-step-header">
               <h3>4. Activities, #1 Priority Goal & Course Rigor</h3>
               <p>Click your current extracurricular tier and #1 priority below, then type what you did in the text box that appears.</p>
             </div>
 
             <!-- 1-Click Extracurricular Tier Cards -->
             <div style="margin-bottom: 1.65rem;">
-              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+              <label class="tf-section-label">
                 Your Extracurricular & Leadership Profile (1-Click):
               </label>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
@@ -738,12 +742,12 @@ const Onboarding = {
                 ].map(item => `
                   <button type="button" class="ob-choice-card ${ecTier === item.val ? 'selected' : ''}" onclick="Onboarding.selectEcTier('${item.val}')">
                     <div>
-                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-                        <span style="font-size: 0.72rem; font-weight: 800; color: #60A5FA;">${item.badge}</span>
-                        ${ecTier === item.val ? '<span style="color: #34D399; font-weight: 800; font-size: 0.8rem;">✓</span>' : ''}
+                      <div class="tf-card-eyebrow">
+                        <span class="tf-card-tag">${item.badge}</span>
+                        ${ecTier === item.val ? '<span class="tf-card-check">✓</span>' : ''}
                       </div>
-                      <div style="font-size: 0.98rem; font-weight: 800; color: #FFFFFF;">${item.title}</div>
-                      <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.2rem;">${item.desc}</div>
+                      <div class="tf-card-title">${item.title}</div>
+                      <div class="tf-card-desc">${item.desc}</div>
                     </div>
                   </button>
                 `).join('')}
@@ -756,15 +760,15 @@ const Onboarding = {
               </select>
 
               <!-- Dynamic Text Box for Extracurricular Details -->
-              <div id="ob-ec-details-box" style="margin-top: 0.85rem; background: rgba(15, 23, 42, 0.88); border: 1.5px solid rgba(59, 130, 246, 0.45); border-radius: 14px; padding: 1.05rem 1.2rem; box-shadow: 0 8px 22px rgba(2, 6, 23, 0.35);">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
-                  <label for="ob-ec-details" style="font-size: 0.92rem; font-weight: 800; color: #93C5FD; margin: 0;">
+              <div id="ob-ec-details-box" class="tf-detail-box">
+                <div class="tf-detail-box-header">
+                  <label for="ob-ec-details" class="tf-detail-box-label">
                     ${curEcPrompt.label}
                   </label>
-                  <span style="font-size: 0.74rem; color: #34D399; font-weight: 700;">Feeds into AI Acceptance Evaluation</span>
+                  <span class="tf-detail-box-sub">Feeds into AI Acceptance Evaluation</span>
                 </div>
-                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
-                  <span style="font-size: 0.74rem; color: var(--text-muted); align-self: center; margin-right: 0.2rem;">Quick Add:</span>
+                <div class="tf-quick-add-strip">
+                  <span class="tf-quick-add-tag">Quick Add:</span>
                   ${[
                     "TSA / Robotics Competition",
                     "DECA / FBLA Officer",
@@ -775,53 +779,53 @@ const Onboarding = {
                     "Independent Coding / App Project",
                     "Part-Time Job / Internship"
                   ].map(tag => `
-                    <button type="button" class="ob-score-pill" style="font-size: 0.73rem; padding: 0.25rem 0.6rem;" onclick="Onboarding.appendEcDetail('${tag}')">+ ${tag}</button>
+                    <button type="button" class="ob-score-pill" onclick="Onboarding.appendEcDetail('${tag}')">+ ${tag}</button>
                   `).join('')}
                 </div>
-                <textarea id="ob-ec-details" class="input-control" rows="3" style="width: 100%; min-height: 82px; font-size: 0.94rem; line-height: 1.45; resize: vertical;" placeholder="${curEcPrompt.placeholder}" oninput="Onboarding.wizardData.extracurricular_details = this.value">${ecDetails}</textarea>
+                <textarea id="ob-ec-details" class="textarea-control tf-textarea" rows="3" style="width: 100%; min-height: 82px;" placeholder="${curEcPrompt.placeholder}" oninput="Onboarding.wizardData.extracurricular_details = this.value">${ecDetails}</textarea>
               </div>
             </div>
 
             <!-- Interactive Awards, Honors & Scholarship Boosters (Calculates College Dollar Value) -->
-            <div style="margin-bottom: 1.65rem; background: rgba(15, 23, 42, 0.72); border: 1.5px solid rgba(245, 158, 11, 0.38); border-radius: 16px; padding: 1.25rem 1.35rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <div class="tf-bento-card" style="margin-bottom: 1.65rem; padding: 1.35rem 1.45rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem;">
                 <div>
-                  <label style="font-size: 0.96rem; font-weight: 800; color: #FDE68A; display: block; margin: 0;">
+                  <label class="tf-section-label" style="color: #FDE68A; margin: 0;">
                     🏅 Your Awards, Honors & Competitions (Tap All That Apply — Boosts College Scholarship $)
                   </label>
-                  <span style="font-size: 0.8rem; color: var(--text-muted);">
+                  <span style="font-size: 0.8rem; color: var(--muted-foreground);">
                     Universities award $1,500–$8,500+/yr in extra leadership, departmental, and honors scholarships based on your awards and service hours.
                   </span>
                 </div>
-                <span style="font-size: 0.75rem; font-weight: 800; color: #34D399; background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(52, 211, 153, 0.35); padding: 0.25rem 0.65rem; border-radius: 999px;">
+                <span class="tf-badge tf-badge-emerald">
                   ${selectedAwards.length} Award Categories Selected
                 </span>
               </div>
 
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 0.7rem; margin-bottom: 0.95rem;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
                 ${awardOptions.map(aw => {
                   const isAwSelected = selectedAwards.includes(aw.id);
                   return `
-                    <button type="button" class="ob-choice-card ${isAwSelected ? 'selected' : ''}" style="padding: 0.82rem 0.95rem;" onclick="Onboarding.toggleAwardCard('${aw.id.replace(/'/g, "\\'")}')">
+                    <button type="button" class="ob-choice-card ${isAwSelected ? 'selected' : ''}" style="padding: 0.85rem 1rem;" onclick="Onboarding.toggleAwardCard('${aw.id.replace(/'/g, "\\'")}')">
                       <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                        <div class="tf-card-eyebrow">
                           <span style="font-size: 0.72rem; font-weight: 800; color: #FCD34D;">${aw.badge}</span>
-                          <span style="font-size: 0.78rem; font-weight: 800; color: ${isAwSelected ? '#34D399' : 'var(--text-muted)'};">${isAwSelected ? '✓ Added' : '+ Tap'}</span>
+                          <span style="font-size: 0.78rem; font-weight: 800; color: ${isAwSelected ? '#34D399' : 'var(--muted-foreground)'};">${isAwSelected ? '✓ Added' : '+ Tap'}</span>
                         </div>
-                        <div style="font-size: 0.94rem; font-weight: 800; color: #FFFFFF;">${aw.title}</div>
-                        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.15rem;">${aw.desc}</div>
+                        <div class="tf-card-title" style="font-size: 0.95rem;">${aw.title}</div>
+                        <div class="tf-card-desc">${aw.desc}</div>
                       </div>
                     </button>
                   `;
                 }).join('')}
               </div>
 
-              <div style="display: grid; grid-template-columns: 1.6fr 0.8fr; gap: 0.95rem; align-items: start;">
+              <div style="display: grid; grid-template-columns: 1.6fr 0.8fr; gap: 1rem; align-items: start;">
                 <div>
-                  <label for="ob-awards-details" style="font-size: 0.86rem; font-weight: 800; color: #FDE68A; display: block; margin-bottom: 0.4rem;">
+                  <label for="ob-awards-details" class="tf-section-label" style="color: #FDE68A; margin-bottom: 0.4rem;">
                     🏆 List Your Specific Awards, Placements & Honors:
                   </label>
-                  <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                  <div class="tf-quick-add-strip">
                     ${[
                       "TSA State Finalist",
                       "AP Scholar with Distinction",
@@ -830,23 +834,23 @@ const Onboarding = {
                       "Varsity Scholar-Athlete",
                       "Science Olympiad Medalist"
                     ].map(tag => `
-                      <button type="button" class="ob-score-pill" style="font-size: 0.71rem; padding: 0.2rem 0.52rem;" onclick="Onboarding.appendAwardDetail('${tag}')">+ ${tag}</button>
+                      <button type="button" class="ob-score-pill" onclick="Onboarding.appendAwardDetail('${tag}')">+ ${tag}</button>
                     `).join('')}
                   </div>
-                  <textarea id="ob-awards-details" class="input-control" rows="2" style="width: 100%; min-height: 68px; font-size: 0.9rem; line-height: 1.4;" placeholder="e.g. 1st Place TSA Webmaster Regional, AP Scholar with Distinction, National Merit Commended, NHS Vice President..." oninput="Onboarding.wizardData.awards_details = this.value">${awardsDetails}</textarea>
+                  <textarea id="ob-awards-details" class="textarea-control tf-textarea" rows="2" style="width: 100%; min-height: 68px;" placeholder="e.g. 1st Place TSA Webmaster Regional, AP Scholar with Distinction, National Merit Commended, NHS Vice President..." oninput="Onboarding.wizardData.awards_details = this.value">${awardsDetails}</textarea>
                 </div>
 
-                <div style="background: rgba(9, 14, 26, 0.75); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 12px; padding: 0.85rem 1rem;">
-                  <label for="ob-service-hours" style="font-size: 0.84rem; font-weight: 800; color: #93C5FD; display: block; margin-bottom: 0.35rem;">
+                <div style="background: rgba(9, 14, 26, 0.75); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: var(--radius-md); padding: 0.95rem 1.1rem;">
+                  <label for="ob-service-hours" class="tf-section-label" style="color: #93C5FD; margin-bottom: 0.35rem;">
                     🤝 Community Service Hours
                   </label>
-                  <input type="number" min="0" max="2000" step="10" id="ob-service-hours" class="input-control" value="${serviceHours}" style="margin-bottom: 0.5rem;" oninput="Onboarding.wizardData.community_service_hours = parseInt(this.value, 10) || 0">
-                  <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                  <input type="number" min="0" max="2000" step="10" id="ob-service-hours" class="input-control tf-input" value="${serviceHours}" style="margin-bottom: 0.6rem;" oninput="Onboarding.wizardData.community_service_hours = parseInt(this.value, 10) || 0">
+                  <div class="tf-quick-add-strip">
                     ${[50, 100, 150, 250].map(hrs => `
-                      <button type="button" class="ob-score-pill ${serviceHours === hrs ? 'active' : ''}" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="Onboarding.setServiceHours(${hrs})">${hrs}+ hrs</button>
+                      <button type="button" class="ob-score-pill ${serviceHours === hrs ? 'active' : ''}" onclick="Onboarding.setServiceHours(${hrs})">${hrs}+ hrs</button>
                     `).join('')}
                   </div>
-                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.45rem;">
+                  <div style="font-size: 0.72rem; color: var(--muted-foreground); margin-top: 0.45rem;">
                     100+ hrs unlocks Bright Futures & university service scholarships.
                   </div>
                 </div>
@@ -855,7 +859,7 @@ const Onboarding = {
 
             <!-- 1-Click Primary Goal Cards -->
             <div style="margin-bottom: 1.65rem;">
-              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+              <label class="tf-section-label">
                 What is your #1 Priority right now? (1-Click):
               </label>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
@@ -867,12 +871,12 @@ const Onboarding = {
                 ].map(item => `
                   <button type="button" class="ob-choice-card ${primaryGoal === item.val ? 'selected' : ''}" onclick="Onboarding.selectPrimaryGoal('${item.val}')">
                     <div>
-                      <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 1.2rem;">${item.icon}</span>
-                        ${primaryGoal === item.val ? '<span style="color: #34D399; font-weight: 800; font-size: 0.8rem;">✓ Selected</span>' : ''}
+                      <div class="tf-card-eyebrow">
+                        <span style="font-size: 1.35rem;">${item.icon}</span>
+                        ${primaryGoal === item.val ? '<span class="tf-card-check">✓ Selected</span>' : ''}
                       </div>
-                      <div style="font-size: 0.98rem; font-weight: 800; color: #FFFFFF; margin-top: 0.25rem;">${item.title}</div>
-                      <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.15rem;">${item.desc}</div>
+                      <div class="tf-card-title" style="margin-top: 0.35rem;">${item.title}</div>
+                      <div class="tf-card-desc">${item.desc}</div>
                     </div>
                   </button>
                 `).join('')}
@@ -885,15 +889,15 @@ const Onboarding = {
               </select>
 
               <!-- Dynamic Text Box for Priority Goal Details -->
-              <div id="ob-goal-details-box" style="margin-top: 0.85rem; background: rgba(15, 23, 42, 0.88); border: 1.5px solid rgba(52, 211, 153, 0.42); border-radius: 14px; padding: 1.05rem 1.2rem; box-shadow: 0 8px 22px rgba(2, 6, 23, 0.35);">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
-                  <label for="ob-goal-details" style="font-size: 0.92rem; font-weight: 800; color: #6EE7B7; margin: 0;">
+              <div id="ob-goal-details-box" class="tf-detail-box" style="border-color: rgba(52, 211, 153, 0.42);">
+                <div class="tf-detail-box-header">
+                  <label for="ob-goal-details" class="tf-detail-box-label" style="color: #6EE7B7;">
                     ${curGoalPrompt.label}
                   </label>
-                  <span style="font-size: 0.74rem; color: #93C5FD; font-weight: 700;">Tailors Your AI Strategy</span>
+                  <span class="tf-detail-box-sub" style="color: #93C5FD;">Tailors Your AI Strategy</span>
                 </div>
-                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
-                  <span style="font-size: 0.74rem; color: var(--text-muted); align-self: center; margin-right: 0.2rem;">Quick Add:</span>
+                <div class="tf-quick-add-strip">
+                  <span class="tf-quick-add-tag">Quick Add:</span>
                   ${[
                     "Win $15k–$28k/yr Merit Scholarship",
                     "Qualify for Top 5% / Top 10% Auto-Admit",
@@ -901,21 +905,21 @@ const Onboarding = {
                     "Boost SAT Score by +80 Points",
                     "Waive Freshman Calculus & Lab Sciences"
                   ].map(tag => `
-                    <button type="button" class="ob-score-pill" style="font-size: 0.73rem; padding: 0.25rem 0.6rem;" onclick="Onboarding.appendGoalDetail('${tag}')">+ ${tag}</button>
+                    <button type="button" class="ob-score-pill" onclick="Onboarding.appendGoalDetail('${tag}')">+ ${tag}</button>
                   `).join('')}
                 </div>
-                <textarea id="ob-goal-details" class="input-control" rows="2" style="width: 100%; min-height: 74px; font-size: 0.94rem; line-height: 1.45; resize: vertical;" placeholder="${curGoalPrompt.placeholder}" oninput="Onboarding.wizardData.priority_goal_details = this.value">${goalDetails}</textarea>
+                <textarea id="ob-goal-details" class="textarea-control tf-textarea" rows="2" style="width: 100%; min-height: 74px;" placeholder="${curGoalPrompt.placeholder}" oninput="Onboarding.wizardData.priority_goal_details = this.value">${goalDetails}</textarea>
               </div>
             </div>
 
             <!-- High School Course Rigor Checklist -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem; flex-wrap: wrap; gap: 0.5rem;">
-              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0;">High School Core Coursework Check:</label>
+              <label class="tf-section-label" style="margin: 0;">High School Core Coursework Check:</label>
               <button type="button" class="ob-score-pill" onclick="Onboarding.checkAllCoursework()">✓ Check All Core Prerequisites</button>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem;">
-              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: 12px; cursor: pointer;">
+              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: var(--radius-md); cursor: pointer;">
                 <input type="checkbox" id="ob-alg2" style="width: 20px; height: 20px;" ${this.wizardData.math_years_algebra2 ? 'checked' : ''}>
                 <div class="checkbox-label">
                   <strong style="font-size: 0.94rem;">Algebra II & 4 Years of Math</strong>
@@ -923,7 +927,7 @@ const Onboarding = {
                 </div>
               </label>
 
-              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: 12px; cursor: pointer;">
+              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: var(--radius-md); cursor: pointer;">
                 <input type="checkbox" id="ob-end" style="width: 20px; height: 20px;" ${this.wizardData.has_endorsement ? 'checked' : ''}>
                 <div class="checkbox-label">
                   <strong style="font-size: 0.94rem;">Distinguished Endorsement & 2+ Yrs World Language</strong>
@@ -931,7 +935,7 @@ const Onboarding = {
                 </div>
               </label>
 
-              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: 12px; cursor: pointer;">
+              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: var(--radius-md); cursor: pointer;">
                 <input type="checkbox" id="ob-fl" style="width: 20px; height: 20px;" ${this.wizardData.fl_prep_complete ? 'checked' : ''}>
                 <div class="checkbox-label">
                   <strong style="font-size: 0.94rem;">Honors / AP / IB College-Prep Track</strong>
@@ -939,12 +943,12 @@ const Onboarding = {
                 </div>
               </label>
 
-              <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 0.95rem 1.1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.45rem;">
+              <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.95rem 1.1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.45rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <label for="ob-sci" style="font-size: 0.92rem; font-weight: 700; color: #FFFFFF; margin: 0;">Lab Science Years (Bio, Chem, Physics)</label>
-                  <input type="number" min="0" max="6" id="ob-sci" class="input-control" style="width: 72px; min-height: 36px; padding: 0.3rem 0.5rem; text-align: center;" value="${sciYears}">
+                  <input type="number" min="0" max="6" id="ob-sci" class="input-control tf-input" style="width: 72px; min-height: 36px; padding: 0.3rem 0.5rem; text-align: center;" value="${sciYears}">
                 </div>
-                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <div class="tf-quick-add-strip" style="margin: 0;">
                   ${[2, 3, 4, 5].map(yr => `
                     <button type="button" class="ob-score-pill ${sciYears === yr ? 'active' : ''}" onclick="Onboarding.setScienceYears(${yr})">${yr} Years</button>
                   `).join('')}
@@ -969,19 +973,19 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             ${stepNavHtml}
-            <div class="step-title-group">
+            <div class="tf-step-header">
               <h3>5. Click Your AP Exams & Target Universities</h3>
               <p>Just tap any AP exam or university card below to toggle it on/off — or use our 1-click Smart Bundles!</p>
             </div>
 
             <!-- AP EXAMS 1-CLICK INTERACTIVE GRID -->
-            <div style="background: rgba(15, 23, 42, 0.55); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 1.35rem; margin-bottom: 1.75rem;">
+            <div class="tf-bento-card" style="padding: 1.35rem 1.45rem; margin-bottom: 1.75rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
                 <div>
                   <h4 style="font-size: 1.12rem; font-weight: 800; color: #FFFFFF; margin: 0;">
                     🎓 Your AP Exams <span style="color: #60A5FA;">(${currentExams.length} selected)</span>
                   </h4>
-                  <span style="font-size: 0.82rem; color: var(--text-muted);">Tap any exam card to add/remove it, and tap <strong>5 / 4 / 3 / Planned</strong> to set your score.</span>
+                  <span style="font-size: 0.82rem; color: var(--muted-foreground);">Tap any exam card to add/remove it, and tap <strong>5 / 4 / 3 / Planned</strong> to set your score.</span>
                 </div>
                 <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
                   <button type="button" class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="Onboarding.addMajorRecommendedAps()">
@@ -1012,8 +1016,8 @@ const Onboarding = {
                     <div class="ob-choice-card ${isSelected ? 'selected' : ''}" style="padding: 0.9rem 1rem;" onclick="Onboarding.toggleExamCard('${ae.id}', '${ae.name.replace(/'/g, "\\'")}', event)">
                       <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
                         <div>
-                          <div style="font-size: 0.95rem; font-weight: 800; color: #FFFFFF;">${ae.name}</div>
-                          <div style="font-size: 0.75rem; color: ${isSelected ? '#34D399' : 'var(--text-muted)'}; margin-top: 0.15rem; font-weight: 600;">
+                          <div class="tf-card-title" style="font-size: 0.95rem;">${ae.name}</div>
+                          <div style="font-size: 0.75rem; color: ${isSelected ? '#34D399' : 'var(--muted-foreground)'}; margin-top: 0.15rem; font-weight: 600;">
                             ${isSelected ? (existing.status === 'planned' ? '✓ Added · Planned Exam' : `✓ Added · Score: ${existing.score}`) : 'Click card to add exam'}
                           </div>
                         </div>
@@ -1022,10 +1026,10 @@ const Onboarding = {
                         </div>
                       </div>
                       ${isSelected ? `
-                        <div style="display: flex; align-items: center; gap: 0.35rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);" onclick="event.stopPropagation();">
-                          <span style="font-size: 0.72rem; color: #93C5FD; font-weight: 700; margin-right: 0.15rem;">Score:</span>
+                        <div class="tf-quick-add-strip" style="margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); margin-bottom: 0;" onclick="event.stopPropagation();">
+                          <span class="tf-quick-add-tag" style="color: #93C5FD;">Score:</span>
                           ${[5, 4, 3, 0].map(sc => `
-                            <button type="button" class="ob-score-pill ${curScore === sc ? 'active' : ''}" style="padding: 0.22rem 0.5rem; font-size: 0.72rem;" onclick="Onboarding.setExamScoreInline('${ae.id}', ${sc})">
+                            <button type="button" class="ob-score-pill ${curScore === sc ? 'active' : ''}" style="padding: 0.22rem 0.55rem; font-size: 0.72rem;" onclick="Onboarding.setExamScoreInline('${ae.id}', ${sc})">
                               ${sc === 0 ? 'Planned' : sc}
                             </button>
                           `).join('')}
@@ -1051,13 +1055,13 @@ const Onboarding = {
             </div>
 
             <!-- TARGET UNIVERSITIES 1-CLICK INTERACTIVE GRID -->
-            <div style="background: rgba(15, 23, 42, 0.55); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 1.35rem;">
+            <div class="tf-bento-card" style="padding: 1.35rem 1.45rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
                 <div>
                   <h4 style="font-size: 1.12rem; font-weight: 800; color: #FFFFFF; margin: 0;">
                     🏛️ Target Universities to Analyze <span style="color: #34D399;">(${savedColleges.length} selected)</span>
                   </h4>
-                  <span style="font-size: 0.82rem; color: var(--text-muted);">Tap any university card below to add or remove it from your AI Breakdown.</span>
+                  <span style="font-size: 0.82rem; color: var(--muted-foreground);">Tap any university card below to add or remove it from your AI Breakdown.</span>
                 </div>
                 <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
                   <button type="button" class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="Onboarding.addCollegeBundle('smart')">
@@ -1082,7 +1086,7 @@ const Onboarding = {
 
               <!-- Quick Filter Input -->
               <div style="margin-bottom: 1rem;">
-                <input type="text" id="ob-college-search" class="input-control" value="${this.collegeSearchQuery || ''}" placeholder="🔍 Quick filter universities by name or state (e.g. Texas, California, MIT, Florida)..." oninput="Onboarding.filterCollegesGrid(this.value)">
+                <input type="text" id="ob-college-search" class="input-control tf-input" value="${this.collegeSearchQuery || ''}" placeholder="🔍 Quick filter universities by name or state (e.g. Texas, California, MIT, Florida)..." oninput="Onboarding.filterCollegesGrid(this.value)">
               </div>
 
               <!-- Spacious 3-Column Clickable College Cards -->
@@ -1091,22 +1095,22 @@ const Onboarding = {
                   const isChecked = savedColleges.includes(c.id);
                   const colStatus = (this.wizardData.college_statuses && this.wizardData.college_statuses[c.id]) || "working";
                   return `
-                    <div class="ob-choice-card ${isChecked ? 'selected' : ''}" style="padding: 0.85rem 1rem;" onclick="Onboarding.toggleCollege('${c.id}')">
+                    <div class="ob-choice-card ${isChecked ? 'selected' : ''}" style="padding: 0.9rem 1rem;" onclick="Onboarding.toggleCollege('${c.id}')">
                       <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; width: 100%;">
                         <div>
-                          <div style="font-size: 0.96rem; font-weight: 800; color: #FFFFFF;">${c.short_name}</div>
-                          <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.1rem;">${c.name}</div>
+                          <div class="tf-card-title" style="font-size: 0.96rem;">${c.short_name}</div>
+                          <div class="tf-card-desc" style="font-size: 0.74rem; margin-top: 0.1rem;">${c.name}</div>
                         </div>
-                        <span style="font-size: 0.7rem; font-weight: 800; padding: 0.18rem 0.5rem; border-radius: 6px; background: ${isChecked ? '#2563EB' : 'rgba(255,255,255,0.07)'}; color: #FFFFFF; flex-shrink: 0;">
+                        <span class="tf-badge ${isChecked ? 'tf-badge-blue' : ''}" style="flex-shrink: 0;">
                           ${isChecked ? '✓ Selected' : c.state}
                         </span>
                       </div>
-                      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 0.74rem; color: #93C5FD; margin-top: 0.35rem; padding-top: 0.35rem; border-top: 1px solid rgba(255,255,255,0.06);">
+                      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 0.74rem; color: #93C5FD; margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.06);">
                         <span>SAT: ${c.sat_total_25}–${c.sat_total_75}</span>
                         <span>Admit: ${(c.admit_rate * 100).toFixed(0)}%</span>
                       </div>
                       ${isChecked ? `
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.12); width: 100%;" onclick="event.stopPropagation();">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: 0.55rem; padding-top: 0.55rem; border-top: 1px solid rgba(255,255,255,0.1); width: 100%;" onclick="event.stopPropagation();">
                           <span style="font-size: 0.7rem; color: #E2E8F0; font-weight: 700;">Status:</span>
                           <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
                             <button type="button" class="ob-score-pill ${colStatus === 'working' ? 'active' : ''}" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="Onboarding.setCollegeAppStatus('${c.id}', 'working', event)">

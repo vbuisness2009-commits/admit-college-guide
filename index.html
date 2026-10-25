@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="assets/admit-logo.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=4.6">
-  <link rel="stylesheet" href="css/components.css?v=4.6">
-  <link rel="stylesheet" href="css/twentyfirst.css?v=4.6">
+  <link rel="stylesheet" href="css/main.css?v=5.0">
+  <link rel="stylesheet" href="css/components.css?v=5.0">
+  <link rel="stylesheet" href="css/twentyfirst.css?v=5.0">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -31,12 +31,12 @@
     </defs>
   </svg>
 
-  <!-- Splash Screen -->
+  <!-- Splash Screen (Prime Prep Blueprint) -->
   <div id="splash-screen">
     <div class="splash-glow-ring"></div>
     <div class="splash-particles" id="splash-particles"></div>
     <div class="splash-content">
-      <div class="splash-logo-mark" aria-label="ShipMates Logo">
+      <div class="splash-logo-mark" aria-label="AdmitAI Logo">
         <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
           <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
@@ -91,7 +91,7 @@
     </header>
 
     <!-- Main Landing & Authentication View -->
-    <section id="auth-stage" class="auth-stage-container" style="position: relative; min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem 1.25rem 4rem 1.25rem;">
+    <section id="auth-stage" class="auth-stage-container">
       <div class="auth-bg">
         <div class="auth-bg-orb auth-orb-1"></div>
         <div class="auth-bg-orb auth-orb-2"></div>
@@ -99,27 +99,27 @@
       </div>
 
       <!-- High-Impact Pitch Hero Header -->
-      <div class="intro-hero-masthead" style="margin-bottom: 2.25rem; max-width: 1020px; width: 100%; text-align: center;">
-        <div class="hero-live-pill" style="margin: 0 auto 1.25rem auto;">
+      <div class="intro-hero-masthead">
+        <div class="hero-live-pill">
           <span class="pulse-beacon"></span>
           <span>Scholarships · Guaranteed Admissions · 4-Year High School Guide</span>
         </div>
         <h1 class="hero-glamour-title">
           Turn Your Stats Into <span class="gradient-shimmer-text">Scholarships</span>, Guaranteed Admissions &amp; A Winning Game Plan.
         </h1>
-        <p class="hero-glamour-subtitle" style="margin: 0.85rem auto 1.35rem auto; max-width: 820px;">
+        <p class="hero-glamour-subtitle">
           <strong>Seniors &amp; Grads:</strong> Enter your GPA and test scores to instantly see the automatic merit scholarships, guaranteed college admissions, and AP tuition dollars you qualify for right now.<br>
           <strong>In High School (9th–11th)?</strong> Get a personalized, step-by-step 4-year roadmap to unlock maximum aid and top acceptances.
         </p>
-        <div class="hero-masthead-actions" style="margin-bottom: 1.35rem;">
+        <div class="hero-masthead-actions">
           <button type="button" class="btn btn-primary btn-lg" onclick="App.promptEnterStats('senior')">
-            <i class="fas fa-chart-line"></i> Enter Your Stats — View Breakdown
+            <i class="fas fa-chart-line"></i> Enter Your Stats — Get AI Breakdown
           </button>
           <button type="button" class="btn btn-glass btn-lg" onclick="App.promptEnterStats('hs')">
             <i class="fas fa-compass"></i> I'm in High School (9th–11th) — Build My Guide
           </button>
         </div>
-        <div class="hero-trust-bar" style="justify-content: center;">
+        <div class="hero-trust-bar">
           <span class="hero-trust-item">💰 $5k–$28k/yr Merit Scholarships</span>
           <span class="hero-trust-item">⚖️ 15+ State Auto-Admit Guarantees</span>
           <span class="hero-trust-item">💵 $7,200+ Avg AP Tuition Saved</span>
@@ -154,38 +154,38 @@
               <span class="track-header-badge">Instant Qualification Check</span>
             </div>
             <div class="track-grid">
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">💰</div>
                 <div class="track-feature-text">
                   <h4>Automatic Merit Scholarships ($5k–$28k/yr)</h4>
                   <p>Match your GPA &amp; SAT/ACT against institutional scholarship tiers that award up to $112,000 over 4 years with zero extra essays.</p>
                 </div>
               </div>
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">⚖️</div>
                 <div class="track-feature-text">
                   <h4>Guaranteed College Acceptance</h4>
                   <p>Instantly verify state laws that legally guarantee your admission into flagship universities based on your class rank or GPA.</p>
                 </div>
               </div>
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">💵</div>
                 <div class="track-feature-text">
                   <h4>Cash In Your AP &amp; IB Credits</h4>
                   <p>See exact university course codes waived and thousands in tuition saved ($7,200+ avg) from exams you already passed.</p>
                 </div>
               </div>
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">⚡</div>
                 <div class="track-feature-text">
-                  <h4>Profile Breakdown &amp; Next Steps</h4>
-                  <p>Get a full breakdown of your stats with scholarship cutoffs, honors college deadlines, and personalized suggestions.</p>
+                  <h4>AI Breakdown &amp; Next Steps</h4>
+                  <p>Get a full AI breakdown of your stats with scholarship cutoffs, honors college deadlines, and personalized suggestions.</p>
                 </div>
               </div>
             </div>
             <div class="track-cta-strip">
-              <span><strong>Have your GPA or test scores ready?</strong> Create an account to enter your stats and view your breakdown.</span>
-              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <span><strong>Have your GPA or test scores ready?</strong> Create an account to enter your stats and get your AI breakdown.</span>
+              <div class="track-cta-actions">
                 <button type="button" class="btn-primary" style="font-size: 0.82rem; padding: 0.5rem 1.05rem;" onclick="App.promptEnterStats('senior')">
                   <i class="fas fa-chart-line" style="margin-right: 4px;"></i> Enter Your Stats →
                 </button>
@@ -203,38 +203,38 @@
               <span class="track-header-badge" style="background: rgba(59, 130, 246, 0.18); color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">Step-by-Step 4-Year Guide</span>
             </div>
             <div class="track-grid">
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">🧭</div>
                 <div class="track-feature-text">
                   <h4>Custom Grade-by-Grade Roadmap</h4>
                   <p>Know exactly what courses, extracurriculars, and summer milestones to hit in 9th, 10th, and 11th grade for top universities.</p>
                 </div>
               </div>
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">🎯</div>
                 <div class="track-feature-text">
                   <h4>Scholarship &amp; Auto-Admit Targets</h4>
                   <p>See the exact GPA, class rank percentile, and SAT/ACT score you need to lock in guaranteed admissions and full-tuition merit aid.</p>
                 </div>
               </div>
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">📚</div>
                 <div class="track-feature-text">
                   <h4>High-ROI AP Course Selection</h4>
                   <p>Don't guess which AP classes to take. Discover which exams waive actual degree requirements and save the most money at your target schools.</p>
                 </div>
               </div>
-              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
+              <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">⏰</div>
                 <div class="track-feature-text">
-                  <h4>Testing &amp; Prep Schedule</h4>
-                  <p>Get a tailored schedule for PSAT/NMSQT National Merit qualification, SAT/ACT target windows, and major-specific prep.</p>
+                  <h4>AI Testing &amp; Prep Suggestions</h4>
+                  <p>Get a tailored AI schedule for PSAT/NMSQT National Merit qualification, SAT/ACT target windows, and major-specific prep.</p>
                 </div>
               </div>
             </div>
             <div class="track-cta-strip">
-              <span><strong>In 9th, 10th, or 11th grade?</strong> Create an account to enter your stats and build your 4-year guide.</span>
-              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <span><strong>In 9th, 10th, or 11th grade?</strong> Create an account to enter your stats and generate your AI 4-year guide.</span>
+              <div class="track-cta-actions">
                 <button type="button" class="btn-primary" style="font-size: 0.82rem; padding: 0.5rem 1.05rem;" onclick="App.promptEnterStats('hs')">
                   <i class="fas fa-compass" style="margin-right: 4px;"></i> Enter Your Stats →
                 </button>
@@ -243,10 +243,10 @@
           </div>
         </div>
 
-        <!-- Auth Card -->
-        <div class="landing-auth-card" id="landing-auth-card-anchor" style="position: relative; z-index: 2; width: 100%; max-width: 100%; margin: 0;">
+        <!-- Prime Prep Glassmorphism Auth Card -->
+        <div class="landing-auth-card" id="landing-auth-card-anchor">
         <div class="landing-auth-header">
-          <div class="brand-logo" style="margin: 0 auto 12px auto; width: 44px; height: 44px;" aria-label="ShipMates Logo">
+          <div class="brand-logo" aria-label="AdmitAI Logo">
             <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
               <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
@@ -257,12 +257,12 @@
               <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
             </svg>
           </div>
-          <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem;">Create Account to Enter Stats</h3>
-          <p>Create your free account to unlock the Stats Survey &amp; your personalized breakdown</p>
+          <h3>Create Account to Enter Stats</h3>
+          <p>Create your free account to unlock the Stats Survey &amp; your custom AI Breakdown</p>
         </div>
 
         <!-- Dynamic Prompt Banner when user clicks "Enter Your Stats" -->
-        <div id="landing-auth-prompt" style="display: none; background: linear-gradient(135deg, rgba(37, 99, 235, 0.22), rgba(79, 70, 229, 0.16)); border: 1px solid rgba(96, 165, 250, 0.45); color: #DBEAFE; padding: 0.7rem 0.9rem; border-radius: 10px; font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;"></div>
+        <div id="landing-auth-prompt" class="landing-auth-prompt" style="display: none;"></div>
 
         <!-- Auth Tabs: Sign In / Create Account -->
         <div class="auth-tabs">
@@ -295,18 +295,18 @@
         </div>
 
         <!-- Error Message Banner -->
-        <div id="landing-auth-error" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #FCA5A5; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;"></div>
+        <div id="landing-auth-error" class="landing-auth-error" style="display: none;"></div>
 
         <!-- Form: Create Account -->
         <form id="landing-form-signup" onsubmit="App.handleSignupSubmit(event)">
           <div class="form-group" style="margin-bottom: 0.85rem;">
             <label for="auth-signup-name">Full Name</label>
-            <input type="text" id="auth-signup-name" class="input-control" placeholder="Jordan Taylor" required>
+            <input type="text" id="auth-signup-name" class="input-control" placeholder="Maya Lin" required>
           </div>
 
           <div class="form-group" style="margin-bottom: 0.85rem;">
             <label for="auth-signup-email">Email Address</label>
-            <input type="email" id="auth-signup-email" class="input-control" placeholder="you@school.edu" required>
+            <input type="email" id="auth-signup-email" class="input-control" placeholder="student@example.com" required>
           </div>
 
           <div class="form-group" style="margin-bottom: 0.85rem;">
@@ -319,7 +319,7 @@
             <input type="password" id="auth-signup-confirm" class="input-control" placeholder="••••••••" minlength="6" required>
           </div>
 
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem; font-weight: 700; margin-bottom: 0.75rem;">
+          <button type="submit" class="btn-primary auth-submit-btn">
             <i class="fas fa-rocket" style="margin-right: 6px;"></i> Create Account &amp; Start Stats Survey →
           </button>
         </form>
@@ -336,54 +336,54 @@
             <input type="password" id="auth-login-password" class="input-control" placeholder="••••••••" required>
           </div>
 
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem; font-weight: 700; margin-bottom: 0.75rem;">
-            <i class="fas fa-arrow-right" style="margin-right: 6px;"></i> Sign In to My Dashboard
+          <button type="submit" class="btn-primary auth-submit-btn">
+            <i class="fas fa-arrow-right" style="margin-right: 6px;"></i> Sign In to My AI Breakdown
           </button>
         </form>
 
         <!-- Clean 3-Step How It Works Strip -->
-        <div style="background: rgba(9, 13, 22, 0.55); border: 1px solid rgba(148, 163, 184, 0.14); border-radius: 10px; padding: 0.65rem 0.75rem; margin-top: 0.4rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: #93C5FD; font-weight: 600;">
+        <div class="auth-steps-strip">
           <span>① Create Account</span>
-          <span style="color: var(--text-dim);">→</span>
+          <span class="auth-steps-arrow">→</span>
           <span>② Stats Survey</span>
-          <span style="color: var(--text-dim);">→</span>
-          <span>③ Full Breakdown</span>
+          <span class="auth-steps-arrow">→</span>
+          <span>③ AI Breakdown</span>
         </div>
 
-        <div style="font-size: 0.72rem; color: var(--text-dim); text-align: center; margin-top: 0.75rem; line-height: 1.4;">
+        <div class="auth-footer-note">
           All student academic records are stored locally in your client session.
         </div>
       </div>
       </div>
 
-      <!-- Feature Bento Grid -->
-      <div class="landing-bento-section" style="width: 100%; max-width: 1240px; margin-top: 1rem;">
+      <!-- Feature Bento Grid (Linear Style) -->
+      <div class="landing-bento-section">
         <div class="landing-bento-header">
-          <h3>One Stats Survey. Scholarships, Admissions &amp; A 4-Year Game Plan.</h3>
-          <p>Create your account, complete the guided stats survey, and let ShipMates build your personalized admissions and scholarship report.</p>
+          <h3>One Stats Survey. Full AI Breakdown, Scholarships &amp; Game Plan.</h3>
+          <p>Create your account, answer our guided stats survey, and let ShipMates build your personalized admissions and scholarship report.</p>
         </div>
         <div class="landing-bento-grid">
-          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
+          <div class="bento-card" onclick="App.promptEnterStats('senior')">
             <div class="bento-icon-box">💰</div>
             <h4>Merit Scholarships &amp; Aid</h4>
             <p>See automatic $5,000–$28,000/yr university scholarships and state tuition grants your GPA and SAT/ACT unlock right now.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
-          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
+          <div class="bento-card" onclick="App.promptEnterStats('senior')">
             <div class="bento-icon-box">⚖️</div>
             <h4>Guaranteed Admissions</h4>
             <p>Check 15+ state laws that legally guarantee university acceptance when you meet class rank or GPA thresholds.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
-          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
+          <div class="bento-card" onclick="App.promptEnterStats('senior')">
             <div class="bento-icon-box">💵</div>
             <h4>AP &amp; Exam Tuition Cash</h4>
             <p>Convert your AP/IB scores into exact college course waivers and thousands in saved tuition across flagship universities.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
-          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
+          <div class="bento-card" onclick="App.promptEnterStats('hs')">
             <div class="bento-icon-box">🗺️</div>
-            <h4>9th–12th Grade Guide</h4>
+            <h4>9th–12th Grade AI Guide</h4>
             <p>Underclassmen get a custom year-by-year guide for courses, testing, and GPA targets; seniors get priority application deadlines.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
@@ -411,7 +411,7 @@
       <div class="onboarding-screen-card">
         <div class="onboarding-screen-header">
           <div class="brand-group">
-            <div class="brand-logo" aria-label="ShipMates Logo">
+            <div class="brand-logo" aria-label="AdmitAI Logo">
               <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
                 <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
@@ -429,7 +429,7 @@
           </div>
           <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
             <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.5rem 0.9rem; border-color: rgba(96, 165, 250, 0.35); color: #93C5FD;" onclick="Onboarding.finish()">
-              Finish &amp; View Breakdown Now
+              ⚡ Finish &amp; View AI Breakdown Now
             </button>
             <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.5rem 0.9rem;" onclick="App.handleLogout()">
               Sign Out
@@ -455,11 +455,11 @@
   </div>
 
   <div id="view-app" style="display: none; min-height: 100vh;">
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar Navigation (Prime Prep Blueprint) -->
     <nav id="sidebar" aria-label="Main navigation" role="navigation">
       <div class="sidebar-header">
-        <div class="logo" style="cursor: pointer;" onclick="App.switchTab('overview')">
-          <div class="brand-logo" style="width: 34px; height: 34px; border-radius: 9px;" aria-label="ShipMates Logo">
+        <div class="logo">
+          <div class="brand-logo" style="width: 34px; height: 34px; border-radius: 9px;" aria-label="AdmitAI Logo">
             <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
               <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
@@ -478,8 +478,8 @@
       </div>
 
       <div class="nav-links">
-        <a href="#" class="nav-link active" data-tab="ai" title="Profile Breakdown" onclick="event.preventDefault(); App.switchTab('ai')">
-          <i class="fas fa-chart-simple"></i><span>Profile Breakdown</span>
+        <a href="#" class="nav-link active" data-tab="ai" title="AI College Chances" onclick="event.preventDefault(); App.switchTab('ai')">
+          <i class="fas fa-wand-magic-sparkles"></i><span>AI College Chances</span>
         </a>
         <a href="#" class="nav-link" data-tab="status" title="Scholarships &amp; Laws" onclick="event.preventDefault(); App.switchTab('status')">
           <i class="fas fa-award"></i><span>Scholarships &amp; Laws</span>
@@ -492,9 +492,6 @@
         </a>
         <a href="#" class="nav-link" data-tab="colleges" title="All Colleges" onclick="event.preventDefault(); App.switchTab('colleges')">
           <i class="fas fa-building-columns"></i><span>All Colleges</span>
-        </a>
-        <a href="#" class="nav-link" data-tab="overview" title="Overview" onclick="event.preventDefault(); App.switchTab('overview')">
-          <i class="fas fa-table-cells-large"></i><span>Overview</span>
         </a>
       </div>
 
@@ -518,7 +515,7 @@
       </div>
     </nav>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area (Prime Prep Blueprint) -->
     <main id="main-content" role="main" tabindex="-1">
       <!-- Top Bar -->
       <header id="topbar">
@@ -528,7 +525,7 @@
 
         <div class="search-container">
           <i class="fas fa-search"></i>
-          <input type="text" id="global-search" placeholder="Search scholarships, universities, or AP exams..." autocomplete="off" oninput="App.handleGlobalSearch(this.value)">
+          <input type="text" id="global-search" placeholder="Search scholarships, 6,800+ colleges, AP credits..." autocomplete="off" oninput="App.handleGlobalSearch(this.value)">
           <div id="search-results" class="search-dropdown hidden"></div>
         </div>
 
@@ -568,24 +565,24 @@
         <button class="tab-btn active" data-tab="ai" onclick="App.switchTab('ai')"></button>
       </div>
 
-      <!-- Overview / Home View Content -->
+      <!-- Overview / Home View Content (Prime Prep Pattern) -->
       <section id="overview-tab-content" class="tab-content" aria-label="Home Overview">
         <!-- Dynamic Student Mode Banner (Senior vs High Schooler) -->
-        <div id="overview-pathway-banner" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(79, 70, 229, 0.14)); border: 1px solid rgba(96, 165, 250, 0.35); border-radius: 14px; padding: 1rem 1.35rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-          <div style="display: flex; align-items: center; gap: 0.85rem;">
-            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(96, 165, 250, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+        <div id="overview-pathway-banner" class="tf-pathway-banner">
+          <div class="tf-banner-left">
+            <div class="tf-banner-icon">
               🎓
             </div>
             <div>
-              <div style="font-size: 0.95rem; font-weight: 700; color: #FFFFFF;" id="overview-pathway-title">
+              <div class="tf-banner-title" id="overview-pathway-title">
                 Senior &amp; Graduate Mode: Qualified Scholarships &amp; Opportunities Unlocked
               </div>
-              <div style="font-size: 0.8rem; color: var(--text-muted);" id="overview-pathway-desc">
+              <div class="tf-banner-desc" id="overview-pathway-desc">
                 Using your GPA &amp; test scores to match automatic merit aid, guaranteed admissions, and AP tuition dollars.
               </div>
             </div>
           </div>
-          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <div class="tf-banner-actions">
             <button type="button" class="btn-secondary" style="font-size: 0.76rem; padding: 0.4rem 0.8rem;" onclick="App.quickSetGradeMode('senior')">
               🎓 Senior / Grad View
             </button>
@@ -639,7 +636,7 @@
           </div>
           <div class="hero-visual">
             <div class="hero-logo-showcase">
-              <div class="brand-logo" style="width: 84px; height: 84px; margin: 0 auto 12px auto; box-shadow: 0 0 38px rgba(37, 99, 235, 0.45); border-radius: 20px;" aria-label="ShipMates Logo">
+              <div class="brand-logo" style="width: 84px; height: 84px; margin: 0 auto 12px auto; box-shadow: 0 0 38px rgba(37, 99, 235, 0.45); border-radius: 20px;" aria-label="AdmitAI Logo">
                 <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
                   <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
@@ -673,45 +670,45 @@
         </div>
         <div class="features-grid">
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('status')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #2563EB, #4F46E5); box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);">
+            <div class="feature-icon tf-feat-icon-1">
               <i class="fas fa-award"></i>
             </div>
             <h3>Scholarships &amp; Auto-Admit</h3>
             <p>See automatic $5,000–$28,000/yr merit scholarships and state-guaranteed university admissions unlocked by your GPA and test scores.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('roadmap')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #3B82F6, #6366F1); box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);">
+            <div class="feature-icon tf-feat-icon-2">
               <i class="fas fa-compass"></i>
             </div>
             <h3>High School Guide &amp; Plan</h3>
             <p>9th–11th graders get a step-by-step 4-year roadmap for courses and testing; seniors track priority scholarship and application cutoffs.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('credits')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #0284C7, #2563EB); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);">
+            <div class="feature-icon tf-feat-icon-3">
               <i class="fas fa-sack-dollar"></i>
             </div>
             <h3>AP &amp; Exam Tuition Cash</h3>
             <p>Convert your AP/IB scores into exact college course waivers and thousands in saved tuition dollars across top universities.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('colleges')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #0EA5E9, #3B82F6); box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);">
+            <div class="feature-icon tf-feat-icon-4">
               <i class="fas fa-chart-column"></i>
             </div>
             <h3>Colleges &amp; Score Ranges</h3>
             <p>Compare your stats against official 25th–75th percentile SAT/ACT score ranges and merit aid policies at flagship institutions.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('ai')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #4F46E5, #6366F1); box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);">
-              <i class="fas fa-chart-simple"></i>
+            <div class="feature-icon tf-feat-icon-5">
+              <i class="fas fa-robot"></i>
             </div>
-            <h3>Profile Breakdown &amp; Q&amp;A</h3>
+            <h3>AI Scholarship &amp; Prep Advisor</h3>
             <p>Ask custom questions about which scholarships to start, how many SAT points unlock the next merit tier, or what AP classes to take.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.openExportModal()">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #1D4ED8, #3B82F6); box-shadow: 0 6px 18px rgba(29, 78, 216, 0.35);">
+            <div class="feature-icon tf-feat-icon-6">
               <i class="fas fa-file-pdf"></i>
             </div>
-            <h3>Printable Student Report</h3>
+            <h3>Printable Student Dossier</h3>
             <p>Generate a clean 8.5" x 11" PDF report of your qualified scholarships, admissions, and 4-year plan for parents and counselors.</p>
           </div>
         </div>
@@ -870,8 +867,8 @@
           </div>
 
           <!-- Coursework Requirements Checklist -->
-          <div style="margin: 1rem 0 0.5rem 0;">
-            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem;">
+          <div class="tf-curriculum-standards-section">
+            <div class="tf-curriculum-standards-label">
               National College-Prep Curriculum Standards:
             </div>
 
@@ -908,8 +905,8 @@
           </div>
 
           <!-- AP Exams Section -->
-          <div style="margin-top: 1.25rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="tf-modal-ap-section">
+            <div class="tf-modal-ap-header">
               <div>
                 <strong style="font-size: 0.88rem; color: #FFFFFF;">Advanced Placement (AP) Exams</strong>
                 <p style="font-size: 0.72rem; color: var(--text-dim);">Include completed scores (3–5) or mark as Planned for future credit estimation.</p>
@@ -946,11 +943,11 @@
     </div>
   </div>
 
-  <!-- Modal: Printable Student Summary Report (Export/Print) -->
+  <!-- Modal: Counselor & Parent Official Advisory Dossier (Export/Print) -->
   <div class="modal-overlay" id="dossier-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-dossier">
     <div class="modal-card" style="max-width: 900px; max-height: 92vh;">
       <div class="modal-header">
-        <h2 id="modal-title-dossier">Student Academic Standing &amp; Credit Report</h2>
+        <h2 id="modal-title-dossier">Official Academic Standing & Credit Dossier</h2>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
           <button class="btn-primary" onclick="DossierExporter.print()" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
             Print / Save as PDF
@@ -962,43 +959,43 @@
         <!-- Rendered by DossierExporter -->
       </div>
       <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.75rem; color: var(--text-muted);">Print-optimized layout (8.5" x 11" ready). All sources cited.</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Print-optimized layout (8.5" x 11" ready). All sources legally cited.</span>
         <div style="display: flex; gap: 0.5rem;">
           <button type="button" class="btn-secondary" onclick="App.closeAllModals()">Close</button>
-          <button type="button" class="btn-primary" onclick="DossierExporter.print()">Print Report</button>
+          <button type="button" class="btn-primary" onclick="DossierExporter.print()">Print Dossier</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal: About & Architecture -->
+  <!-- Modal: About & Architecture (clean, consumer-facing) -->
   <div class="modal-overlay" id="judges-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-about">
     <div class="modal-card" style="max-width: 800px; max-height: 90vh;">
       <div class="modal-header">
-        <h2 id="modal-title-about">About ShipMates</h2>
+        <h2 id="modal-title-about">About ShipMates: Philosophy &amp; Architecture</h2>
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted);">
         <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
-          <strong style="color: #FFFFFF; font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">Why I Built This</strong>
+          <strong style="color: #FFFFFF; font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">Our Mission</strong>
           <p style="margin: 0;">
-            With public high school counselor ratios averaging over 400:1, it's hard for students to get clear answers on which state admission laws they qualify for or what their AP exams are worth in tuition. ShipMates brings state automatic-admission rules, U.S. Department of Education College Scorecard ranges, and university AP credit tables into one free place.
+            With national high school counselor ratios exceeding 400:1, students and families are often targeted by commercial platforms charging fees for speculative "chance calculators." ShipMates provides a 100% transparent, free, and fact-based scholarship and higher education intelligence platform based solely on codified statutes and verified federal records.
           </p>
         </div>
 
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">How It Works</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">Core Engines</h3>
         <ul style="padding-left: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
           <li>
-            <strong>State Admission Rules:</strong> Checks multi-state automatic admission laws (Texas TEC § 51.803, California UC Regents 2102, Washington GAP, Florida BOG 6.002) against your class rank and coursework.
+            <strong>Deterministic Statutory Rule Engine:</strong> Evaluates multi-state auto-admission policies (Texas TEC § 51.803, California UC Regents 2102, Washington GAP, Florida BOG 6.002) directly against student rank and course benchmarks.
           </li>
           <li>
-            <strong>College Scorecard Percentiles &amp; Profile Match:</strong> Plots your SAT/ACT against official 25th–75th percentile ranges from the U.S. Department of Education College Scorecard and calculates an academic match score.
+            <strong>Federal Scorecard Percentile Engine:</strong> Visualizes official middle-50% SAT/ACT ranges from the U.S. Department of Education College Scorecard with precise delta targets.
           </li>
           <li>
-            <strong>AP/IB Credit Calculator:</strong> Maps exam scores against university registrar catalogs and state credit laws to show course waivers and estimated tuition savings.
+            <strong>AP/IB Higher Education Credit Engine:</strong> Maps exams against verified university registrar catalogs and state credit laws, calculating course code waivers and net tuition dollars saved.
           </li>
           <li>
-            <strong>Printable Summary Report:</strong> Generates a clean 8.5" x 11" PDF summary for family and school counselor meetings.
+            <strong>Counselor Advisory Dossier:</strong> Generates clean, audit-ready PDF summary reports for guidance counselors and family college planning meetings.
           </li>
         </ul>
       </div>
@@ -1016,25 +1013,25 @@
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted);">
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">1. Public Data Sources</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">1. Authoritative Public Data Sources</h3>
         <p style="margin-bottom: 0.85rem;">
-          Every score range, merit threshold, and policy cutoff in <strong>ShipMates</strong> comes from public-domain sources:
+          Every numerical distribution and policy cutoff in <strong>ShipMates</strong> is backed by authoritative public-domain sources:
         </p>
         <ul style="padding-left: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
-          <li><strong>U.S. Department of Education College Scorecard:</strong> Official federal dataset for 25th/75th percentile SAT/ACT ranges, graduation rates, net price, and average tuition.</li>
-          <li><strong>State Automatic Admission Laws:</strong> California UC Regents Policy 2102, Washington RCW 28B.77.020, Georgia USG Policy 4.2, Florida BOG Reg 6.002, and Texas Education Code § 51.803.</li>
-          <li><strong>State AP Credit Laws:</strong> California AB 1985, Illinois Public Act 099-0358, Ohio ORC 3333.163, Florida Title XLVIII, and Texas Education Code § 51.968.</li>
-          <li><strong>University Registrar Catalogs:</strong> Credit equivalency tables from university testing service and registrar offices.</li>
+          <li><strong>U.S. Department of Education College Scorecard:</strong> Official federal database for 25th/75th percentile SAT/ACT ranges, graduation rates, net price, and average tuition.</li>
+          <li><strong>State Automatic Admission Statutes:</strong> California UC Regents Policy 2102, Washington RCW 28B.77.020, Georgia USG Policy 4.2, Florida BOG Reg 6.002, and Texas Education Code § 51.803.</li>
+          <li><strong>State AP Credit Legislation:</strong> California AB 1985, Illinois Public Act 099-0358, Ohio ORC 3333.163, Florida Title XLVIII, and Texas Education Code § 51.968.</li>
+          <li><strong>University Registrar Catalogs:</strong> Direct credit equivalency tables curated from university testing service and registrar offices.</li>
         </ul>
 
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">2. How Profile Match &amp; Standing Are Calculated</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">2. The Anti-Hallucination Standard</h3>
         <p style="margin-bottom: 1rem;">
-          ShipMates first checks whether your residency, class rank percentile, and core coursework qualify you for a binding state automatic-admission guarantee (such as Texas Top 10% / Top 5% or Florida Talented Twenty). For non-guaranteed schools, your Profile Match Score compares your SAT/ACT against the school's published 25th–75th percentile band, baseline admit rate, unweighted GPA, and AP course rigor.
+          Commercial admissions platforms use black-box formulas to output speculative "chance percentages". Because university admissions involve holistic evaluations, chance estimates are mathematically unverifiable. <strong>ShipMates strictly outputs verifiable facts:</strong> published score distributions, exact course waivers, and codified statutory rules.
         </p>
 
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">3. Privacy &amp; Local Storage</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">3. Data Freshness &amp; Verification</h3>
         <p style="margin-bottom: 0.5rem;">
-          Your GPA, test scores, and AP exam entries are stored locally in your browser (`localStorage`) so you can test different scenarios privately.
+          ShipMates tracks annual College Scorecard data releases and legislative statutory revisions, ensuring all score benchmarks, tuition credit evaluations, and statutory eligibility criteria reflect current institutional and legal standards.
         </p>
       </div>
       <div class="modal-footer">
@@ -1067,21 +1064,21 @@
           Enter your Google email (personal <strong>@gmail.com</strong> or school Google Workspace) below to sign in and start your Academic Stats Survey.
         </p>
 
-        <!-- Google Account Connect Form -->
+        <!-- Direct Google Account Connect Form (Primary, Zero Origin-Mismatch Errors) -->
         <form id="google-direct-connect-form" onsubmit="App.handleGoogleDirectConnect(event)">
           <div class="form-group" style="margin-bottom: 0.85rem;">
             <label for="google-direct-email" style="font-size: 0.82rem; font-weight: 600; color: #FFFFFF; display: block; margin-bottom: 0.35rem;">
               Your Google Account Email
             </label>
-            <input type="email" id="google-direct-email" class="input-control" placeholder="you@gmail.com" required style="width: 100%;">
-            <span style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem; display: block;">Works with personal @gmail.com or school Google Workspace accounts.</span>
+            <input type="email" id="google-direct-email" class="input-control" placeholder="iamvik502@gmail.com" required style="width: 100%;">
+            <span style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem; display: block;">Works instantly on any domain with @gmail.com or school Google accounts.</span>
           </div>
 
           <div class="form-group" style="margin-bottom: 1.15rem;">
             <label for="google-direct-name" style="font-size: 0.82rem; font-weight: 600; color: #FFFFFF; display: block; margin-bottom: 0.35rem;">
               Your Full Name
             </label>
-            <input type="text" id="google-direct-name" class="input-control" placeholder="e.g. Jordan Taylor" style="width: 100%;">
+            <input type="text" id="google-direct-name" class="input-control" placeholder="e.g. Vik" style="width: 100%;">
           </div>
 
           <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; background: #1a73e8; border-color: #1a73e8; padding: 0.8rem; font-size: 0.94rem; font-weight: 700; display: flex; align-items: center; gap: 0.55rem;">
@@ -1122,15 +1119,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts -->
-  <script src="js/auth.js?v=4.6"></script>
-  <script src="js/onboarding.js?v=4.6"></script>
-  <script src="js/profile.js?v=4.6"></script>
-  <script src="js/status.js?v=4.6"></script>
-  <script src="js/colleges.js?v=4.6"></script>
-  <script src="js/credits.js?v=4.6"></script>
-  <script src="js/roadmap.js?v=4.6"></script>
-  <script src="js/export.js?v=4.6"></script>
-  <script src="js/ai.js?v=4.6"></script>
-  <script src="js/app.js?v=4.6"></script>
+  <script src="js/auth.js?v=5.0"></script>
+  <script src="js/onboarding.js?v=5.0"></script>
+  <script src="js/profile.js?v=5.0"></script>
+  <script src="js/status.js?v=5.0"></script>
+  <script src="js/colleges.js?v=5.0"></script>
+  <script src="js/credits.js?v=5.0"></script>
+  <script src="js/roadmap.js?v=5.0"></script>
+  <script src="js/export.js?v=5.0"></script>
+  <script src="js/ai.js?v=5.0"></script>
+  <script src="js/app.js?v=5.0"></script>
 </body>
 </html>
