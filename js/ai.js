@@ -504,16 +504,21 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
     <!-- MAIN 2-COLUMN VISUAL HUB: LEFT SIDE (__ Scholarships, __ Auto-Admits, $__ AP Saved) | RIGHT SIDE (College Acceptance Chance Bars) -->
     <div class="ai-layout-grid" style="display: grid; grid-template-columns: 330px 1fr; gap: 1.35rem; align-items: start; margin-bottom: 1.6rem;">
       
-      <!-- LEFT SIDE COLUMN: __ Scholarships, __ Auto-Admits, $__ AP Savings -->
+      <!-- LEFT SIDE COLUMN: 21st.dev [4237] Statistics Cards (__ Scholarships, __ Auto-Admits, $__ AP Savings) -->
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         
-        <!-- 1. __ Scholarships Card -->
-        <div class="card" style="padding: 1.25rem; border-left: 4px solid #3B82F6; background: linear-gradient(145deg, rgba(19, 30, 51, 0.96), rgba(15, 23, 42, 0.94)); cursor: pointer;" onclick="App.switchTab('status')">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-            <span style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #60A5FA;">💰 Merit Scholarships</span>
+        <!-- 1. __ Scholarships Card (21st.dev [4237] Statistics Card 2 Package) -->
+        <div class="card tf-stat-card" style="border-left: 4px solid #3B82F6 !important; cursor: pointer;" onclick="App.switchTab('status')">
+          <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+            <circle cx="230" cy="95" r="85" fill="#3B82F6" fill-opacity="0.10" />
+            <circle cx="265" cy="55" r="55" fill="#60A5FA" fill-opacity="0.12" />
+            <circle cx="205" cy="155" r="45" fill="#818CF8" fill-opacity="0.08" />
+          </svg>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span class="tf-stat-badge" style="background: rgba(37, 99, 235, 0.2); color: #93C5FD;">💰 Merit Scholarships</span>
             <span style="font-size: 0.72rem; color: #93C5FD; font-weight: 700;">View All →</span>
           </div>
-          <div style="font-size: 2rem; font-weight: 800; color: #FFFFFF; line-height: 1.1;">
+          <div style="font-size: 2.05rem; font-weight: 900; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.02em;">
             ${audit.scholarshipsUnlocked.length} Scholarships
           </div>
           <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; margin-bottom: 0.75rem;">
@@ -522,7 +527,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           ${audit.scholarshipsUnlocked.length > 0 ? `
             <div style="display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08);">
               ${audit.scholarshipsUnlocked.slice(0, 3).map(s => `
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; background: rgba(37, 99, 235, 0.12); padding: 0.4rem 0.6rem; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.22); padding: 0.42rem 0.65rem; border-radius: 10px;">
                   <span style="color: #F8FAFC; font-weight: 600;">${s.name.split("—")[0].trim()}</span>
                   <strong style="color: #34D399;">${s.award}</strong>
                 </div>
@@ -531,13 +536,17 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           ` : ''}
         </div>
 
-        <!-- 2. __ Auto-Admits & In-Range Matches Card -->
-        <div class="card" style="padding: 1.25rem; border-left: 4px solid #10B981; background: linear-gradient(145deg, rgba(19, 30, 51, 0.96), rgba(15, 23, 42, 0.94)); cursor: pointer;" onclick="App.switchTab('status')">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-            <span style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #34D399;">🏛️ Admission Guarantees</span>
+        <!-- 2. __ Auto-Admits & In-Range Matches Card (21st.dev [4237] Statistics Card 2 Package) -->
+        <div class="card tf-stat-card" style="border-left: 4px solid #10B981 !important; cursor: pointer;" onclick="App.switchTab('status')">
+          <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+            <circle cx="235" cy="90" r="80" fill="#10B981" fill-opacity="0.10" />
+            <circle cx="270" cy="140" r="50" fill="#34D399" fill-opacity="0.12" />
+          </svg>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.18); color: #6EE7B7;">🏛️ Admission Guarantees</span>
             <span style="font-size: 0.72rem; color: #6EE7B7; font-weight: 700;">State Laws →</span>
           </div>
-          <div style="font-size: 2rem; font-weight: 800; color: #FFFFFF; line-height: 1.1;">
+          <div style="font-size: 2.05rem; font-weight: 900; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.02em;">
             ${audit.qualifications.length} Auto-Admits
           </div>
           <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">
@@ -550,13 +559,17 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           ` : ''}
         </div>
 
-        <!-- 3. $__ AP Savings & Credits Card -->
-        <div class="card" style="padding: 1.25rem; border-left: 4px solid #818CF8; background: linear-gradient(145deg, rgba(19, 30, 51, 0.96), rgba(15, 23, 42, 0.94)); cursor: pointer;" onclick="App.switchTab('credits')">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-            <span style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #A5B4FC;">🎓 AP Tuition Value</span>
+        <!-- 3. $__ AP Savings & Credits Card (21st.dev [4245] Statistics Card 10 Package) -->
+        <div class="card tf-stat-card" style="border-left: 4px solid #818CF8 !important; cursor: pointer;" onclick="App.switchTab('credits')">
+          <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+            <circle cx="225" cy="100" r="85" fill="#6366F1" fill-opacity="0.11" />
+            <circle cx="265" cy="60" r="45" fill="#A5B4FC" fill-opacity="0.12" />
+          </svg>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span class="tf-stat-badge" style="background: rgba(99, 102, 241, 0.2); color: #C7D2FE;">🎓 AP Tuition Value</span>
             <span style="font-size: 0.72rem; color: #C7D2FE; font-weight: 700;">AP Matrix →</span>
           </div>
-          <div style="font-size: 2rem; font-weight: 800; color: #FFFFFF; line-height: 1.1;">
+          <div style="font-size: 2.05rem; font-weight: 900; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.02em;">
             $${audit.maxTuitionSaved.toLocaleString()} Saved
           </div>
           <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">
@@ -565,81 +578,81 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         </div>
 
         <!-- 4. Your Extracurricular & Goal Input Card -->
-        <div class="card" style="padding: 1.15rem; border-left: 4px solid #F59E0B; background: rgba(15, 23, 42, 0.85);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
-            <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #FBBF24;">✍️ Your Activities & Priority</span>
-            <button type="button" class="ob-score-pill" style="font-size: 0.7rem; padding: 0.18rem 0.5rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">Edit</button>
+        <div class="card tf-stat-card" style="border-left: 4px solid #F59E0B !important;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.18); color: #FDE68A;">✍️ Your Activities & Priority</span>
+            <button type="button" class="ob-score-pill" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">Edit</button>
           </div>
-          <div style="font-size: 0.8rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.45rem;">
+          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.48; margin-bottom: 0.45rem;">
             <strong style="color: #93C5FD;">Extracurriculars:</strong> ${audit.ecDetailsText ? escapeHTML(audit.ecDetailsText) : `<span style="color: var(--text-muted);">Tier selected (${profile.extracurricular_tier || 'strong'}) — click Edit to add specific clubs/roles</span>`}
           </div>
-          <div style="font-size: 0.8rem; color: #E2E8F0; line-height: 1.45;">
+          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.48;">
             <strong style="color: #6EE7B7;">#1 Priority Goal:</strong> ${audit.goalDetailsText ? escapeHTML(audit.goalDetailsText) : `<span style="color: var(--text-muted);">${audit.primaryGoal} — click Edit to add specific target details</span>`}
           </div>
         </div>
 
       </div>
 
-      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as Highlighted Acceptance Chance Bars -->
-      <div class="card" style="padding: 1.5rem; background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(11, 18, 33, 0.96)); border: 1px solid rgba(96, 165, 250, 0.28);">
+      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as 21st.dev [23549] Specular Progress Bars -->
+      <div class="card tf-bento-card" style="padding: 1.55rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
           <div>
-            <h3 style="font-size: 1.28rem; font-weight: 800; color: #FFFFFF; margin: 0;">
+            <h3 style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; margin: 0;">
               🏛️ Your Selected Colleges — AI Acceptance Chance Bars
             </h3>
             <p style="font-size: 0.86rem; color: var(--text-muted); margin-top: 0.25rem;">
               Each college bar is highlighted based on your AI-evaluated chance of acceptance using your GPA (${gpaUw}), ${eff.score ? eff.label : 'test status'}, class rank (${pctText}), and activities.
             </p>
           </div>
-          <button type="button" class="btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="Onboarding.open(); Onboarding.goToStep(5);">
+          <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.48rem 0.95rem;" onclick="Onboarding.open(); Onboarding.goToStep(5);">
             + Add / Change Colleges
           </button>
         </div>
 
         <!-- Legend Pills -->
         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
-          <span style="font-size: 0.74rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px; background: rgba(16, 185, 129, 0.14); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);">
+          <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.14); color: #34D399; border-color: rgba(16, 185, 129, 0.32);">
             🟢 72%–97% Likely / Auto-Admit
           </span>
-          <span style="font-size: 0.74rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px; background: rgba(59, 130, 246, 0.14); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.3);">
+          <span class="tf-stat-badge" style="background: rgba(59, 130, 246, 0.14); color: #93C5FD; border-color: rgba(59, 130, 246, 0.32);">
             🔵 48%–71% Target Match
           </span>
-          <span style="font-size: 0.74rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px; background: rgba(245, 158, 11, 0.14); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.3);">
+          <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.14); color: #FCD34D; border-color: rgba(245, 158, 11, 0.32);">
             🟡 28%–47% Competitive Reach
           </span>
-          <span style="font-size: 0.74rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px; background: rgba(239, 68, 68, 0.14); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.3);">
+          <span class="tf-stat-badge" style="background: rgba(239, 68, 68, 0.14); color: #FCA5A5; border-color: rgba(239, 68, 68, 0.32);">
             🔴 &lt;28% High Reach
           </span>
         </div>
 
-        <!-- College Acceptance Chance Horizontal Bars List -->
+        <!-- College Acceptance Chance Horizontal Bars List (21st.dev [23549] Specular Progress Bar Package) -->
         <div id="ai-college-bars-list" style="display: flex; flex-direction: column; gap: 1.05rem;">
           ${audit.evaluatedColleges.map(item => `
-            <div style="background: rgba(19, 30, 51, 0.78); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 14px; padding: 1.05rem 1.2rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.55rem;">
+            <div class="tf-progress-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem;">
                 <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
-                  <strong style="font-size: 1.06rem; font-weight: 800; color: #FFFFFF;">${item.college.name}</strong>
-                  <span style="font-size: 0.72rem; font-weight: 800; padding: 0.2rem 0.55rem; border-radius: 999px; background: ${item.badgeBg}; color: ${item.badgeColor};">
+                  <strong style="font-size: 1.08rem; font-weight: 800; color: #FFFFFF;">${item.college.name}</strong>
+                  <span class="tf-stat-badge" style="background: ${item.badgeBg}; color: ${item.badgeColor};">
                     ${item.tierLabel}
                   </span>
                 </div>
                 <div style="display: flex; align-items: baseline; gap: 0.35rem;">
-                  <span style="font-size: 1.35rem; font-weight: 900; color: ${item.badgeColor};">${item.chancePct}%</span>
-                  <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">AI Chance</span>
+                  <span style="font-size: 1.4rem; font-weight: 900; color: ${item.badgeColor};">${item.chancePct}%</span>
+                  <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">AI Chance</span>
                 </div>
               </div>
 
-              <!-- Highlighted Acceptance Chance Bar -->
-              <div style="width: 100%; height: 24px; background: rgba(9, 14, 26, 0.92); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 999px; overflow: hidden; position: relative; box-shadow: inset 0 2px 6px rgba(0,0,0,0.45);">
-                <div style="width: ${item.chancePct}%; height: 100%; background: ${item.barGradient}; border-radius: 999px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; box-shadow: 0 0 16px rgba(59, 130, 246, 0.35); transition: width 0.5s ease;">
-                  <span style="font-size: 0.74rem; font-weight: 800; color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,0.6);">${item.chancePct}%</span>
+              <!-- 21st.dev [23549] Recessed Specular Progress Bar -->
+              <div class="tf-progress-shell" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${item.chancePct}">
+                <div class="tf-progress-fill" style="width: ${item.chancePct}%; background: ${item.barGradient};">
+                  <span style="font-size: 0.74rem; font-weight: 900; color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,0.65);">${item.chancePct}%</span>
                 </div>
               </div>
 
               <!-- Concise AI Explanation Under Bar -->
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem; color: #CBD5E1;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.55rem; font-size: 0.81rem; color: #CBD5E1;">
                 <span>${item.reasonText}</span>
-                <span style="color: #93C5FD; font-weight: 600;">Middle-50% SAT: ${item.college.sat_total_25}–${item.college.sat_total_75}</span>
+                <span style="color: #93C5FD; font-weight: 700;">Middle-50% SAT: ${item.college.sat_total_25}–${item.college.sat_total_75}</span>
               </div>
             </div>
           `).join('')}
@@ -698,16 +711,16 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         </div>
       </div>
 
-      <!-- Interactive AI Advisor Chat Interface -->
-      <div class="card" style="display: flex; flex-direction: column; height: 480px; padding: 1.15rem;">
+      <!-- Interactive AI Advisor Chat Interface (21st.dev [28186] Joyco Composable Chat Package) -->
+      <div class="card tf-bento-card" style="display: flex; flex-direction: column; height: 485px; padding: 1.25rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.65rem; margin-bottom: 0.65rem;">
           <div>
-            <h3 style="font-size: 1.02rem; font-weight: 700; color: #FFFFFF;">
+            <h3 style="font-size: 1.04rem; font-weight: 800; color: #FFFFFF;">
               💬 Ask Your AI Admissions Advisor
             </h3>
             <span style="font-size: 0.74rem; color: var(--text-muted);">Ask anything about your bars, scholarships, or APs</span>
           </div>
-          <button class="btn-secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="AdmitAI.clearChat()">
+          <button class="btn-secondary" style="font-size: 0.7rem; padding: 0.22rem 0.55rem;" onclick="AdmitAI.clearChat()">
             Clear
           </button>
         </div>
@@ -724,17 +737,17 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           </button>
         </div>
 
-        <div id="ai-chat-messages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: 0.65rem;">
-          <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.8rem; font-size: 0.82rem; line-height: 1.45; color: var(--text-main);">
+        <div id="ai-chat-messages" class="tf-chat-viewport" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div style="background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: 14px; padding: 0.85rem; font-size: 0.83rem; line-height: 1.48; color: var(--text-main);">
             <strong style="color: #60A5FA; display: block; margin-bottom: 0.2rem;">Admit AI Advisor:</strong>
             Hello ${userName}! I've calculated your acceptance chance bars for <strong>${audit.evaluatedColleges.length} universities</strong>. Ask me how to boost your acceptance percentage or unlock more scholarships!
           </div>
         </div>
 
-        <form id="ai-chat-form" onsubmit="event.preventDefault(); AdmitAI.handleChatSubmit();" style="display: flex; gap: 0.5rem;">
-          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask how to boost your acceptance bar..." style="font-size: 0.85rem; min-height: 40px;" autocomplete="off" required>
-          <button type="submit" class="btn-primary" style="padding: 0.45rem 0.95rem; font-size: 0.85rem; white-space: nowrap;">
-            Ask AI →
+        <form id="ai-chat-form" class="tf-chat-input-group" onsubmit="event.preventDefault(); AdmitAI.handleChatSubmit();">
+          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask how to boost your acceptance bar..." style="font-size: 0.85rem;" autocomplete="off" required>
+          <button type="submit" class="btn-primary tf-shimmer-btn" style="padding: 0.48rem 1rem; font-size: 0.82rem; border-radius: 999px; white-space: nowrap;">
+            Ask AI ↑
           </button>
         </form>
       </div>

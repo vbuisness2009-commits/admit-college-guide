@@ -1,0 +1,520 @@
+/**
+ * 21st.dev Component Registry Package Integration
+ * Retrieved via 21st.dev MCP API:
+ * - [833] & [10380] Shimmer Button (dillionverma / Shatlyk1011)
+ * - [774] Stepper (originui/stepper)
+ * - [4237] & [4245] Statistics Cards (sean0205/statistics-card-2 & 10)
+ * - [23549] Specular Progress Bar (ddoemonn/progress-bar)
+ * - [4517] & [9758] Bento Grid & Bento Dashboard (designali-in / daiwiikharihar)
+ * - [1603] Session Sidebar (andrewlu0/sidebar)
+ * - [19152] Auth Form Card (deltacomponents/auth-form)
+ * - [28186] Composable Chat (joyco/chat)
+ */
+
+@keyframes tf-shimmer2 {
+  0% {
+    background-position: 200% 0%;
+  }
+  100% {
+    background-position: -200% 0%;
+  }
+}
+
+@keyframes tf-bar-grow {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes tf-border-beam {
+  0%, 100% {
+    opacity: 0.55;
+    transform: translateX(-15%);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(15%);
+  }
+}
+
+/* ============================================================================
+   1. 21st.dev [833] & [10380] Shimmer Button Package
+   ============================================================================ */
+.btn-primary,
+.tf-shimmer-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    110deg,
+    #1d4ed8 0%,
+    #2563eb 38%,
+    #60a5fa 50%,
+    #3b82f6 62%,
+    #4f46e5 100%
+  ) !important;
+  background-size: 220% 100% !important;
+  animation: tf-shimmer2 4.5s infinite linear;
+  border: 1px solid rgba(147, 197, 253, 0.38) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -8px 10px rgba(255, 255, 255, 0.12),
+    0 8px 24px -4px rgba(37, 99, 235, 0.5) !important;
+  transform: translateZ(0);
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease !important;
+}
+
+.btn-primary:hover,
+.tf-shimmer-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(191, 219, 254, 0.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -6px 12px rgba(255, 255, 255, 0.24),
+    0 14px 32px -4px rgba(59, 130, 246, 0.65) !important;
+}
+
+.btn-primary:active,
+.tf-shimmer-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 -10px 10px rgba(255, 255, 255, 0.25),
+    0 4px 14px rgba(37, 99, 235, 0.4) !important;
+}
+
+.btn-secondary,
+.btn-glass,
+.pill-btn,
+.ob-score-pill {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: linear-gradient(
+    180deg,
+    rgba(30, 41, 59, 0.82) 0%,
+    rgba(15, 23, 42, 0.92) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 4px 12px rgba(2, 6, 23, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-secondary:hover,
+.btn-glass:hover,
+.pill-btn:hover,
+.ob-score-pill:hover {
+  border-color: rgba(96, 165, 250, 0.55);
+  background: linear-gradient(
+    180deg,
+    rgba(37, 99, 235, 0.22) 0%,
+    rgba(15, 23, 42, 0.95) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 20px rgba(37, 99, 235, 0.22);
+  transform: translateY(-1px);
+}
+
+/* ============================================================================
+   2. 21st.dev [4517] & [9758] Bento Grid & Frosted Spotlight Cards
+   ============================================================================ */
+.card,
+.tf-bento-card,
+.rule-card,
+.college-card,
+.onboarding-card,
+.landing-auth-card,
+.landing-showcase-window {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      900px circle at 100% 0%,
+      rgba(59, 130, 246, 0.09),
+      transparent 45%
+    ),
+    radial-gradient(
+      700px circle at 0% 100%,
+      rgba(79, 70, 229, 0.07),
+      transparent 45%
+    ),
+    linear-gradient(
+      165deg,
+      rgba(17, 27, 46, 0.94) 0%,
+      rgba(10, 17, 32, 0.97) 100%
+    ) !important;
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 18px 40px -12px rgba(2, 6, 23, 0.65) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition:
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.24s ease,
+    box-shadow 0.24s ease;
+}
+
+.card::before,
+.tf-bento-card::before,
+.landing-auth-card::before,
+.onboarding-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(96, 165, 250, 0.65),
+    rgba(129, 140, 248, 0.65),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.card:hover,
+.tf-bento-card:hover,
+.rule-card:hover,
+.college-card:hover {
+  border-color: rgba(96, 165, 250, 0.36) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 22px 48px -12px rgba(15, 23, 42, 0.8),
+    0 0 28px -8px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* ============================================================================
+   3. 21st.dev [4237] & [4245] Statistics Card Package (Left-Side KPI Cards)
+   ============================================================================ */
+.tf-stat-card {
+  position: relative;
+  overflow: hidden;
+  padding: 1.3rem 1.35rem !important;
+  border-radius: 20px !important;
+  background: linear-gradient(
+    145deg,
+    rgba(19, 30, 52, 0.96) 0%,
+    rgba(11, 18, 34, 0.98) 100%
+  ) !important;
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 14px 32px -10px rgba(2, 6, 23, 0.65) !important;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tf-stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 20px 40px -10px rgba(37, 99, 235, 0.3) !important;
+}
+
+.tf-stat-card-svg {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  width: 68%;
+  height: 115%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.tf-stat-card > *:not(.tf-stat-card-svg) {
+  position: relative;
+  z-index: 1;
+}
+
+.tf-stat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ============================================================================
+   4. 21st.dev [23549] Specular Progress Bar Package (College Acceptance Bars)
+   ============================================================================ */
+.tf-progress-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    160deg,
+    rgba(22, 34, 59, 0.86) 0%,
+    rgba(13, 21, 38, 0.94) 100%
+  );
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  padding: 1.15rem 1.3rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 24px -6px rgba(2, 6, 23, 0.5);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tf-progress-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 14px 32px -6px rgba(37, 99, 235, 0.26);
+}
+
+/* Outer recessed well from 21st.dev [23549] ddoemonn/progress-bar */
+.tf-progress-shell {
+  width: 100%;
+  height: 28px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #070d19;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.75),
+    inset 0 0 0 1px rgba(148, 163, 184, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle 25% / 50% / 75% scale ticks inside the progress shell */
+.tf-progress-shell::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background-image: linear-gradient(
+    to right,
+    transparent 24.8%,
+    rgba(255, 255, 255, 0.07) 25%,
+    transparent 25.2%,
+    transparent 49.8%,
+    rgba(255, 255, 255, 0.09) 50%,
+    transparent 50.2%,
+    transparent 74.8%,
+    rgba(255, 255, 255, 0.07) 75%,
+    transparent 75.2%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Inner specular fill bar from 21st.dev [23549] */
+.tf-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 11px;
+  transform-origin: left center;
+  animation: tf-bar-grow 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.3),
+    0 0 18px rgba(59, 130, 246, 0.35);
+}
+
+/* ============================================================================
+   5. 21st.dev [774] OriginUI Stepper Package (5-Step Stats Survey Navigation)
+   ============================================================================ */
+.ob-step-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(9, 15, 29, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 1.5rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.ob-step-pill {
+  flex: 1;
+  position: relative;
+  border-radius: 12px !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ob-step-pill.active {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.28) 0%,
+    rgba(79, 70, 229, 0.22) 100%
+  ) !important;
+  border-color: rgba(96, 165, 250, 0.75) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 6px 18px -4px rgba(37, 99, 235, 0.45) !important;
+}
+
+.ob-step-pill.completed {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(52, 211, 153, 0.38) !important;
+}
+
+/* 21st.dev Interactive Choice Cards in Survey & Modals */
+.ob-choice-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px !important;
+  background: linear-gradient(
+    155deg,
+    rgba(20, 31, 53, 0.85) 0%,
+    rgba(12, 20, 36, 0.94) 100%
+  ) !important;
+  border: 1.5px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 6px 16px rgba(2, 6, 23, 0.35);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ob-choice-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, 0.58) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 12px 26px -6px rgba(37, 99, 235, 0.3);
+}
+
+.ob-choice-card.selected {
+  background:
+    radial-gradient(
+      400px circle at 100% 0%,
+      rgba(59, 130, 246, 0.22),
+      transparent 70%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(30, 58, 138, 0.42) 0%,
+      rgba(15, 23, 42, 0.96) 100%
+    ) !important;
+  border-color: #3b82f6 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(147, 197, 253, 0.35),
+    0 0 0 1px rgba(59, 130, 246, 0.4),
+    0 12px 28px -6px rgba(37, 99, 235, 0.42) !important;
+}
+
+/* ============================================================================
+   6. 21st.dev [1603] Supabase-Inspired Sidebar & [28186] Joyco Chat Polish
+   ============================================================================ */
+#sidebar {
+  background: linear-gradient(
+    180deg,
+    rgba(9, 15, 28, 0.98) 0%,
+    rgba(6, 11, 22, 0.99) 100%
+  ) !important;
+  border-right: 1px solid rgba(148, 163, 184, 0.14) !important;
+  box-shadow: 10px 0 36px rgba(2, 6, 23, 0.55);
+}
+
+#sidebar .nav-link {
+  border-radius: 12px !important;
+  margin: 0.15rem 0.65rem;
+  padding: 0.7rem 0.95rem !important;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#sidebar .nav-link:hover {
+  background: rgba(30, 41, 59, 0.65) !important;
+  border-color: rgba(148, 163, 184, 0.16);
+  color: #f8fafc !important;
+}
+
+#sidebar .nav-link.active {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.24) 0%,
+    rgba(79, 70, 229, 0.18) 100%
+  ) !important;
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 6px 16px -4px rgba(37, 99, 235, 0.35);
+}
+
+/* 21st.dev [28186] Joyco Chat Input Group & Message Bubbles */
+.tf-chat-viewport {
+  background: rgba(7, 12, 24, 0.85) !important;
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  border-radius: 16px !important;
+  padding: 0.9rem !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+.tf-chat-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(9, 15, 29, 0.95);
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  border-radius: 999px;
+  padding: 0.3rem 0.35rem 0.3rem 1rem;
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(2, 6, 23, 0.35);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tf-chat-input-group:focus-within {
+  border-color: #60a5fa;
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.22),
+    0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.tf-chat-input-group input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: 38px !important;
+  padding: 0.25rem 0.4rem !important;
+  color: #ffffff !important;
+  flex: 1;
+}
+
+.tf-chat-input-group input:focus {
+  outline: none !important;
+}
+
+/* 21st.dev [19152] DeltaComponents Auth Status Badge */
+.tf-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.24rem 0.68rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(37, 99, 235, 0.16);
+  color: #93c5fd;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
