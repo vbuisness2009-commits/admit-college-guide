@@ -246,6 +246,14 @@ const CollegesEngine = {
 
     grid.innerHTML = filtered.map(col => {
       const isSaved = (profile.saved_colleges || []).includes(col.id);
+      const appStatus = ProfileManager.getCollegeStatus ? ProfileManager.getCollegeStatus(col.id, profile) : "working";
+      const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
+      const colSavings = (typeof CreditsEngine !== "undefined" && CreditsEngine.calculateCollegeSavings)
+        ? CreditsEngine.calculateCollegeSavings(col, completedExams, profile.residency)
+        : { credits: 0, tuitionSaved: 0 };
+      const sch = (typeof AdmitAI !== "undefined" && AdmitAI.calculateCollegeScholarshipValue)
+        ? AdmitAI.calculateCollegeScholarshipValue(col, profile, colSavings)
+        : { statsMeritPerYr: 4000, ecAwardsPerYr: 3000, psatMeritPerYr: 0, totalPerYr: 7000, total4YrValue: 28000, programName: `${col.short_name} Merit & Leadership` };
       
       // Range calculation: SAT scale 900 to 1600
       const scaleMin = 900;
@@ -300,9 +308,34 @@ const CollegesEngine = {
               <h3>${col.name}</h3>
               <div class="college-location">${col.city}, ${col.state} · ${col.type}</div>
             </div>
-            <button class="btn-secondary" onclick="CollegesEngine.toggleSave('${col.id}')" style="padding: 0.35rem 0.6rem; font-size: 0.85rem;" title="${isSaved ? 'Remove from saved' : 'Save to compare'}">
-              ${isSaved ? 'Saved' : 'Save'}
-            </button>
+            <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;">
+              ${isSaved ? `
+                <button class="ob-score-pill ${appStatus === 'working' ? 'active' : ''}" onclick="AdmitAI.setCollegeStatus('${col.id}', 'working'); CollegesEngine.renderCards();" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                  🛠️ Working On It
+                </button>
+                <button class="ob-score-pill ${appStatus === 'submitted' ? 'active' : ''}" onclick="AdmitAI.setCollegeStatus('${col.id}', 'submitted'); CollegesEngine.renderCards();" style="font-size: 0.72rem; padding: 0.25rem 0.55rem; ${appStatus === 'submitted' ? 'background:#059669;border-color:#34D399;' : ''}">
+                  ✅ Submitted
+                </button>
+              ` : ''}
+              <button class="btn-secondary" onclick="CollegesEngine.toggleSave('${col.id}')" style="padding: 0.35rem 0.6rem; font-size: 0.82rem;" title="${isSaved ? 'Remove from saved' : 'Select college'}">
+                ${isSaved ? '✓ Selected' : '+ Select'}
+              </button>
+            </div>
+          </div>
+
+          <!-- Personalized Scholarship & EC/Awards Earnings Box -->
+          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(52, 211, 153, 0.32); border-radius: 10px; padding: 0.65rem 0.8rem; margin-bottom: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.3rem;">
+              <strong style="font-size: 0.82rem; color: #34D399;">
+                💰 Est. Scholarship for You: $${sch.totalPerYr.toLocaleString()}/yr ($${sch.total4YrValue.toLocaleString()} 4-Yr)
+              </strong>
+              <span style="font-size: 0.7rem; color: #FDE68A; font-weight: 700;">
+                🏅 ECs &amp; Awards: +$${sch.ecAwardsPerYr.toLocaleString()}/yr
+              </span>
+            </div>
+            <div style="font-size: 0.72rem; color: #CBD5E1;">
+              📊 Stats Merit: $${sch.statsMeritPerYr.toLocaleString()}/yr${sch.psatMeritPerYr > 0 ? ` · 🎓 PSAT Bonus: +$${sch.psatMeritPerYr.toLocaleString()}/yr` : ''} · ${sch.programName}
+            </div>
           </div>
 
           <!-- SAT Middle-50% Range Bar Chart -->

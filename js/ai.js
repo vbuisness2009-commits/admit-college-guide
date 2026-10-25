@@ -151,10 +151,23 @@ const AdmitAI = {
 
     const ecDetailsText = (profile.extracurricular_details || "").trim();
     const goalDetailsText = (profile.priority_goal_details || "").trim();
+    const awardsDetailsText = (profile.awards_details || "").trim();
+    const selectedAwards = Array.isArray(profile.selected_awards) ? profile.selected_awards : [];
+    const psatScore = profile.psat_score || null;
+    const psatIndex = profile.psat_index || (psatScore ? Math.min(228, Math.round(psatScore * 0.15)) : null);
+    const serviceHours = profile.community_service_hours ?? 100;
 
     const evaluatedColleges = (savedColleges.length > 0 ? savedColleges : (collegesData || []).slice(0, 5))
       .map(c => this.evaluateCollegeChance(c, profile))
       .sort((a, b) => b.chancePct - a.chancePct);
+
+    const workingCount = evaluatedColleges.filter(item => item.appStatus === "working").length;
+    const submittedCount = evaluatedColleges.filter(item => item.appStatus === "submitted").length;
+    const maxCollege4YrValue = evaluatedColleges.reduce((mx, item) => Math.max(mx, item.scholarship.total4YrValue), 0);
+    const maxEcAwards4Yr = evaluatedColleges.reduce((mx, item) => Math.max(mx, (item.scholarship.ecAwardsPerYr + item.scholarship.psatMeritPerYr) * 4), 0);
+    const avgEcAwardsPerYr = evaluatedColleges.length > 0
+      ? Math.round(evaluatedColleges.reduce((s, item) => s + item.scholarship.ecAwardsPerYr + item.scholarship.psatMeritPerYr, 0) / evaluatedColleges.length)
+      : 3500;
 
     const personalizedSuggestions = [
       {
@@ -243,7 +256,122 @@ const AdmitAI = {
       grade,
       primaryGoal,
       ecDetailsText,
-      goalDetailsText
+      goalDetailsText,
+      awardsDetailsText,
+      selectedAwards,
+      psatScore,
+      psatIndex,
+      serviceHours,
+      workingCount,
+      submittedCount,
+      maxCollege4YrValue,
+      maxEcAwards4Yr,
+      avgEcAwardsPerYr
+    };
+  },
+
+  /**
+   * Calculates how much money a student's GPA/SAT, ECs, Awards, PSAT & APs can earn at a specific college
+   */
+  calculateCollegeScholarshipValue(college, profile, savingsObj) {
+    const eff = CollegesEngine.getEffectiveSat(profile);
+    const studentSat = eff.score || 1350;
+    const gpaUw = profile.gpa_unweighted || 3.8;
+    const res = profile.residency || "TX";
+    const ecTier = profile.extracurricular_tier || "strong";
+    const ecDetails = (profile.extracurricular_details || "").trim();
+    const awardsDetails = (profile.awards_details || "").trim();
+    const selectedAwards = Array.isArray(profile.selected_awards) ? profile.selected_awards : [];
+    const psat = profile.psat_score || 0;
+    const nmStatus = profile.national_merit_status || (psat >= 1470 ? "semifinalist" : (psat >= 1400 ? "commended" : "none"));
+    const serviceHours = profile.community_service_hours ?? 100;
+    const apTuitionSaved = savingsObj ? savingsObj.tuitionSaved : 0;
+
+    // 1. Academic Stats Merit Scholarship at this college ($/yr)
+    let statsMeritPerYr = 0;
+    if (res === "FL" && college.state === "FL" && gpaUw >= 3.5 && studentSat >= 1340) {
+      statsMeritPerYr = college.tuition_in_state || 6380;
+    } else if (res === "GA" && college.state === "GA" && gpaUw >= 3.7 && studentSat >= 1200) {
+      statsMeritPerYr = college.tuition_in_state || 11180;
+    } else if (college.type === "Public") {
+      if (gpaUw >= 3.9 && studentSat >= college.sat_total_75) {
+        statsMeritPerYr = res === college.state ? 6000 : 14000;
+      } else if (gpaUw >= 3.75 && studentSat >= college.sat_total_25) {
+        statsMeritPerYr = res === college.state ? 3500 : 8500;
+      } else if (gpaUw >= 3.5) {
+        statsMeritPerYr = 2000;
+      }
+    } else {
+      // Private selective institutions (institutional merit / need-merit grant estimate)
+      if (gpaUw >= 3.9 && studentSat >= college.sat_total_75) {
+        statsMeritPerYr = 18000;
+      } else if (gpaUw >= 3.75 && studentSat >= college.sat_total_25) {
+        statsMeritPerYr = 10000;
+      } else {
+        statsMeritPerYr = 5000;
+      }
+    }
+
+    // 2. User's Extracurriculars, Leadership & Awards Earnings at this college ($/yr)
+    const ecBaseMap = { national: 4500, strong: 2800, developing: 1500, starter: 1000 };
+    let ecAwardsPerYr = ecBaseMap[ecTier] || 2500;
+    ecAwardsPerYr += selectedAwards.length * 750;
+    if (ecDetails.length > 10) ecAwardsPerYr += 650;
+    if (awardsDetails.length > 8) ecAwardsPerYr += 650;
+    if (serviceHours >= 100) ecAwardsPerYr += 500;
+    if (serviceHours >= 200) ecAwardsPerYr += 500;
+    ecAwardsPerYr = Math.min(9500, Math.round(ecAwardsPerYr / 250) * 250);
+
+    // 3. PSAT / National Merit Scholarship Bonus at this college ($/yr)
+    let psatMeritPerYr = 0;
+    const nmsSponsorIds = ["tamu", "uf", "purdue", "ut-austin", "uga", "gt"];
+    if (nmStatus === "semifinalist" || psat >= 1470) {
+      psatMeritPerYr = nmsSponsorIds.includes(college.id) ? 10500 : 2500;
+    } else if (nmStatus === "commended" || psat >= 1400) {
+      psatMeritPerYr = nmsSponsorIds.includes(college.id) ? 3000 : 1500;
+    } else if (psat >= 1300) {
+      psatMeritPerYr = 1000;
+    }
+
+    const totalPerYr = statsMeritPerYr + ecAwardsPerYr + psatMeritPerYr;
+    const total4YrValue = (totalPerYr * 4) + apTuitionSaved;
+
+    const collegeProgramNames = {
+      "ut-austin": "Texas Exes Forty Acres & Presidential Achievement Awards",
+      "tamu": "President's Endowed, Brown Foundation & National Merit Package",
+      "uf": "UF Presidential, Lombardi & Bright Futures Honors Package",
+      "uga": "UGA Charter, Foundation Fellowship & Zell Miller Merit",
+      "purdue": "Purdue Trustees, Presidential & Engineering Leadership Grant",
+      "gt": "Stamps President's Scholars & Provost Leadership Award",
+      "umich": "Victors Award, Rogel Scholarship & Departmental Honors",
+      "uc-berkeley": "Regents' & Chancellor's Leadership Scholarship",
+      "ucla": "UCLA Regents & Alumni Leadership Scholarship",
+      "unc": "Morehead-Cain & Robertson Leadership Scholarships",
+      "uva": "Jefferson Scholars & Blue Ridge Merit Program",
+      "uw": "Purple & Gold Merit + Presidential Leadership Award",
+      "uiuc": "Illinois Commitment & Grainger Engineering Merit",
+      "mit": "MIT Institutional Grant & FIRST/STEM Fellowship",
+      "cmu": "Carnegie Scholarship & SCS Presidential Fellowship",
+      "stanford": "Knight-Hennessy Prep & Institutional Grant Aid"
+    };
+    const programName = collegeProgramNames[college.id] || `${college.short_name} Presidential & Departmental Leadership Scholarships`;
+
+    const driverParts = [];
+    if (ecDetails) driverParts.push(`ECs ("${ecDetails.slice(0, 34)}${ecDetails.length > 34 ? '...' : ''}")`);
+    else driverParts.push(`${ecTier.toUpperCase()} EC Tier`);
+    if (selectedAwards.length > 0) driverParts.push(`${selectedAwards.length} Award(s)`);
+    if (psat >= 1350) driverParts.push(`${psat} PSAT`);
+    if (serviceHours >= 100) driverParts.push(`${serviceHours} Service Hrs`);
+
+    return {
+      statsMeritPerYr,
+      ecAwardsPerYr,
+      psatMeritPerYr,
+      apTuitionSaved,
+      totalPerYr,
+      total4YrValue,
+      programName,
+      userDriversLabel: driverParts.join(" + ")
     };
   },
 
@@ -261,6 +389,8 @@ const AdmitAI = {
     const apCount = (profile.ap_exams || []).length;
     const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
     const savings = CreditsEngine.calculateCollegeSavings(college, completedExams, res);
+    const scholarship = this.calculateCollegeScholarshipValue(college, profile, savings);
+    const appStatus = ProfileManager.getCollegeStatus ? ProfileManager.getCollegeStatus(college.id, profile) : "working";
 
     // 1. Check statutory auto-admission guarantee first
     const hasCorePrereqs = !!(profile.math_years_algebra2 && profile.has_endorsement);
@@ -274,6 +404,8 @@ const AdmitAI = {
           badgeBg: "rgba(16, 185, 129, 0.16)",
           badgeColor: "#34D399",
           savings,
+          scholarship,
+          appStatus,
           reasonText: `✓ Top ${pct}% class rank legally guarantees admission to UT Austin under TX SB 175 (Top 5% cutoff)`
         };
       }
@@ -286,6 +418,8 @@ const AdmitAI = {
           badgeBg: "rgba(16, 185, 129, 0.16)",
           badgeColor: "#34D399",
           savings,
+          scholarship,
+          appStatus,
           reasonText: `✓ Top ${pct}% class rank legally guarantees admission under Texas Top 10% Law (TEC § 51.803)`
         };
       }
@@ -300,6 +434,8 @@ const AdmitAI = {
         badgeBg: "rgba(16, 185, 129, 0.16)",
         badgeColor: "#34D399",
         savings,
+        scholarship,
+        appStatus,
         reasonText: `✓ Top ${pct}% rank + college-prep track qualifies for Florida Talented Twenty guarantee`
       };
     }
@@ -383,6 +519,8 @@ const AdmitAI = {
       badgeBg,
       badgeColor,
       savings,
+      scholarship,
+      appStatus,
       reasonText: `${scoreReason} · ${gpaUw.toFixed(2)} GPA · ${ecLabel}${savings.tuitionSaved > 0 ? ` · $${savings.tuitionSaved.toLocaleString()} AP Credit Value` : ''}`
     };
   },
@@ -485,10 +623,10 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
         <div>
           <div style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #60A5FA; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(59, 130, 246, 0.32); padding: 0.28rem 0.7rem; border-radius: 999px; margin-bottom: 0.45rem;">
-            ✨ AI Survey Evaluation · ${audit.major} · ${gpaUw} / ${gpaW} GPA · ${eff.score ? eff.label : 'Test-Optional'} · ${pctText}
+            ✨ AI Survey Evaluation · ${audit.major} · ${gpaUw} / ${gpaW} GPA · ${eff.score ? eff.label : 'Test-Optional'} · ${audit.psatScore ? `${audit.psatScore} PSAT` : 'PSAT Ready'} · ${pctText}
           </div>
-          <h2>${userName}'s AI Stats Breakdown & Personalized Suggestions</h2>
-          <p>See your AI-evaluated acceptance chances for every selected college on the right, and your unlocked scholarships, auto-admits, and AP savings on the left.</p>
+          <h2>${userName}'s AI Stats Breakdown &amp; Personalized Suggestions</h2>
+          <p>See how much scholarship money your GPA/SAT, PSAT, Extracurriculars, and Awards can earn you at every selected college — and mark each college as <strong>Working On It</strong> or <strong>Submitted</strong>.</p>
         </div>
         <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
           <button class="btn-secondary" style="font-size: 0.85rem; padding: 0.55rem 1rem;" onclick="Onboarding.open()">
@@ -501,13 +639,13 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       </div>
     </div>
 
-    <!-- MAIN 2-COLUMN VISUAL HUB: LEFT SIDE (__ Scholarships, __ Auto-Admits, $__ AP Saved) | RIGHT SIDE (College Acceptance Chance Bars) -->
-    <div class="ai-layout-grid" style="display: grid; grid-template-columns: 330px 1fr; gap: 1.35rem; align-items: start; margin-bottom: 1.6rem;">
+    <!-- MAIN 2-COLUMN VISUAL HUB: LEFT SIDE (User Scholarship, EC/Award Earnings, App Tracker) | RIGHT SIDE (College Acceptance & Scholarship Bars) -->
+    <div class="ai-layout-grid" style="display: grid; grid-template-columns: 345px 1fr; gap: 1.35rem; align-items: start; margin-bottom: 1.6rem;">
       
-      <!-- LEFT SIDE COLUMN: 21st.dev [4237] Statistics Cards (__ Scholarships, __ Auto-Admits, $__ AP Savings) -->
+      <!-- LEFT SIDE COLUMN: 21st.dev [4237] User-Focused Scholarship & EC Earnings Cards -->
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         
-        <!-- 1. __ Scholarships Card (21st.dev [4237] Statistics Card 2 Package) -->
+        <!-- 1. __ Scholarships & Total 4-Yr Package Potential Card -->
         <div class="card tf-stat-card" style="border-left: 4px solid #3B82F6 !important; cursor: pointer;" onclick="App.switchTab('status')">
           <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
             <circle cx="230" cy="95" r="85" fill="#3B82F6" fill-opacity="0.10" />
@@ -521,11 +659,11 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           <div style="font-size: 2.05rem; font-weight: 900; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.02em;">
             ${audit.scholarshipsUnlocked.length} Scholarships
           </div>
-          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; margin-bottom: 0.75rem;">
-            ${audit.scholarshipsUnlocked.length > 0 ? `Automatic Merit Scholarships Unlocked (Up to ${audit.scholarshipsUnlocked[0].award})` : `${audit.scholarshipsStretch.length} automatic merit awards within reach`}
+          <div style="font-size: 0.82rem; color: #34D399; font-weight: 700; margin-top: 0.25rem; margin-bottom: 0.65rem;">
+            ${audit.scholarshipsUnlocked.length > 0 ? `Automatic Merit Scholarships Unlocked · Up to $${audit.maxCollege4YrValue.toLocaleString()} 4-Yr Potential` : `Up to $${audit.maxCollege4YrValue.toLocaleString()} 4-Yr Scholarship & Aid Potential`}
           </div>
           ${audit.scholarshipsUnlocked.length > 0 ? `
-            <div style="display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08);">
+            <div style="display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.08);">
               ${audit.scholarshipsUnlocked.slice(0, 3).map(s => `
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.22); padding: 0.42rem 0.65rem; border-radius: 10px;">
                   <span style="color: #F8FAFC; font-weight: 600;">${s.name.split("—")[0].trim()}</span>
@@ -536,72 +674,100 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           ` : ''}
         </div>
 
-        <!-- 2. __ Auto-Admits & In-Range Matches Card (21st.dev [4237] Statistics Card 2 Package) -->
-        <div class="card tf-stat-card" style="border-left: 4px solid #10B981 !important; cursor: pointer;" onclick="App.switchTab('status')">
-          <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
-            <circle cx="235" cy="90" r="80" fill="#10B981" fill-opacity="0.10" />
-            <circle cx="270" cy="140" r="50" fill="#34D399" fill-opacity="0.12" />
-          </svg>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.18); color: #6EE7B7;">🏛️ Admission Guarantees</span>
-            <span style="font-size: 0.72rem; color: #6EE7B7; font-weight: 700;">State Laws →</span>
-          </div>
-          <div style="font-size: 2.05rem; font-weight: 900; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.02em;">
-            ${audit.qualifications.length} Auto-Admits
-          </div>
-          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">
-            ${audit.strongAnchor.length + audit.middleTarget.length} Selected Colleges In/Above Range
-          </div>
-          ${audit.qualifications.length > 0 ? `
-            <div style="margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.78rem; color: #A7F3D0; font-weight: 600;">
-              ✓ ${audit.qualifications[0].title}
-            </div>
-          ` : ''}
-        </div>
-
-        <!-- 3. $__ AP Savings & Credits Card (21st.dev [4245] Statistics Card 10 Package) -->
-        <div class="card tf-stat-card" style="border-left: 4px solid #818CF8 !important; cursor: pointer;" onclick="App.switchTab('credits')">
-          <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
-            <circle cx="225" cy="100" r="85" fill="#6366F1" fill-opacity="0.11" />
-            <circle cx="265" cy="60" r="45" fill="#A5B4FC" fill-opacity="0.12" />
-          </svg>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <span class="tf-stat-badge" style="background: rgba(99, 102, 241, 0.2); color: #C7D2FE;">🎓 AP Tuition Value</span>
-            <span style="font-size: 0.72rem; color: #C7D2FE; font-weight: 700;">AP Matrix →</span>
-          </div>
-          <div style="font-size: 2.05rem; font-weight: 900; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.02em;">
-            $${audit.maxTuitionSaved.toLocaleString()} Saved
-          </div>
-          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">
-            ${audit.maxCreditsSaved} College Credits Waived (${(profile.ap_exams || []).length} APs)
-          </div>
-        </div>
-
-        <!-- 4. Your Extracurricular & Goal Input Card -->
+        <!-- 2. Your ECs, Awards & PSAT Dollar Value Card -->
         <div class="card tf-stat-card" style="border-left: 4px solid #F59E0B !important;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.18); color: #FDE68A;">✍️ Your Activities & Priority</span>
-            <button type="button" class="ob-score-pill" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">Edit</button>
+          <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+            <circle cx="235" cy="90" r="80" fill="#F59E0B" fill-opacity="0.10" />
+            <circle cx="270" cy="140" r="50" fill="#FBBF24" fill-opacity="0.12" />
+          </svg>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.2); color: #FDE68A;">🏅 Your ECs, Awards &amp; PSAT Value</span>
+            <button type="button" class="ob-score-pill" style="font-size: 0.7rem; padding: 0.18rem 0.5rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">+ Add More</button>
           </div>
-          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.48; margin-bottom: 0.45rem;">
-            <strong style="color: #93C5FD;">Extracurriculars:</strong> ${audit.ecDetailsText ? escapeHTML(audit.ecDetailsText) : `<span style="color: var(--text-muted);">Tier selected (${profile.extracurricular_tier || 'strong'}) — click Edit to add specific clubs/roles</span>`}
+          <div style="font-size: 1.9rem; font-weight: 900; color: #FCD34D; line-height: 1.1; letter-spacing: -0.02em;">
+            +$${audit.avgEcAwardsPerYr.toLocaleString()} / yr
           </div>
-          <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.48;">
-            <strong style="color: #6EE7B7;">#1 Priority Goal:</strong> ${audit.goalDetailsText ? escapeHTML(audit.goalDetailsText) : `<span style="color: var(--text-muted);">${audit.primaryGoal} — click Edit to add specific target details</span>`}
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.22rem;">
+            Up to <strong style="color: #FFFFFF;">+$${audit.maxEcAwards4Yr.toLocaleString()} over 4 yrs</strong> from your Activities, ${audit.selectedAwards.length} Award(s), ${audit.serviceHours} Service Hrs${audit.psatScore ? ` &amp; ${audit.psatScore} PSAT` : ''}
+          </div>
+        </div>
+
+        <!-- 3. __ Auto-Admits, $__ AP Saved & Application Tracker Card -->
+        <div class="card tf-stat-card" style="border-left: 4px solid #10B981 !important;">
+          <svg class="tf-stat-card-svg" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+            <circle cx="225" cy="100" r="85" fill="#10B981" fill-opacity="0.10" />
+            <circle cx="265" cy="60" r="45" fill="#34D399" fill-opacity="0.12" />
+          </svg>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.18); color: #6EE7B7;">📋 Guarantees, APs &amp; App Status</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">
+            <div style="font-size: 1.65rem; font-weight: 900; color: #FFFFFF; line-height: 1.1;">
+              ${audit.qualifications.length} Auto-Admits
+            </div>
+            <div style="font-size: 1.15rem; font-weight: 900; color: #A5B4FC;">
+              $${audit.maxTuitionSaved.toLocaleString()} Saved
+            </div>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">
+            ${audit.maxCreditsSaved} AP Credits Waived · ${audit.strongAnchor.length + audit.middleTarget.length} Colleges In Range
+          </div>
+          <div style="display: flex; gap: 0.45rem; margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08);">
+            <span style="flex: 1; text-align: center; font-size: 0.76rem; font-weight: 800; padding: 0.35rem 0.5rem; border-radius: 8px; background: rgba(59, 130, 246, 0.16); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.3);">
+              🛠️ ${audit.workingCount} Working On It
+            </span>
+            <span style="flex: 1; text-align: center; font-size: 0.76rem; font-weight: 800; padding: 0.35rem 0.5rem; border-radius: 8px; background: rgba(16, 185, 129, 0.16); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);">
+              ✅ ${audit.submittedCount} Submitted
+            </span>
+          </div>
+        </div>
+
+        <!-- 4. Interactive User ECs, Awards & PSAT Live Portfolio Card -->
+        <div class="card tf-stat-card" style="border-left: 4px solid #818CF8 !important;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.55rem;">
+            <span class="tf-stat-badge" style="background: rgba(129, 140, 248, 0.2); color: #C7D2FE;">✍️ Your Personal ECs, Awards &amp; PSAT</span>
+            <button type="button" class="ob-score-pill" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">Full Editor</button>
+          </div>
+          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.4rem;">
+            <strong style="color: #93C5FD;">Extracurriculars:</strong> ${audit.ecDetailsText ? escapeHTML(audit.ecDetailsText) : `<span style="color: var(--text-muted);">Tier: ${profile.extracurricular_tier || 'strong'} — add your clubs &amp; roles below</span>`}
+          </div>
+          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.4rem;">
+            <strong style="color: #FCD34D;">Awards &amp; Honors:</strong> ${audit.awardsDetailsText ? escapeHTML(audit.awardsDetailsText) : (audit.selectedAwards.length > 0 ? escapeHTML(audit.selectedAwards.join(", ")) : `<span style="color: var(--text-muted);">Add your awards below to boost college $</span>`)}
+          </div>
+          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.4rem;">
+            <strong style="color: #38BDF8;">PSAT / NMSQT:</strong> ${audit.psatScore ? `${audit.psatScore} Total (${audit.psatIndex || ''} Selection Index)` : `<span style="color: var(--text-muted);">Not entered — add PSAT below</span>`}
+          </div>
+          <div style="font-size: 0.81rem; color: #E2E8F0; line-height: 1.45; margin-bottom: 0.65rem;">
+            <strong style="color: #6EE7B7;">#1 Priority Goal:</strong> ${audit.goalDetailsText ? escapeHTML(audit.goalDetailsText) : `<span style="color: var(--text-muted);">${audit.primaryGoal}</span>`}
+          </div>
+
+          <!-- Interactive 1-Click Live Update Inputs Right on the Dashboard -->
+          <div style="padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 0.45rem;">
+            <div style="font-size: 0.73rem; font-weight: 800; color: #93C5FD; text-transform: uppercase; letter-spacing: 0.04em;">
+              ⚡ Live Update Your ECs, Awards or PSAT:
+            </div>
+            <input type="text" id="dash-quick-ec" class="input-control" style="font-size: 0.8rem; padding: 0.42rem 0.65rem;" value="${escapeHTML(audit.ecDetailsText)}" placeholder="Your ECs (e.g. TSA Webmaster, Robotics President)...">
+            <input type="text" id="dash-quick-awards" class="input-control" style="font-size: 0.8rem; padding: 0.42rem 0.65rem;" value="${escapeHTML(audit.awardsDetailsText)}" placeholder="Your Awards (e.g. TSA State Finalist, AP Scholar)...">
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <input type="number" id="dash-quick-psat" class="input-control" style="font-size: 0.8rem; padding: 0.42rem 0.65rem; flex: 1;" min="320" max="1520" step="10" value="${audit.psatScore || ''}" placeholder="PSAT Score (320-1520)">
+              <button type="button" class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.8rem;" onclick="AdmitAI.saveQuickUserFocus()">
+                Update $ Value
+              </button>
+            </div>
           </div>
         </div>
 
       </div>
 
-      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as 21st.dev [23549] Specular Progress Bars -->
+      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as Acceptance Chance + Scholarship Dollar Bars -->
       <div class="card tf-bento-card" style="padding: 1.55rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
           <div>
             <h3 style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; margin: 0;">
-              🏛️ Your Selected Colleges — AI Acceptance Chance Bars
+              🏛️ Your Selected Colleges — AI Acceptance Chance Bars &amp; Scholarship Value
             </h3>
             <p style="font-size: 0.86rem; color: var(--text-muted); margin-top: 0.25rem;">
-              Each college bar is highlighted based on your AI-evaluated chance of acceptance using your GPA (${gpaUw}), ${eff.score ? eff.label : 'test status'}, class rank (${pctText}), and activities.
+              Every selected college shows your AI acceptance probability, how much scholarship money your <strong>GPA/SAT, ECs, Awards &amp; PSAT</strong> can earn you there, and lets you mark it as <strong>Working On It</strong> or <strong>Submitted</strong>.
             </p>
           </div>
           <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.48rem 0.95rem;" onclick="Onboarding.open(); Onboarding.goToStep(5);">
@@ -626,19 +792,32 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         </div>
 
         <!-- College Acceptance Chance Horizontal Bars List (21st.dev [23549] Specular Progress Bar Package) -->
-        <div id="ai-college-bars-list" style="display: flex; flex-direction: column; gap: 1.05rem;">
+        <div id="ai-college-bars-list" style="display: flex; flex-direction: column; gap: 1.1rem;">
           ${audit.evaluatedColleges.map(item => `
             <div class="tf-progress-card">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem;">
-                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
-                  <strong style="font-size: 1.08rem; font-weight: 800; color: #FFFFFF;">${item.college.name}</strong>
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.6rem;">
+                <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
+                  <strong style="font-size: 1.1rem; font-weight: 800; color: #FFFFFF;">${item.college.name}</strong>
                   <span class="tf-stat-badge" style="background: ${item.badgeBg}; color: ${item.badgeColor};">
                     ${item.tierLabel}
                   </span>
                 </div>
-                <div style="display: flex; align-items: baseline; gap: 0.35rem;">
-                  <span style="font-size: 1.4rem; font-weight: 900; color: ${item.badgeColor};">${item.chancePct}%</span>
-                  <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">AI Chance</span>
+
+                <!-- Interactive 1-Click Application Status Toggles (Working On It / Submitted) -->
+                <div style="display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;">
+                  <div style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(7, 13, 25, 0.85); border: 1px solid rgba(148, 163, 184, 0.2); padding: 0.22rem; border-radius: 999px;">
+                    <button type="button" class="ob-score-pill ${item.appStatus === 'working' ? 'active' : ''}" style="border-radius: 999px; font-size: 0.72rem; padding: 0.22rem 0.65rem; border: none;" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'working')">
+                      🛠️ Working On It
+                    </button>
+                    <button type="button" class="ob-score-pill ${item.appStatus === 'submitted' ? 'active' : ''}" style="border-radius: 999px; font-size: 0.72rem; padding: 0.22rem 0.65rem; border: none; ${item.appStatus === 'submitted' ? 'background: #059669; color: #FFFFFF;' : ''}" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'submitted')">
+                      ✅ Submitted
+                    </button>
+                  </div>
+
+                  <div style="display: flex; align-items: baseline; gap: 0.3rem;">
+                    <span style="font-size: 1.4rem; font-weight: 900; color: ${item.badgeColor};">${item.chancePct}%</span>
+                    <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">AI Chance</span>
+                  </div>
                 </div>
               </div>
 
@@ -649,10 +828,38 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
                 </div>
               </div>
 
-              <!-- Concise AI Explanation Under Bar -->
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.55rem; font-size: 0.81rem; color: #CBD5E1;">
-                <span>${item.reasonText}</span>
-                <span style="color: #93C5FD; font-weight: 700;">Middle-50% SAT: ${item.college.sat_total_25}–${item.college.sat_total_75}</span>
+              <!-- Personalized Scholarship & EC/Award Dollar Earnings Breakdown at This College -->
+              <div style="margin-top: 0.65rem; background: rgba(9, 15, 29, 0.78); border: 1px solid rgba(96, 165, 250, 0.22); border-radius: 12px; padding: 0.7rem 0.9rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.45rem;">
+                  <span style="font-size: 0.84rem; font-weight: 800; color: #34D399;">
+                    💰 Est. Scholarship &amp; Aid at ${item.college.short_name}: $${item.scholarship.totalPerYr.toLocaleString()}/yr ($${item.scholarship.total4YrValue.toLocaleString()} 4-Yr Total)
+                  </span>
+                  <span style="font-size: 0.74rem; font-weight: 700; color: #93C5FD;">
+                    Merit Cutoff: ${item.college.scholarship_deadline || item.college.early_deadline || 'Nov 1'}
+                  </span>
+                </div>
+                <div style="display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
+                  <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(245, 158, 11, 0.16); color: #FDE68A; border: 1px solid rgba(245, 158, 11, 0.3);">
+                    🏅 Your ECs &amp; Awards Earn: +$${item.scholarship.ecAwardsPerYr.toLocaleString()}/yr ($${(item.scholarship.ecAwardsPerYr * 4).toLocaleString()} 4-Yr)
+                  </span>
+                  <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(37, 99, 235, 0.16); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.3);">
+                    📊 GPA/SAT Merit: $${item.scholarship.statsMeritPerYr.toLocaleString()}/yr
+                  </span>
+                  ${item.scholarship.psatMeritPerYr > 0 ? `
+                    <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(56, 189, 248, 0.16); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.3);">
+                      🎓 PSAT / Natl Merit: +$${item.scholarship.psatMeritPerYr.toLocaleString()}/yr
+                    </span>
+                  ` : ''}
+                  ${item.savings.tuitionSaved > 0 ? `
+                    <span style="font-size: 0.74rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.3);">
+                      💵 AP Credits: +$${item.savings.tuitionSaved.toLocaleString()} Waived
+                    </span>
+                  ` : ''}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.77rem; color: #CBD5E1;">
+                  <span>🎯 <strong>${item.scholarship.programName}</strong> · Driven by your ${item.scholarship.userDriversLabel}</span>
+                  <span style="color: #93C5FD; font-weight: 700;">Middle-50% SAT: ${item.college.sat_total_25}–${item.college.sat_total_75}</span>
+                </div>
               </div>
             </div>
           `).join('')}
@@ -792,6 +999,34 @@ AdmitAI.addRecommendedCollege = function(collegeId) {
   ProfileManager.toggleSavedCollege(collegeId);
   const col = CollegesEngine.getById(collegeId);
   App.showToast(`Added ${col ? col.short_name : collegeId} to your target college list!`, "success");
+};
+
+AdmitAI.setCollegeStatus = function(collegeId, status) {
+  if (!collegeId || !status) return;
+  ProfileManager.setCollegeStatus(collegeId, status);
+  const col = CollegesEngine.getById(collegeId);
+  const label = status === "submitted" ? "✅ Submitted" : "🛠️ Working On It";
+  App.showToast(`${col ? col.short_name : collegeId} marked as ${label}!`, "success");
+};
+
+AdmitAI.saveQuickUserFocus = function() {
+  const profile = ProfileManager.get();
+  const ecInput = document.getElementById("dash-quick-ec");
+  const awInput = document.getElementById("dash-quick-awards");
+  const psatInput = document.getElementById("dash-quick-psat");
+  if (ecInput) profile.extracurricular_details = ecInput.value.trim();
+  if (awInput) profile.awards_details = awInput.value.trim();
+  if (psatInput && psatInput.value) {
+    const pVal = parseInt(psatInput.value, 10);
+    if (pVal >= 320 && pVal <= 1520) {
+      profile.psat_score = pVal;
+      profile.psat_index = Math.min(228, Math.round(pVal * 0.15));
+      if (pVal >= 1470) profile.national_merit_status = "semifinalist";
+      else if (pVal >= 1400) profile.national_merit_status = "commended";
+    }
+  }
+  ProfileManager.save(profile);
+  App.showToast("✨ Updated your ECs, Awards & PSAT — recalculated college scholarship values!", "success");
 };
 
 AdmitAI.handleChatSubmit = function() {

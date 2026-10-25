@@ -12,6 +12,9 @@ const ProfileManager = {
       intended_major: "STEM & Engineering",
       extracurricular_tier: "strong",
       extracurricular_details: "",
+      selected_awards: ["AP Scholar / Honor Roll", "TSA / Robotics / STEM Competition"],
+      awards_details: "",
+      community_service_hours: 100,
       primary_goal: "scholarships",
       priority_goal_details: "",
       gpa_unweighted: 3.85,
@@ -23,11 +26,19 @@ const ProfileManager = {
       sat_m: null,
       sat_total: null,
       act_composite: null,
+      psat_score: 1420,
+      psat_index: 214,
+      national_merit_status: "commended",
       math_years_algebra2: true,
       science_years: 4,
       has_endorsement: true,
       fl_prep_complete: false,
       saved_colleges: ["ut-austin", "tamu", "uf"],
+      college_statuses: {
+        "ut-austin": "working",
+        "tamu": "working",
+        "uf": "working"
+      },
       ap_exams: [],
       application_tracker: {}
     };
@@ -67,15 +78,43 @@ const ProfileManager = {
   toggleSavedCollege(collegeId) {
     const profile = this.get();
     const list = profile.saved_colleges || [];
+    if (!profile.college_statuses) profile.college_statuses = {};
     const index = list.indexOf(collegeId);
     if (index > -1) {
       list.splice(index, 1);
     } else {
       list.push(collegeId);
+      if (!profile.college_statuses[collegeId]) {
+        profile.college_statuses[collegeId] = "working";
+      }
     }
     profile.saved_colleges = list;
     this.save(profile);
     return index === -1;
+  },
+
+  setCollegeStatus(collegeId, status) {
+    const profile = this.get();
+    if (!profile.college_statuses) profile.college_statuses = {};
+    profile.college_statuses[collegeId] = status;
+    if (!profile.application_tracker) profile.application_tracker = {};
+    profile.application_tracker[collegeId] = {
+      ...(profile.application_tracker[collegeId] || {}),
+      app_status: status,
+      updated_at: new Date().toISOString()
+    };
+    this.save(profile);
+  },
+
+  getCollegeStatus(collegeId, profileObj) {
+    const p = profileObj || this.get();
+    if (p && p.college_statuses && p.college_statuses[collegeId]) {
+      return p.college_statuses[collegeId];
+    }
+    if (p && p.application_tracker && p.application_tracker[collegeId] && p.application_tracker[collegeId].app_status) {
+      return p.application_tracker[collegeId].app_status;
+    }
+    return "working";
   },
 
   isCollegeSaved(collegeId) {

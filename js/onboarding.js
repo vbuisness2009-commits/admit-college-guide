@@ -24,6 +24,17 @@ const Onboarding = {
       }
       if (typeof this.wizardData.extracurricular_details !== "string") this.wizardData.extracurricular_details = "";
       if (typeof this.wizardData.priority_goal_details !== "string") this.wizardData.priority_goal_details = "";
+      if (typeof this.wizardData.awards_details !== "string") this.wizardData.awards_details = "";
+      if (!Array.isArray(this.wizardData.selected_awards)) {
+        this.wizardData.selected_awards = ["AP Scholar / Honor Roll", "TSA / Robotics / STEM Competition"];
+      }
+      if (typeof this.wizardData.community_service_hours !== "number") this.wizardData.community_service_hours = 100;
+      if (!this.wizardData.college_statuses || typeof this.wizardData.college_statuses !== "object") {
+        this.wizardData.college_statuses = {};
+      }
+      (this.wizardData.saved_colleges || []).forEach(cid => {
+        if (!this.wizardData.college_statuses[cid]) this.wizardData.college_statuses[cid] = "working";
+      });
     } else {
       this.wizardData = {
         name: user ? user.name : "",
@@ -33,6 +44,9 @@ const Onboarding = {
         intended_major: "STEM & Engineering",
         extracurricular_tier: "strong",
         extracurricular_details: "",
+        selected_awards: ["AP Scholar / Honor Roll", "TSA / Robotics / STEM Competition"],
+        awards_details: "",
+        community_service_hours: 100,
         primary_goal: defaultGrade >= 12 ? "scholarships" : "roadmap",
         priority_goal_details: "",
         gpa_unweighted: 3.85,
@@ -44,11 +58,21 @@ const Onboarding = {
         sat_m: 730,
         sat_total: 1420,
         act_composite: 31,
+        psat_score: 1420,
+        psat_index: 214,
+        national_merit_status: "commended",
         math_years_algebra2: true,
         science_years: 4,
         has_endorsement: true,
         fl_prep_complete: true,
         saved_colleges: ["ut-austin", "tamu", "uf", "uga", "purdue"],
+        college_statuses: {
+          "ut-austin": "working",
+          "tamu": "working",
+          "uf": "working",
+          "uga": "working",
+          "purdue": "working"
+        },
         ap_exams: [
           { id: "calc_ab", name: "AP Calculus AB", score: 5, status: "completed" },
           { id: "eng_lang", name: "AP English Language & Composition", score: 4, status: "completed" },
@@ -149,6 +173,16 @@ const Onboarding = {
           this.wizardData.sat_total = (rwVal && mVal) ? (rwVal + mVal) : null;
           this.wizardData.act_composite = (act && act.value) ? parseInt(act.value, 10) : null;
         }
+        const psatEl = document.getElementById("ob-psat");
+        const psatIdxEl = document.getElementById("ob-psat-index");
+        if (psatEl && psatEl.value !== "") {
+          this.wizardData.psat_score = parseInt(psatEl.value, 10) || null;
+        }
+        if (psatIdxEl && psatIdxEl.value !== "") {
+          this.wizardData.psat_index = parseInt(psatIdxEl.value, 10) || null;
+        } else if (this.wizardData.psat_score) {
+          this.wizardData.psat_index = Math.min(228, Math.round(this.wizardData.psat_score * 0.15));
+        }
         break;
       }
       case 4: {
@@ -160,6 +194,8 @@ const Onboarding = {
         const goal = document.getElementById("ob-goal");
         const ecDetails = document.getElementById("ob-ec-details");
         const goalDetails = document.getElementById("ob-goal-details");
+        const awardsDetails = document.getElementById("ob-awards-details");
+        const serviceHours = document.getElementById("ob-service-hours");
         if (alg2) this.wizardData.math_years_algebra2 = alg2.checked;
         if (sci) {
           const parsedSci = parseInt(sci.value, 10);
@@ -174,6 +210,12 @@ const Onboarding = {
         }
         if (goalDetails && goalDetails.value !== undefined && goalDetails.value.trim() !== "") {
           this.wizardData.priority_goal_details = goalDetails.value.trim();
+        }
+        if (awardsDetails && awardsDetails.value !== undefined && awardsDetails.value.trim() !== "") {
+          this.wizardData.awards_details = awardsDetails.value.trim();
+        }
+        if (serviceHours && serviceHours.value !== "") {
+          this.wizardData.community_service_hours = parseInt(serviceHours.value, 10) || 0;
         }
         break;
       }
@@ -211,9 +253,9 @@ const Onboarding = {
     const stepTitles = [
       { num: 1, title: "Track & Major", sub: "Grade & State" },
       { num: 2, title: "GPA & Rank", sub: "1-Click Presets" },
-      { num: 3, title: "SAT / ACT", sub: "Test Scores" },
-      { num: 4, title: "Activities & Goal", sub: "Course Rigor" },
-      { num: 5, title: "APs & Colleges", sub: "1-Click Tap Grid" }
+      { num: 3, title: "SAT, ACT & PSAT", sub: "Merit & NMSQT" },
+      { num: 4, title: "ECs & Awards", sub: "Scholarship Boost" },
+      { num: 5, title: "APs & Colleges", sub: "Status Tracker" }
     ];
 
     const stepNavHtml = `
@@ -477,12 +519,22 @@ const Onboarding = {
       case 3: {
         const hasScores = !this.wizardData.no_test_checked && this.wizardData.sat_rw && this.wizardData.sat_m;
         const totalSat = hasScores ? (this.wizardData.sat_rw + this.wizardData.sat_m) : "Test-Optional / Not Entered";
+        const curPsat = this.wizardData.psat_score || "";
+        const curPsatIdx = this.wizardData.psat_index || (curPsat ? Math.min(228, Math.round(curPsat * 0.15)) : "");
+        const nmStatus = this.wizardData.national_merit_status || (curPsat >= 1470 ? "semifinalist" : (curPsat >= 1400 ? "commended" : "none"));
+        const psatBannerMsg = curPsat >= 1470
+          ? `🏆 ${curPsat} PSAT (${curPsatIdx} Selection Index): National Merit Semifinalist/Finalist Track — Unlocks $10,000/yr to Full-Ride ($112,000–$140,000+) packages at Alabama, Texas A&M, UF, UT Dallas, Purdue & Oklahoma!`
+          : curPsat >= 1400
+            ? `⭐ ${curPsat} PSAT (${curPsatIdx} Selection Index): National Merit Commended / Recognition Track — Unlocks +$2,000–$6,000/yr Honors & National Recognition scholarships!`
+            : curPsat >= 1200
+              ? `📈 ${curPsat} PSAT (${curPsatIdx} Selection Index): Strong Honors Baseline — Projects to a ${Math.min(1600, curPsat + 90)}+ SAT with targeted prep!`
+              : `Tap a PSAT preset below or enter your PSAT / NMSQT score to calculate National Merit & Recognition scholarships.`;
         html = `
           <div class="onboarding-step-body">
             ${stepNavHtml}
             <div class="step-title-group">
-              <h3>3. Standardized Test Scores (SAT / ACT)</h3>
-              <p>Click any 1-click score preset card below, enter your exact section scores, or select Test-Optional.</p>
+              <h3>3. Standardized Testing: SAT, ACT & PSAT / National Merit</h3>
+              <p>Click any 1-click SAT/ACT preset and PSAT/NMSQT preset below to calculate automatic merit and National Merit scholarships.</p>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
@@ -538,6 +590,67 @@ const Onboarding = {
                 <strong style="color: #34D399; font-size: 1.35rem; font-weight: 800;" id="ob-sat-total-live">${totalSat}</strong>
               </div>
             </div>
+
+            <!-- Interactive PSAT / NMSQT & National Merit Scholarship Section -->
+            <div style="margin-top: 1.65rem; background: rgba(15, 23, 42, 0.82); border: 1.5px solid rgba(96, 165, 250, 0.4); border-radius: 16px; padding: 1.25rem 1.35rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <div>
+                  <h4 style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF; margin: 0;">
+                    🎓 PSAT / NMSQT Score & National Merit Scholarship Calculator (1-Click)
+                  </h4>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">
+                    Did you take the PSAT/NMSQT or PSAT 10? National Merit & College Board Recognition unlock $2,500/yr to Full-Ride university packages!
+                  </span>
+                </div>
+                <span style="font-size: 0.74rem; font-weight: 800; color: #FCD34D; background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.35); padding: 0.25rem 0.65rem; border-radius: 999px;">
+                  💰 Up to $140,000+ National Merit Value
+                </span>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr)); gap: 0.7rem; margin-bottom: 1rem;">
+                ${[
+                  { psat: 1490, idx: 224, status: "semifinalist", badge: "🏆 Semifinalist / Finalist", title: "1480–1520 PSAT (222+ Index)", desc: "Unlocks Full-Tuition / $28k/yr National Merit packages" },
+                  { psat: 1430, idx: 215, status: "commended", badge: "⭐ Commended / Recognition", title: "1400–1470 PSAT (212–221)", desc: "Unlocks +$2,500–$6,000/yr Honors & Recognition awards" },
+                  { psat: 1320, idx: 198, status: "rising", badge: "📈 Rising Merit Track", title: "1250–1390 PSAT (188–211)", desc: "Strong baseline for 1420+ SAT & university merit tiers" },
+                  { psat: 0, idx: 0, status: "none", badge: "🌱 No PSAT / Skip", title: "Haven't Taken PSAT Yet", desc: "Evaluate using my GPA, SAT/ACT & ECs only" }
+                ].map(p => `
+                  <button type="button" class="ob-choice-card ${(curPsat === p.psat || (p.psat === 0 && !curPsat)) ? 'selected' : ''}" style="padding: 0.85rem 1rem;" onclick="Onboarding.setPsatPreset(${p.psat}, ${p.idx}, '${p.status}')">
+                    <div>
+                      <div style="font-size: 0.72rem; font-weight: 800; color: #93C5FD; margin-bottom: 0.18rem;">${p.badge}</div>
+                      <div style="font-size: 0.96rem; font-weight: 800; color: #FFFFFF;">${p.title}</div>
+                      <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.18rem;">${p.desc}</div>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+
+              <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 0.85rem;">
+                <div class="form-group">
+                  <label for="ob-psat">Your PSAT / NMSQT Total Score <span class="hint">(320–1520)</span></label>
+                  <input type="number" min="320" max="1520" step="10" id="ob-psat" class="input-control" value="${curPsat}" placeholder="e.g. 1440" oninput="Onboarding.updatePsatLive(this.value)">
+                </div>
+                <div class="form-group">
+                  <label for="ob-psat-index">NMSC Selection Index <span class="hint">(48–228)</span></label>
+                  <input type="number" min="48" max="228" id="ob-psat-index" class="input-control" value="${curPsatIdx}" placeholder="e.g. 216" oninput="Onboarding.wizardData.psat_index = parseInt(this.value, 10) || null">
+                </div>
+                <div class="form-group">
+                  <label>National Merit / College Board Recognition</label>
+                  <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; padding-top: 0.25rem;">
+                    ${[
+                      { k: "semifinalist", lbl: "🏆 NMSF / Finalist" },
+                      { k: "commended", lbl: "⭐ Commended / CBRP" },
+                      { k: "none", lbl: "Standard" }
+                    ].map(st => `
+                      <button type="button" class="ob-score-pill ${nmStatus === st.k ? 'active' : ''}" onclick="Onboarding.setNationalMeritStatus('${st.k}')">${st.lbl}</button>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+
+              <div id="ob-psat-live-banner" style="background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.32); border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.84rem; color: #DBEAFE; font-weight: 600;">
+                ${psatBannerMsg}
+              </div>
+            </div>
           </div>
         `;
         break;
@@ -548,7 +661,19 @@ const Onboarding = {
         const primaryGoal = this.wizardData.primary_goal || "scholarships";
         const ecDetails = this.wizardData.extracurricular_details || "";
         const goalDetails = this.wizardData.priority_goal_details || "";
+        const awardsDetails = this.wizardData.awards_details || "";
+        const selectedAwards = Array.isArray(this.wizardData.selected_awards) ? this.wizardData.selected_awards : [];
+        const serviceHours = this.wizardData.community_service_hours ?? 100;
         const sciYears = this.wizardData.science_years ?? 4;
+
+        const awardOptions = [
+          { id: "National Merit Semifinalist / Commended", badge: "🎓 +$2,500–$28k/yr", title: "National Merit / CBRP Scholar", desc: "NMSF, Finalist, Commended, or College Board National Recognition" },
+          { id: "TSA / Robotics / STEM Competition", badge: "🏆 +$2,500–$6k/yr", title: "TSA / DECA / FBLA / HOSA / Robotics", desc: "State or national qualifier/winner in CTSO or engineering events" },
+          { id: "AP Scholar / Honor Roll", badge: "📘 +$1,500–$4k/yr", title: "AP Scholar with Distinction / NHS", desc: "AP Scholar, National Honor Society, or Principal's Honor Roll" },
+          { id: "Club President / Founder", badge: "👑 +$2,000–$5k/yr", title: "Club President / Founder / Captain", desc: "Elected student org president, nonprofit founder, or varsity captain" },
+          { id: "Science Fair / USACO / Research", badge: "🔬 +$3,000–$8k/yr", title: "Olympiad / Science Fair / Research", desc: "ISEF, USACO, AIME, Science Olympiad medalist, or university lab research" },
+          { id: "Eagle Scout / Gold Award / Service", badge: "🤝 +$1,500–$4k/yr", title: "100+ Hrs Service / Eagle / Gold Award", desc: "Presidential Volunteer Service Award, Boy/Girl Scout capstone, civic impact" }
+        ];
 
         const ecPrompts = {
           national: {
@@ -654,6 +779,77 @@ const Onboarding = {
                   `).join('')}
                 </div>
                 <textarea id="ob-ec-details" class="input-control" rows="3" style="width: 100%; min-height: 82px; font-size: 0.94rem; line-height: 1.45; resize: vertical;" placeholder="${curEcPrompt.placeholder}" oninput="Onboarding.wizardData.extracurricular_details = this.value">${ecDetails}</textarea>
+              </div>
+            </div>
+
+            <!-- Interactive Awards, Honors & Scholarship Boosters (Calculates College Dollar Value) -->
+            <div style="margin-bottom: 1.65rem; background: rgba(15, 23, 42, 0.72); border: 1.5px solid rgba(245, 158, 11, 0.38); border-radius: 16px; padding: 1.25rem 1.35rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <div>
+                  <label style="font-size: 0.96rem; font-weight: 800; color: #FDE68A; display: block; margin: 0;">
+                    🏅 Your Awards, Honors & Competitions (Tap All That Apply — Boosts College Scholarship $)
+                  </label>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">
+                    Universities award $1,500–$8,500+/yr in extra leadership, departmental, and honors scholarships based on your awards and service hours.
+                  </span>
+                </div>
+                <span style="font-size: 0.75rem; font-weight: 800; color: #34D399; background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(52, 211, 153, 0.35); padding: 0.25rem 0.65rem; border-radius: 999px;">
+                  ${selectedAwards.length} Award Categories Selected
+                </span>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 0.7rem; margin-bottom: 0.95rem;">
+                ${awardOptions.map(aw => {
+                  const isAwSelected = selectedAwards.includes(aw.id);
+                  return `
+                    <button type="button" class="ob-choice-card ${isAwSelected ? 'selected' : ''}" style="padding: 0.82rem 0.95rem;" onclick="Onboarding.toggleAwardCard('${aw.id.replace(/'/g, "\\'")}')">
+                      <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                          <span style="font-size: 0.72rem; font-weight: 800; color: #FCD34D;">${aw.badge}</span>
+                          <span style="font-size: 0.78rem; font-weight: 800; color: ${isAwSelected ? '#34D399' : 'var(--text-muted)'};">${isAwSelected ? '✓ Added' : '+ Tap'}</span>
+                        </div>
+                        <div style="font-size: 0.94rem; font-weight: 800; color: #FFFFFF;">${aw.title}</div>
+                        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.15rem;">${aw.desc}</div>
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1.6fr 0.8fr; gap: 0.95rem; align-items: start;">
+                <div>
+                  <label for="ob-awards-details" style="font-size: 0.86rem; font-weight: 800; color: #FDE68A; display: block; margin-bottom: 0.4rem;">
+                    🏆 List Your Specific Awards, Placements & Honors:
+                  </label>
+                  <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                    ${[
+                      "TSA State Finalist",
+                      "AP Scholar with Distinction",
+                      "National Merit Commended",
+                      "DECA / FBLA State Winner",
+                      "Varsity Scholar-Athlete",
+                      "Science Olympiad Medalist"
+                    ].map(tag => `
+                      <button type="button" class="ob-score-pill" style="font-size: 0.71rem; padding: 0.2rem 0.52rem;" onclick="Onboarding.appendAwardDetail('${tag}')">+ ${tag}</button>
+                    `).join('')}
+                  </div>
+                  <textarea id="ob-awards-details" class="input-control" rows="2" style="width: 100%; min-height: 68px; font-size: 0.9rem; line-height: 1.4;" placeholder="e.g. 1st Place TSA Webmaster Regional, AP Scholar with Distinction, National Merit Commended, NHS Vice President..." oninput="Onboarding.wizardData.awards_details = this.value">${awardsDetails}</textarea>
+                </div>
+
+                <div style="background: rgba(9, 14, 26, 0.75); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 12px; padding: 0.85rem 1rem;">
+                  <label for="ob-service-hours" style="font-size: 0.84rem; font-weight: 800; color: #93C5FD; display: block; margin-bottom: 0.35rem;">
+                    🤝 Community Service Hours
+                  </label>
+                  <input type="number" min="0" max="2000" step="10" id="ob-service-hours" class="input-control" value="${serviceHours}" style="margin-bottom: 0.5rem;" oninput="Onboarding.wizardData.community_service_hours = parseInt(this.value, 10) || 0">
+                  <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                    ${[50, 100, 150, 250].map(hrs => `
+                      <button type="button" class="ob-score-pill ${serviceHours === hrs ? 'active' : ''}" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="Onboarding.setServiceHours(${hrs})">${hrs}+ hrs</button>
+                    `).join('')}
+                  </div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.45rem;">
+                    100+ hrs unlocks Bright Futures & university service scholarships.
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -890,11 +1086,12 @@ const Onboarding = {
               </div>
 
               <!-- Spacious 3-Column Clickable College Cards -->
-              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; max-height: 420px; overflow-y: auto; padding: 0.25rem;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; max-height: 440px; overflow-y: auto; padding: 0.25rem;">
                 ${filteredColleges.map(c => {
                   const isChecked = savedColleges.includes(c.id);
+                  const colStatus = (this.wizardData.college_statuses && this.wizardData.college_statuses[c.id]) || "working";
                   return `
-                    <button type="button" class="ob-choice-card ${isChecked ? 'selected' : ''}" style="padding: 0.85rem 1rem;" onclick="Onboarding.toggleCollege('${c.id}')">
+                    <div class="ob-choice-card ${isChecked ? 'selected' : ''}" style="padding: 0.85rem 1rem;" onclick="Onboarding.toggleCollege('${c.id}')">
                       <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; width: 100%;">
                         <div>
                           <div style="font-size: 0.96rem; font-weight: 800; color: #FFFFFF;">${c.short_name}</div>
@@ -908,7 +1105,20 @@ const Onboarding = {
                         <span>SAT: ${c.sat_total_25}–${c.sat_total_75}</span>
                         <span>Admit: ${(c.admit_rate * 100).toFixed(0)}%</span>
                       </div>
-                    </button>
+                      ${isChecked ? `
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.12); width: 100%;" onclick="event.stopPropagation();">
+                          <span style="font-size: 0.7rem; color: #E2E8F0; font-weight: 700;">Status:</span>
+                          <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
+                            <button type="button" class="ob-score-pill ${colStatus === 'working' ? 'active' : ''}" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="Onboarding.setCollegeAppStatus('${c.id}', 'working', event)">
+                              🛠️ Working On It
+                            </button>
+                            <button type="button" class="ob-score-pill ${colStatus === 'submitted' ? 'active' : ''}" style="padding: 0.2rem 0.5rem; font-size: 0.7rem; ${colStatus === 'submitted' ? 'background:#059669;border-color:#34D399;' : ''}" onclick="Onboarding.setCollegeAppStatus('${c.id}', 'submitted', event)">
+                              ✅ Submitted
+                            </button>
+                          </div>
+                        </div>
+                      ` : ''}
+                    </div>
                   `;
                 }).join('')}
               </div>
@@ -1003,6 +1213,92 @@ const Onboarding = {
     this.renderStep(4);
     const sciEl = document.getElementById("ob-sci");
     if (sciEl) sciEl.value = yrs;
+  },
+
+  setPsatPreset(psatScore, psatIdx, status) {
+    this.harvestCurrentStepData();
+    this.wizardData.psat_score = psatScore > 0 ? psatScore : null;
+    this.wizardData.psat_index = psatIdx > 0 ? psatIdx : null;
+    this.wizardData.national_merit_status = status || "none";
+    if (status === "semifinalist" || status === "commended") {
+      if (!Array.isArray(this.wizardData.selected_awards)) this.wizardData.selected_awards = [];
+      if (!this.wizardData.selected_awards.includes("National Merit Semifinalist / Commended")) {
+        this.wizardData.selected_awards.push("National Merit Semifinalist / Commended");
+      }
+    }
+    this.renderStep(3);
+    const psatEl = document.getElementById("ob-psat");
+    const psatIdxEl = document.getElementById("ob-psat-index");
+    if (psatEl) psatEl.value = psatScore > 0 ? psatScore : "";
+    if (psatIdxEl) psatIdxEl.value = psatIdx > 0 ? psatIdx : "";
+  },
+
+  updatePsatLive(val) {
+    const score = parseInt(val, 10) || 0;
+    this.wizardData.psat_score = score > 0 ? score : null;
+    const idx = score > 0 ? Math.min(228, Math.round(score * 0.15)) : null;
+    this.wizardData.psat_index = idx;
+    if (score >= 1470) this.wizardData.national_merit_status = "semifinalist";
+    else if (score >= 1400) this.wizardData.national_merit_status = "commended";
+    const idxEl = document.getElementById("ob-psat-index");
+    if (idxEl) idxEl.value = idx || "";
+    const banner = document.getElementById("ob-psat-live-banner");
+    if (banner) {
+      banner.innerText = score >= 1470
+        ? `🏆 ${score} PSAT (${idx} Selection Index): National Merit Semifinalist/Finalist Track — Unlocks $10,000/yr to Full-Ride ($112,000–$140,000+) packages at Alabama, Texas A&M, UF, UT Dallas, Purdue & Oklahoma!`
+        : score >= 1400
+          ? `⭐ ${score} PSAT (${idx} Selection Index): National Merit Commended / Recognition Track — Unlocks +$2,000–$6,000/yr Honors & National Recognition scholarships!`
+          : score >= 1200
+            ? `📈 ${score} PSAT (${idx} Selection Index): Strong Honors Baseline — Projects to a ${Math.min(1600, score + 90)}+ SAT with targeted prep!`
+            : `Tap a PSAT preset or enter your PSAT / NMSQT score to calculate National Merit & Recognition scholarships.`;
+    }
+  },
+
+  setNationalMeritStatus(status) {
+    this.harvestCurrentStepData();
+    this.wizardData.national_merit_status = status;
+    this.renderStep(3);
+  },
+
+  toggleAwardCard(awardId) {
+    this.harvestCurrentStepData();
+    if (!Array.isArray(this.wizardData.selected_awards)) this.wizardData.selected_awards = [];
+    const idx = this.wizardData.selected_awards.indexOf(awardId);
+    if (idx > -1) {
+      this.wizardData.selected_awards.splice(idx, 1);
+    } else {
+      this.wizardData.selected_awards.push(awardId);
+    }
+    this.renderStep(4);
+  },
+
+  appendAwardDetail(tag) {
+    this.harvestCurrentStepData();
+    const cur = (this.wizardData.awards_details || "").trim();
+    if (!cur.toLowerCase().includes(tag.toLowerCase())) {
+      this.wizardData.awards_details = cur ? `${cur}, ${tag}` : tag;
+    }
+    this.renderStep(4);
+    const awBox = document.getElementById("ob-awards-details");
+    if (awBox) {
+      awBox.value = this.wizardData.awards_details;
+      if (awBox.focus) awBox.focus();
+    }
+  },
+
+  setServiceHours(hrs) {
+    this.harvestCurrentStepData();
+    this.wizardData.community_service_hours = hrs;
+    this.renderStep(4);
+    const sEl = document.getElementById("ob-service-hours");
+    if (sEl) sEl.value = hrs;
+  },
+
+  setCollegeAppStatus(collegeId, status, ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    if (!this.wizardData.college_statuses) this.wizardData.college_statuses = {};
+    this.wizardData.college_statuses[collegeId] = status;
+    this.renderStep(5);
   },
 
   checkAllCoursework() {
@@ -1190,17 +1486,22 @@ const Onboarding = {
 
   toggleCollege(collegeId) {
     if (!this.wizardData.saved_colleges) this.wizardData.saved_colleges = [];
+    if (!this.wizardData.college_statuses) this.wizardData.college_statuses = {};
     const idx = this.wizardData.saved_colleges.indexOf(collegeId);
     if (idx > -1) {
       this.wizardData.saved_colleges.splice(idx, 1);
     } else {
       this.wizardData.saved_colleges.push(collegeId);
+      if (!this.wizardData.college_statuses[collegeId]) {
+        this.wizardData.college_statuses[collegeId] = "working";
+      }
     }
     this.renderStep(5);
   },
 
   addCollegeBundle(bundleType) {
     const all = CollegesEngine.getAll();
+    if (!this.wizardData.college_statuses) this.wizardData.college_statuses = {};
     if (bundleType === "clear") {
       this.wizardData.saved_colleges = [];
       this.renderStep(5);
@@ -1223,6 +1524,9 @@ const Onboarding = {
     }
     const set = new Set([...(this.wizardData.saved_colleges || []), ...ids]);
     this.wizardData.saved_colleges = Array.from(set);
+    this.wizardData.saved_colleges.forEach(cid => {
+      if (!this.wizardData.college_statuses[cid]) this.wizardData.college_statuses[cid] = "working";
+    });
     this.renderStep(5);
     App.showToast(`Updated target college list (${this.wizardData.saved_colleges.length} selected)!`, "success");
   },

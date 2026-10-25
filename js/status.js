@@ -278,6 +278,20 @@ const StatusEngine = {
           </div>
 
           <div class="stat-row">
+            <span class="stat-label">PSAT / NMSQT</span>
+            <span class="stat-value" style="color: #38BDF8;">
+              ${profile.psat_score ? `${profile.psat_score} <span style="font-size: 0.74rem; color: var(--text-dim);">(${profile.psat_index || Math.round(profile.psat_score * 0.15)} Index)</span>` : 'Not entered'}
+            </span>
+          </div>
+
+          <div class="stat-row">
+            <span class="stat-label">Awards &amp; ECs logged</span>
+            <span class="stat-value" style="color: #FCD34D; font-size: 0.84rem;">
+              ${(profile.selected_awards || []).length} Awards · ${(profile.extracurricular_tier || 'strong').toUpperCase()}
+            </span>
+          </div>
+
+          <div class="stat-row">
             <span class="stat-label">Core College Prep Curriculum</span>
             <span class="stat-value" style="color: ${profile.math_years_algebra2 && (profile.science_years ?? 0) >= 4 && profile.has_endorsement ? 'var(--success)' : 'var(--warning)'}; font-size: 0.85rem;">
               ${profile.math_years_algebra2 && (profile.science_years ?? 0) >= 4 && profile.has_endorsement ? 'Distinguished Ready' : 'Action Needed'}
@@ -318,10 +332,14 @@ const StatusEngine = {
               ` : (profile.saved_colleges || []).map(id => {
                 const c = (collegesData || []).find(col => col.id === id);
                 if (!c) return '';
+                const appSt = ProfileManager.getCollegeStatus ? ProfileManager.getCollegeStatus(c.id, profile) : "working";
                 return `
-                  <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.8rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 0.42rem 0.65rem; border-radius: 8px; font-size: 0.8rem; gap: 0.4rem;">
                     <span>${c.short_name} (${c.state})</span>
-                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">${(c.admit_rate * 100).toFixed(0)}% admit</span>
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                      <button type="button" class="ob-score-pill ${appSt === 'working' ? 'active' : ''}" style="font-size: 0.68rem; padding: 0.14rem 0.42rem;" onclick="AdmitAI.setCollegeStatus('${c.id}', 'working'); StatusEngine.render('status-tab-content', ProfileManager.get(), CollegesEngine.getAll());">🛠️ Working</button>
+                      <button type="button" class="ob-score-pill ${appSt === 'submitted' ? 'active' : ''}" style="font-size: 0.68rem; padding: 0.14rem 0.42rem; ${appSt === 'submitted' ? 'background:#059669;border-color:#34D399;' : ''}" onclick="AdmitAI.setCollegeStatus('${c.id}', 'submitted'); StatusEngine.render('status-tab-content', ProfileManager.get(), CollegesEngine.getAll());">✅ Submitted</button>
+                    </div>
                   </div>
                 `;
               }).join('')}
@@ -331,6 +349,49 @@ const StatusEngine = {
 
         <!-- Scholarships & Automatic Admission Column -->
         <div class="rules-container">
+          <!-- Section 0: Personalized EC, Awards & PSAT Scholarship Earnings by College -->
+          <div style="margin-bottom: 1.85rem; background: rgba(15, 23, 42, 0.78); border: 1.5px solid rgba(245, 158, 11, 0.35); border-radius: 16px; padding: 1.25rem 1.35rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.9rem;">
+              <div>
+                <h3 style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF; margin: 0;">🏅 How Much Your ECs, Awards &amp; PSAT Earn at Your Colleges</h3>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  Personalized 4-year scholarship projection combining your GPA/SAT Merit, Extracurricular Leadership (${(profile.extracurricular_tier || 'strong').toUpperCase()}), ${(profile.selected_awards || []).length} Award(s)${profile.psat_score ? `, and ${profile.psat_score} PSAT` : ''}.
+                </p>
+              </div>
+              <button type="button" class="btn-secondary" style="font-size: 0.76rem; padding: 0.38rem 0.75rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">
+                + Edit My ECs, Awards &amp; PSAT
+              </button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+              ${((profile.saved_colleges || []).map(id => (collegesData || []).find(col => col.id === id)).filter(Boolean)).map(col => {
+                const completedExams = (profile.ap_exams || []).filter(e => e.status === "completed");
+                const sav = (typeof CreditsEngine !== "undefined" && CreditsEngine.calculateCollegeSavings) ? CreditsEngine.calculateCollegeSavings(col, completedExams, profile.residency) : { tuitionSaved: 0 };
+                const sch = (typeof AdmitAI !== "undefined" && AdmitAI.calculateCollegeScholarshipValue)
+                  ? AdmitAI.calculateCollegeScholarshipValue(col, profile, sav)
+                  : { statsMeritPerYr: 4000, ecAwardsPerYr: 3000, psatMeritPerYr: 0, totalPerYr: 7000, total4YrValue: 28000, programName: `${col.short_name} Merit`, userDriversLabel: "Profile" };
+                return `
+                  <div style="background: rgba(9, 14, 26, 0.82); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 12px; padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                    <div>
+                      <div style="font-size: 0.96rem; font-weight: 800; color: #FFFFFF;">${col.name}</div>
+                      <div style="font-size: 0.76rem; color: #CBD5E1; margin-top: 0.15rem;">
+                        🎯 <strong>${sch.programName}</strong> · Driven by your ${sch.userDriversLabel}
+                      </div>
+                      <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem;">
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #FDE68A; background: rgba(245, 158, 11, 0.15); padding: 0.15rem 0.5rem; border-radius: 6px;">🏅 ECs &amp; Awards: +$${sch.ecAwardsPerYr.toLocaleString()}/yr</span>
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #93C5FD; background: rgba(37, 99, 235, 0.15); padding: 0.15rem 0.5rem; border-radius: 6px;">📊 Stats Merit: $${sch.statsMeritPerYr.toLocaleString()}/yr</span>
+                        ${sch.psatMeritPerYr > 0 ? `<span style="font-size: 0.72rem; font-weight: 700; color: #7DD3FC; background: rgba(56, 189, 248, 0.15); padding: 0.15rem 0.5rem; border-radius: 6px;">🎓 PSAT: +$${sch.psatMeritPerYr.toLocaleString()}/yr</span>` : ''}
+                      </div>
+                    </div>
+                    <div style="text-align: right;">
+                      <div style="font-size: 1.2rem; font-weight: 900; color: #34D399;">$${sch.totalPerYr.toLocaleString()} / yr</div>
+                      <div style="font-size: 0.76rem; font-weight: 700; color: #A7F3D0;">$${sch.total4YrValue.toLocaleString()} 4-Yr Total</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
           <!-- Section 1: Automatic Merit Scholarships & Grants -->
           <div style="margin-bottom: 2rem;">
             <div style="margin-bottom: 0.85rem;">
