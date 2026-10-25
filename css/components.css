@@ -1216,6 +1216,196 @@
   gap: 0.45rem;
 }
 
+/* --- Interactive Dual-Track Pathway Switcher --- */
+.track-switcher-wrap {
+  width: 100%;
+  max-width: 860px;
+  margin: 2rem auto 2.5rem auto;
+  position: relative;
+  z-index: 2;
+}
+
+.track-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.track-btn {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  padding: 0.65rem 1.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+}
+
+.track-btn:hover {
+  color: #FFFFFF;
+  border-color: rgba(96, 165, 250, 0.4);
+  background: rgba(30, 41, 59, 0.85);
+  transform: translateY(-1px);
+}
+
+.track-btn.active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(124, 58, 237, 0.25));
+  border-color: #60A5FA;
+  color: #FFFFFF;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.track-pill-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-full);
+  background: rgba(59, 130, 246, 0.2);
+  color: #93C5FD;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.track-btn.active .track-pill-tag {
+  background: #3B82F6;
+  color: #FFFFFF;
+  border-color: #60A5FA;
+}
+
+.track-showcase-card {
+  background: rgba(13, 20, 36, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 40px rgba(59, 130, 246, 0.08);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.track-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.track-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: #FFFFFF;
+}
+
+.track-header-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.15);
+  color: #6EE7B7;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 680px) {
+  .track-grid {
+    grid-template-columns: 1fr;
+  }
+  .track-showcase-card {
+    padding: 1.25rem;
+  }
+}
+
+.track-feature-item {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  transition: all 0.2s ease;
+}
+
+.track-feature-item:hover {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(96, 165, 250, 0.3);
+  transform: translateY(-2px);
+}
+
+.track-feature-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.track-feature-text h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.25rem;
+}
+
+.track-feature-text p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.track-cta-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.75rem 1.15rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.track-cta-strip span {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.track-cta-strip strong {
+  color: #FFFFFF;
+}
+
 /* Bento Grid / Feature Pillars */
 .landing-bento-section {
   margin-top: 3.5rem;

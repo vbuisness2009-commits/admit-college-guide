@@ -117,27 +117,87 @@ const Auth = {
     return { success: true, user: newUser };
   },
 
-  continueAsGuest() {
-    let guestUser = this.getUsers().find(u => u.email === "guest@admitai.org");
+  continueAsGuest(mode = "senior") {
+    const isHs = mode === "hs";
+    const demoProfile = isHs ? {
+      grade_level: 10,
+      residency: "TX",
+      high_school: "Westlake High School",
+      gpa_unweighted: 3.85,
+      gpa_weighted: 4.18,
+      class_rank: 35,
+      class_size: 520,
+      class_percentile: 6.7,
+      sat_rw: 670,
+      sat_m: 700,
+      sat_total: 1370,
+      act_composite: 30,
+      math_years_algebra2: true,
+      science_years: 3,
+      has_endorsement: true,
+      fl_prep_complete: false,
+      saved_colleges: ["ut-austin", "tamu", "uc-berkeley", "uf"],
+      ap_exams: [
+        { id: "ushist", name: "AP United States History", score: 5, status: "completed" },
+        { id: "calc_bc", name: "AP Calculus BC", score: 5, status: "planned" },
+        { id: "csa", name: "AP Computer Science A", score: 5, status: "planned" },
+        { id: "chem", name: "AP Chemistry", score: 4, status: "planned" }
+      ],
+      application_tracker: {}
+    } : {
+      grade_level: 12,
+      residency: "TX",
+      high_school: "Westlake High School",
+      gpa_unweighted: 3.94,
+      gpa_weighted: 4.42,
+      class_rank: 26,
+      class_size: 520,
+      class_percentile: 5.0,
+      sat_rw: 720,
+      sat_m: 760,
+      sat_total: 1480,
+      act_composite: 33,
+      math_years_algebra2: true,
+      science_years: 4,
+      has_endorsement: true,
+      fl_prep_complete: true,
+      saved_colleges: ["ut-austin", "tamu", "umich", "uf"],
+      ap_exams: [
+        { id: "calc_bc", name: "AP Calculus BC", score: 5, status: "completed" },
+        { id: "csa", name: "AP Computer Science A", score: 5, status: "completed" },
+        { id: "chem", name: "AP Chemistry", score: 4, status: "completed" },
+        { id: "ushist", name: "AP United States History", score: 5, status: "completed" },
+        { id: "eng_lang", name: "AP English Language & Composition", score: 5, status: "completed" }
+      ],
+      application_tracker: {}
+    };
+
+    const users = this.getUsers();
+    let guestUser = users.find(u => u.email === "guest@admitai.org");
     if (!guestUser) {
       guestUser = {
         id: "usr_guest_" + Date.now(),
-        name: "Guest Student",
+        name: isHs ? "Guest Student (10th Grade)" : "Guest Student (Senior)",
         email: "guest@admitai.org",
         password: "guest_session_token",
         provider: "guest",
         created_at: new Date().toISOString(),
         onboarding_completed: true,
-        profile: ProfileManager.get()
+        profile: demoProfile
       };
-      const users = this.getUsers();
       users.push(guestUser);
-      try {
-        localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
-      } catch (e) {
-        console.warn("Failed to persist guest user to local storage", e);
-      }
+    } else {
+      guestUser.name = isHs ? "Guest Student (10th Grade)" : "Guest Student (Senior)";
+      guestUser.profile = demoProfile;
+      guestUser.onboarding_completed = true;
     }
+
+    try {
+      localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+    } catch (e) {
+      console.warn("Failed to persist guest user to local storage", e);
+    }
+
     this.setSession(guestUser);
     return { success: true, user: guestUser };
   },

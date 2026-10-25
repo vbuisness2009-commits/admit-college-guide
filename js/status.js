@@ -8,6 +8,117 @@
 const StatusEngine = {
   rulesData: [],
 
+  MERIT_SCHOLARSHIPS: [
+    {
+      id: "ua-presidential",
+      name: "University of Alabama — Presidential Merit Scholarship",
+      award: "$28,000 / yr ($112,000 Total)",
+      min_gpa: 3.5,
+      min_sat: 1420,
+      min_act: 32,
+      state: "ALL",
+      deadline: "Jan 15 Priority",
+      action: "Automatic upon admission with qualifying GPA & test score — no separate scholarship essay required.",
+      url: "https://afford.ua.edu/scholarships/out-of-state-freshman/"
+    },
+    {
+      id: "uarizona-wildcat",
+      name: "University of Arizona — Wildcat Distinction Award",
+      award: "$20,000 – $32,000 / yr",
+      min_gpa: 3.9,
+      min_sat: 0,
+      min_act: 0,
+      state: "ALL",
+      deadline: "Rolling / May 1",
+      action: "100% automatic based on unweighted core GPA (3.90+ unlocks top tier; 3.50+ unlocks $12,500/yr).",
+      url: "https://financialaid.arizona.edu/types-of-aid/scholarships/incoming-first-year-transfer"
+    },
+    {
+      id: "osu-buckeye",
+      name: "Ohio State University — National Buckeye & Maximus Merit",
+      award: "$13,500 – $16,500 / yr ($66,000 Total)",
+      min_gpa: 3.8,
+      min_sat: 1350,
+      min_act: 29,
+      state: "ALL",
+      deadline: "Nov 1 Early Action",
+      action: "Must submit Common App and official scores by the Nov 1 Early Action priority deadline.",
+      url: "https://sfa.osu.edu/incoming-freshmen/about-aid/types-of-aid/scholarships"
+    },
+    {
+      id: "uh-excellence",
+      name: "University of Houston — Academic Excellence Scholarship",
+      award: "$6,000 / yr + In-State Tuition Waiver",
+      min_gpa: 3.7,
+      min_sat: 1320,
+      min_act: 28,
+      state: "ALL",
+      deadline: "Nov 1 Priority",
+      action: "Submit admission application and transcripts by Nov 1; out-of-state recipients also receive an in-state tuition waiver.",
+      url: "https://uh.edu/financial/undergraduate/types-aid/scholarships/"
+    },
+    {
+      id: "purdue-trustees",
+      name: "Purdue University — Trustees & Presidential Scholarship",
+      award: "$10,000 – $16,000 / yr ($64,000 Total)",
+      min_gpa: 3.85,
+      min_sat: 1400,
+      min_act: 31,
+      state: "ALL",
+      deadline: "Nov 1 Early Action",
+      action: "Automatic review when applying by the Nov 1 Early Action deadline on the Common App.",
+      url: "https://www.admissions.purdue.edu/costsandfinaid/freshman.php"
+    },
+    {
+      id: "fl-bright-futures",
+      name: "Florida Bright Futures — Academic Scholars (FAS)",
+      award: "100% Public University Tuition Covered",
+      min_gpa: 3.5,
+      min_sat: 1340,
+      min_act: 29,
+      state: "FL",
+      deadline: "Before Graduation",
+      action: "Florida residents meeting GPA, 1340+ SAT / 29+ ACT, and service hours receive 100% tuition at UF, FSU, UCF, USF.",
+      url: "https://www.floridastudentfinancialaidsg.org/"
+    },
+    {
+      id: "ga-zell-miller",
+      name: "Georgia Zell Miller & HOPE Merit Scholarship",
+      award: "100% Standard Tuition Covered",
+      min_gpa: 3.7,
+      min_sat: 1200,
+      min_act: 26,
+      state: "GA",
+      deadline: "GSFAPPS / FAFSA",
+      action: "Georgia residents with 3.70+ GPA and 1200+ SAT receive 100% tuition at Georgia Tech, UGA, and all USG institutions.",
+      url: "https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-scholarships/"
+    }
+  ],
+
+  evaluateScholarships(profile) {
+    const gpa = profile.gpa_unweighted || 0;
+    const sat = profile.sat_total || 0;
+    const act = profile.act_composite || 0;
+
+    return this.MERIT_SCHOLARSHIPS.map(sch => {
+      const gpaMet = gpa >= sch.min_gpa;
+      const testMet = sch.min_sat === 0 || sat >= sch.min_sat || act >= sch.min_act;
+      const stateMet = sch.state === "ALL" || profile.residency === sch.state;
+      const isQualified = gpaMet && testMet && stateMet;
+
+      const missing = [];
+      if (!gpaMet) missing.push(`Raise GPA to ${sch.min_gpa.toFixed(2)}+ (currently ${gpa ? gpa.toFixed(2) : 'N/A'})`);
+      if (!testMet) missing.push(`Reach ${sch.min_sat}+ SAT or ${sch.min_act}+ ACT (currently ${sat ? sat + ' SAT' : (act ? act + ' ACT' : 'no score')})`);
+      if (!stateMet) missing.push(`Requires ${sch.state} State Residency`);
+
+      return {
+        ...sch,
+        isQualified,
+        missing
+      };
+    });
+  },
+
   async init() {
     try {
       const res = await fetch("data/state_rules.json");
@@ -78,25 +189,36 @@ const StatusEngine = {
       return;
     }
 
-    const studentState = profile.residency || "CA";
+    const isSenior = (profile.grade_level || 11) >= 12;
+    const scholarships = this.evaluateScholarships(profile);
+    const qualifiedScholarshipsCount = scholarships.filter(s => s.isQualified).length;
 
     container.innerHTML = `
-      <!-- AI Quick Callout Banner -->
-      <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div style="width: 28px; height: 28px; border-radius: 6px; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">
-            AI
+      <!-- Dynamic Pathway Banner -->
+      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(16, 185, 129, 0.12)); border: 1px solid rgba(96, 165, 250, 0.35); border-radius: var(--radius-lg); padding: 1.15rem 1.35rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <div style="width: 38px; height: 38px; border-radius: 10px; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700;">
+            ${isSenior ? '🎓' : '🎒'}
           </div>
           <div>
-            <strong style="color: #FFFFFF; font-size: 0.92rem;">Admit AI Nationwide Eligibility Scanner Active</strong>
-            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 1px;">
-              Multi-vector analysis of your GPA, test scores, and coursework against official state public university admission laws.
+            <strong style="color: #FFFFFF; font-size: 0.96rem;">
+              ${isSenior ? `Senior &amp; Graduate Opportunity Scanner (${qualifiedScholarshipsCount} Automatic Merit Awards Unlocked)` : `Grade ${profile.grade_level || 11} Scholarship &amp; Auto-Admit Target Tracker`}
+            </strong>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+              ${isSenior
+                ? 'Your GPA and test scores have been matched against automatic university merit scholarships and state admission guarantees you can claim right now.'
+                : 'See which scholarships and guaranteed admissions your current stats unlock, and the exact GPA/SAT targets to hit before senior year.'}
             </p>
           </div>
         </div>
-        <button class="btn-primary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="App.switchTab('ai')">
-          Launch Full AI Audit & Advisor →
-        </button>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="App.switchTab('roadmap')">
+            ${isSenior ? 'View Priority Deadlines →' : 'Open My 4-Year High School Guide →'}
+          </button>
+          <button class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="App.switchTab('ai')">
+            Ask AI Scholarship Advisor →
+          </button>
+        </div>
       </div>
 
       <div class="status-grid">
@@ -199,14 +321,52 @@ const StatusEngine = {
           </div>
         </div>
 
-        <!-- Rules & Automatic Admission Column -->
+        <!-- Scholarships & Automatic Admission Column -->
         <div class="rules-container">
-          <div style="margin-bottom: 0.25rem;">
+          <!-- Section 1: Automatic Merit Scholarships & Grants -->
+          <div style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 0.85rem;">
+              <h3 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF;">💰 Automatic Merit Scholarships &amp; Tuition Grants</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted);">
+                Guaranteed institutional merit scholarships and state tuition awards matched directly against your GPA and SAT/ACT scores.
+              </p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+              ${scholarships.map(s => `
+                <div class="rule-card" style="padding: 1.1rem 1.25rem; border-color: ${s.isQualified ? 'rgba(16, 185, 129, 0.35)' : 'rgba(255, 255, 255, 0.08)'};">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                    <div>
+                      <div style="font-weight: 700; font-size: 0.98rem; color: #FFFFFF;">${s.name}</div>
+                      <div style="font-size: 0.84rem; font-family: var(--font-mono); color: #34D399; font-weight: 700; margin-top: 2px;">Award: ${s.award} · Cutoff: ${s.deadline}</div>
+                    </div>
+                    <div class="rule-status-badge ${s.isQualified ? 'qualified' : 'not-qualified'}">
+                      ${s.isQualified ? '✓ QUALIFIED BY STATS' : 'TARGET BENCHMARK'}
+                    </div>
+                  </div>
+                  <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.65rem; line-height: 1.45;">
+                    <strong>How to Claim / Start:</strong> ${s.action}
+                  </p>
+                  ${!s.isQualified && s.missing.length > 0 ? `
+                    <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 6px; padding: 0.45rem 0.75rem; font-size: 0.76rem; color: #FCD34D; margin-bottom: 0.5rem;">
+                      <strong>To Unlock This Scholarship:</strong> ${s.missing.join(' · ')}
+                    </div>
+                  ` : ''}
+                  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; color: var(--text-dim); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;">
+                    <span>Min Req: ${s.min_gpa.toFixed(2)} GPA ${s.min_sat > 0 ? `· ${s.min_sat}+ SAT / ${s.min_act}+ ACT` : '(Test-Free)'}</span>
+                    <a href="${s.url}" target="_blank" rel="noopener noreferrer" class="badge-source">Official Scholarship Page ↗</a>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Section 2: State Statutory Automatic Admission Guarantees -->
+          <div style="margin-bottom: 0.75rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
               <div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF;">State Statutory Automatic Admission Status</h3>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF;">⚖️ Guaranteed State University Admissions</h3>
                 <p style="font-size: 0.82rem; color: var(--text-muted);">
-                  Legally mandated guaranteed public university admission programs and national direct placement criteria.
+                  Legally mandated automatic public university admission programs based on class rank or GPA.
                 </p>
               </div>
               <select id="state-rules-selector" class="select-control" style="width: auto; font-size: 0.8rem; padding: 0.4rem 0.75rem;" onchange="StatusEngine.onStateFilterChange(this.value)">

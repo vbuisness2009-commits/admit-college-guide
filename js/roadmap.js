@@ -141,8 +141,10 @@ const RoadmapEngine = {
       <div class="section-header">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <h2>What do I do next?</h2>
-            <p>Track exact Early Action, Regular Decision, and Merit Scholarship deadlines for your saved universities alongside your grade-by-grade roadmap.</p>
+            <h2>${currentGrade >= 12 ? '🎓 Senior Priority Deadlines &amp; Action Plan' : `🗺️ Your Personalized Grade ${currentGrade} High School Guide &amp; 4-Year Roadmap`}</h2>
+            <p>${currentGrade >= 12
+              ? 'Claim your qualified merit scholarships before priority cutoffs and track your Early Action and Regular Decision applications.'
+              : 'Follow this customized year-by-year game plan to hit auto-admit GPA/rank benchmarks, pick high-ROI AP courses, and unlock maximum merit scholarships.'}</p>
           </div>
           <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 0.4rem 0.8rem; border-radius: var(--radius-md); font-size: 0.82rem;">

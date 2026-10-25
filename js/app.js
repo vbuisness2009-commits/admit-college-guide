@@ -46,11 +46,51 @@ const App = {
     setTimeout(dismiss, 1600);
   },
 
-  continueAsGuest() {
-    const res = Auth.continueAsGuest();
+  switchTrackPreview(track) {
+    const btnSenior = document.getElementById("track-btn-senior");
+    const btnHs = document.getElementById("track-btn-hs");
+    const cardSenior = document.getElementById("track-card-senior");
+    const cardHs = document.getElementById("track-card-hs");
+
+    if (track === "hs") {
+      if (btnHs) btnHs.classList.add("active");
+      if (btnSenior) btnSenior.classList.remove("active");
+      if (cardHs) cardHs.style.display = "block";
+      if (cardSenior) cardSenior.style.display = "none";
+    } else {
+      if (btnSenior) btnSenior.classList.add("active");
+      if (btnHs) btnHs.classList.remove("active");
+      if (cardSenior) cardSenior.style.display = "block";
+      if (cardHs) cardHs.style.display = "none";
+    }
+  },
+
+  continueAsGuest(mode = "senior") {
+    const res = Auth.continueAsGuest(mode);
     if (res.success) {
       this.updateAppView();
-      this.showToast("Welcome! Exploring as guest student with verified stats.", "success");
+      if (mode === "hs") {
+        this.switchTab("roadmap");
+        this.showToast("Loaded 10th Grade High School Guide & 4-Year Strategy!", "success");
+      } else {
+        this.switchTab("status");
+        this.showToast("Loaded Senior Profile: Scholarships & Auto-Admit Unlocked!", "success");
+      }
+    }
+  },
+
+  quickSetGradeMode(mode) {
+    const profile = ProfileManager.get();
+    if (mode === "hs") {
+      profile.grade_level = 10;
+      ProfileManager.save(profile);
+      this.switchTab("roadmap");
+      this.showToast("Switched to High School (9th–11th) 4-Year Guide Mode!", "info");
+    } else {
+      profile.grade_level = 12;
+      ProfileManager.save(profile);
+      this.switchTab("status");
+      this.showToast("Switched to Senior / Graduate Opportunity & Scholarship Mode!", "info");
     }
   },
 
@@ -691,6 +731,18 @@ const App = {
         <span>Grade ${profile.grade_level || 11} · ${profile.residency || 'TX'} · ${rankText} · ${satText}</span>
         <span style="font-size: 0.72rem; color: var(--text-dim); margin-left: 2px;">Edit</span>
       `;
+    }
+
+    const pwTitle = document.getElementById("overview-pathway-title");
+    const pwDesc = document.getElementById("overview-pathway-desc");
+    if (pwTitle && pwDesc) {
+      if ((profile.grade_level || 11) >= 12) {
+        pwTitle.innerHTML = "🎓 Senior &amp; Graduate Mode: Qualified Scholarships &amp; Opportunities Unlocked";
+        pwDesc.innerHTML = `Using your ${profile.gpa_unweighted ? profile.gpa_unweighted.toFixed(2) + ' GPA' : 'GPA'} and ${satText} to match automatic merit aid, guaranteed admissions, and AP tuition dollars.`;
+      } else {
+        pwTitle.innerHTML = `🎒 Grade ${profile.grade_level || 11} High School Guide Mode: 4-Year Strategic Blueprint`;
+        pwDesc.innerHTML = `Personalized year-by-year coursework, testing milestones, and GPA/rank targets to lock in maximum scholarships and state auto-admit.`;
+      }
     }
 
     const userContainer = document.getElementById("header-user-widget");
