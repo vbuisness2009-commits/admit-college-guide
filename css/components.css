@@ -1216,20 +1216,38 @@
   gap: 0.45rem;
 }
 
-/* --- Interactive Dual-Track Pathway Switcher --- */
+/* --- Interactive Dual-Track Pathway Switcher & Desktop Split --- */
+.landing-desktop-split {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto 3.5rem auto;
+  display: grid;
+  grid-template-columns: 1.38fr 0.85fr;
+  gap: 2.25rem;
+  align-items: start;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 1040px) {
+  .landing-desktop-split {
+    grid-template-columns: 1fr;
+    max-width: 780px;
+  }
+}
+
 .track-switcher-wrap {
   width: 100%;
-  max-width: 860px;
-  margin: 2rem auto 2.5rem auto;
+  margin: 0;
   position: relative;
   z-index: 2;
 }
 
 .track-nav {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.75rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.15rem;
   flex-wrap: wrap;
 }
 
@@ -1508,10 +1526,17 @@
 
 /* Dedicated Auth Stage */
 .auth-stage-container {
-  max-width: 480px;
-  margin: 2.5rem auto 4rem auto;
-  padding: 0 1.25rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 1.5rem auto 4rem auto;
+  padding: 0 2rem;
   transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .auth-stage-container {
+    padding: 0 1rem;
+  }
 }
 
 .auth-stage-header-actions {
