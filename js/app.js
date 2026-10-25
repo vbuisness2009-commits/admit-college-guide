@@ -19,7 +19,6 @@ const App = {
     this.updateAppView();
     this.initGoogleIdentityServices();
     this.initParticleCanvas();
-    this.setupCardTilt();
   },
 
   playSplash() {
@@ -134,87 +133,6 @@ const App = {
     });
   },
 
-  introCurrentSlide: 0,
-  introTotalSlides: 4,
-  introTimer: null,
-  introLabels: [
-    "Next: State Laws →",
-    "Next: Scorecard Data →",
-    "Next: Tuition ROI →",
-    "Create Free Account →"
-  ],
-
-  startIntroAnimation() {
-    this.setIntroSlide(0);
-    if (this.introTimer) clearInterval(this.introTimer);
-
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    this.introTimer = setInterval(() => {
-      if (this.introCurrentSlide < this.introTotalSlides - 1) {
-        this.setIntroSlide(this.introCurrentSlide + 1);
-      } else {
-        clearInterval(this.introTimer);
-      }
-    }, 6500);
-  },
-
-  setIntroSlide(index) {
-    this.introCurrentSlide = Math.max(0, Math.min(index, this.introTotalSlides - 1));
-
-    for (let i = 0; i < this.introTotalSlides; i++) {
-      const slide = document.getElementById(`intro-slide-${i}`);
-      const segBtn = document.getElementById(`intro-seg-${i}`);
-      const segFill = document.getElementById(`seg-fill-${i}`);
-
-      if (slide) {
-        if (i === this.introCurrentSlide) {
-          slide.classList.add("active");
-        } else {
-          slide.classList.remove("active");
-        }
-      }
-
-      if (segBtn && segFill) {
-        if (i < this.introCurrentSlide) {
-          segBtn.classList.remove("active");
-          segBtn.classList.add("completed");
-          segFill.style.width = "100%";
-        } else if (i === this.introCurrentSlide) {
-          segBtn.classList.add("active");
-          segBtn.classList.remove("completed");
-          segFill.style.width = "100%";
-        } else {
-          segBtn.classList.remove("active");
-          segBtn.classList.remove("completed");
-          segFill.style.width = "0%";
-        }
-      }
-    }
-
-    const prevBtn = document.getElementById("btn-intro-prev");
-    const nextBtn = document.getElementById("btn-intro-next");
-
-    if (prevBtn) {
-      prevBtn.style.visibility = this.introCurrentSlide === 0 ? "hidden" : "visible";
-    }
-
-    if (nextBtn) {
-      nextBtn.textContent = this.introLabels[this.introCurrentSlide] || "Next →";
-      if (this.introCurrentSlide === this.introTotalSlides - 1) {
-        nextBtn.style.background = "var(--success)";
-        nextBtn.style.borderColor = "var(--success)";
-      } else {
-        nextBtn.style.background = "";
-        nextBtn.style.borderColor = "";
-      }
-    }
-
-    this.animateSlideVisuals(this.introCurrentSlide);
-  },
-
   particleAnimFrame: null,
 
   initParticleCanvas() {
@@ -313,152 +231,16 @@ const App = {
     render();
   },
 
-  animateSlideVisuals(slideIndex) {
-    if (typeof document === "undefined") return;
-
-    if (slideIndex === 0) {
-      const el = document.getElementById("intro-scramble-chance");
-      if (el) {
-        let iterations = 0;
-        const target = 74.3;
-        const interval = setInterval(() => {
-          iterations++;
-          const randomVal = (Math.random() * 85 + 10).toFixed(1);
-          el.textContent = randomVal + "%";
-          if (iterations >= 8) {
-            clearInterval(interval);
-            el.textContent = target.toFixed(1) + "%";
-          }
-        }, 55);
-      }
-    } else if (slideIndex === 3) {
-      const el = document.getElementById("tuition-count-display");
-      if (el) {
-        const end = 7275;
-        const duration = 1000;
-        const startTime = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
-        const step = (now) => {
-          const progress = Math.min((now - startTime) / duration, 1);
-          const easeOut = 1 - Math.pow(1 - progress, 3);
-          const current = Math.floor(easeOut * end);
-          el.textContent = "$" + current.toLocaleString() + " Saved";
-          if (progress < 1 && typeof requestAnimationFrame !== "undefined") {
-            requestAnimationFrame(step);
-          }
-        };
-        if (typeof requestAnimationFrame !== "undefined") {
-          requestAnimationFrame(step);
-        } else {
-          el.textContent = "$7,275 Saved";
-        }
-      }
-    }
-  },
-
-  setupCardTilt() {
-    if (typeof document === "undefined" || !document.querySelectorAll) return;
-    const cards = document.querySelectorAll(".intro-visual-card");
-    cards.forEach((card) => {
-      card.addEventListener("mousemove", (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -6;
-        const rotateY = ((x - centerX) / centerX) * 6;
-        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
-      });
-
-      card.addEventListener("mouseleave", () => {
-        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
-      });
-    });
-  },
-
-  nextIntroSlide() {
-    if (this.introCurrentSlide < this.introTotalSlides - 1) {
-      this.setIntroSlide(this.introCurrentSlide + 1);
-    } else {
-      this.showAuthStage("signup");
-    }
-  },
-
-  prevIntroSlide() {
-    if (this.introCurrentSlide > 0) {
-      this.setIntroSlide(this.introCurrentSlide - 1);
-    }
-  },
-
   showAuthStage(mode = "signup") {
-    if (this.introTimer) clearInterval(this.introTimer);
-
-    const introStage = document.getElementById("intro-stage");
-    const authStage = document.getElementById("auth-stage");
-    const navBtnTour = document.getElementById("nav-btn-tour");
-    const navBtnAuth = document.getElementById("nav-btn-auth");
-
-    if (navBtnTour) navBtnTour.style.display = "inline-flex";
-    if (navBtnAuth) {
-      navBtnAuth.textContent = mode === "signin" ? "Create Account" : "Sign In";
-      navBtnAuth.onclick = () => {
-        this.showAuthStage(mode === "signin" ? "signup" : "signin");
-      };
-    }
-
-    if (introStage && authStage) {
-      introStage.style.opacity = "0";
-      introStage.style.transform = "translateY(-12px)";
-      introStage.style.transition = "all 0.25s ease";
-      setTimeout(() => {
-        introStage.style.display = "none";
-        authStage.style.display = "block";
-        authStage.style.opacity = "0";
-        authStage.style.transform = "translateY(12px)";
-        setTimeout(() => {
-          authStage.style.opacity = "1";
-          authStage.style.transform = "translateY(0)";
-          authStage.style.transition = "all 0.25s ease";
-          this.switchLandingAuthTab(mode);
-          const cardAnchor = document.getElementById("landing-auth-card-anchor");
-          if (cardAnchor) cardAnchor.scrollIntoView({ behavior: "smooth" });
-        }, 20);
-      }, 250);
-    } else {
-      this.switchLandingAuthTab(mode);
+    this.switchLandingAuthTab(mode);
+    const cardAnchor = document.getElementById("landing-auth-card-anchor");
+    if (cardAnchor) {
+      cardAnchor.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   },
 
   showIntroStage() {
-    const introStage = document.getElementById("intro-stage");
-    const authStage = document.getElementById("auth-stage");
-    const navBtnTour = document.getElementById("nav-btn-tour");
-    const navBtnAuth = document.getElementById("nav-btn-auth");
-
-    if (navBtnTour) navBtnTour.style.display = "none";
-    if (navBtnAuth) {
-      navBtnAuth.textContent = "Create Account";
-      navBtnAuth.onclick = () => this.showAuthStage("signup");
-    }
-
-    if (introStage && authStage) {
-      authStage.style.opacity = "0";
-      authStage.style.transform = "translateY(12px)";
-      authStage.style.transition = "all 0.25s ease";
-      setTimeout(() => {
-        authStage.style.display = "none";
-        introStage.style.display = "block";
-        introStage.style.opacity = "0";
-        introStage.style.transform = "translateY(-12px)";
-        setTimeout(() => {
-          introStage.style.opacity = "1";
-          introStage.style.transform = "translateY(0)";
-          introStage.style.transition = "all 0.25s ease";
-          this.startIntroAnimation();
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }, 20);
-      }, 250);
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
   updateAppView() {
@@ -475,7 +257,7 @@ const App = {
 
     if (!user) {
       setViews("block", "none", "none");
-      this.startIntroAnimation();
+      this.switchLandingAuthTab("signup");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (!user.onboarding_completed) {
       setViews("none", "block", "none");
@@ -494,6 +276,7 @@ const App = {
     const formSignIn = document.getElementById("landing-form-signin");
     const formSignUp = document.getElementById("landing-form-signup");
     const googleBtnLabel = document.getElementById("google-btn-label");
+    const navBtnAuth = document.getElementById("nav-btn-auth");
     const errBox = document.getElementById("landing-auth-error");
 
     if (errBox) errBox.style.display = "none";
@@ -504,12 +287,20 @@ const App = {
       if (formSignIn) formSignIn.style.display = "block";
       if (formSignUp) formSignUp.style.display = "none";
       if (googleBtnLabel) googleBtnLabel.textContent = "Sign in with Google";
+      if (navBtnAuth) {
+        navBtnAuth.textContent = "Create Account";
+        navBtnAuth.onclick = () => this.showAuthStage("signup");
+      }
     } else {
       if (tabSignUp) tabSignUp.classList.add("active");
       if (tabSignIn) tabSignIn.classList.remove("active");
       if (formSignUp) formSignUp.style.display = "block";
       if (formSignIn) formSignIn.style.display = "none";
       if (googleBtnLabel) googleBtnLabel.textContent = "Create account with Google";
+      if (navBtnAuth) {
+        navBtnAuth.textContent = "Sign In";
+        navBtnAuth.onclick = () => this.showAuthStage("signin");
+      }
     }
   },
 
