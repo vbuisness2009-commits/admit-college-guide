@@ -428,12 +428,7 @@ const App = {
       console.warn("Could not read custom Google Client ID:", e);
     }
 
-    const container = document.getElementById("g_id_signin_container");
     if (!hasCustomClientId) {
-      if (container) {
-        container.innerHTML = "";
-        container.style.display = "none";
-      }
       return;
     }
 
@@ -447,20 +442,6 @@ const App = {
             auto_select: false,
             cancel_on_tap_outside: true
           });
-
-          if (container) {
-            container.style.display = "flex";
-            container.innerHTML = "";
-            window.google.accounts.id.renderButton(container, {
-              type: "standard",
-              shape: "rectangular",
-              theme: "outline",
-              text: "continue_with",
-              size: "large",
-              logo_alignment: "left",
-              width: 320
-            });
-          }
         } catch (err) {
           console.warn("Google Identity Services initialization:", err);
         }
