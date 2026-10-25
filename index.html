@@ -52,231 +52,294 @@
       <div class="intro-hero-masthead">
         <div class="hero-live-pill">
           <span class="pulse-beacon"></span>
-          <span>Fact-Based College Admissions Engine</span>
+          <span>Fact-Based Admissions Platform · Zero Speculation</span>
         </div>
         <h1 class="hero-glamour-title">
-          Admissions Decoded by <span class="gradient-shimmer-text">Facts</span>.
+          Admissions Decoded by <span class="gradient-shimmer-text">Law</span>.
         </h1>
         <p class="hero-glamour-subtitle">
           Verify state automatic admission guarantees, published College Scorecard median percentiles, and exact AP tuition ROI — simple, transparent, and verified.
         </p>
         <div class="hero-masthead-actions">
-          <button type="button" class="btn-primary" onclick="App.showAuthStage('signup')" style="padding: 0.65rem 1.35rem; font-size: 0.92rem; font-weight: 600;">
+          <button type="button" class="btn-primary" onclick="App.showAuthStage('signup')" style="padding: 0.7rem 1.45rem; font-size: 0.94rem; font-weight: 600;">
             Create Free Account →
           </button>
-          <button type="button" class="btn-secondary" onclick="App.showAuthStage('signin')" style="padding: 0.65rem 1.25rem; font-size: 0.92rem;">
+          <button type="button" class="btn-secondary" onclick="App.showAuthStage('signin')" style="padding: 0.7rem 1.35rem; font-size: 0.94rem;">
             Sign In
           </button>
         </div>
-      </div>
-
-      <!-- Segmented Interactive Progress Header -->
-      <div class="intro-progress-header">
-        <div class="intro-segment-nav">
-          <button type="button" class="intro-seg-btn active" id="intro-seg-0" onclick="App.setIntroSlide(0)">
-            <div class="seg-bar"><div class="seg-fill" id="seg-fill-0"></div></div>
-            <span class="seg-label">1. Facts Over Guesswork</span>
-          </button>
-          <button type="button" class="intro-seg-btn" id="intro-seg-1" onclick="App.setIntroSlide(1)">
-            <div class="seg-bar"><div class="seg-fill" id="seg-fill-1"></div></div>
-            <span class="seg-label">2. Guaranteed Law</span>
-          </button>
-          <button type="button" class="intro-seg-btn" id="intro-seg-2" onclick="App.setIntroSlide(2)">
-            <div class="seg-bar"><div class="seg-fill" id="seg-fill-2"></div></div>
-            <span class="seg-label">3. Scorecard Medians</span>
-          </button>
-          <button type="button" class="intro-seg-btn" id="intro-seg-3" onclick="App.setIntroSlide(3)">
-            <div class="seg-bar"><div class="seg-fill" id="seg-fill-3"></div></div>
-            <span class="seg-label">4. Tuition Savings</span>
-          </button>
-        </div>
-        <button type="button" class="btn-skip-intro" onclick="App.showAuthStage('signup')">
-          Skip to Sign Up →
-        </button>
-      </div>
-
-      <div class="intro-viewport" id="intro-viewport">
-        <!-- Slide 0: Clean Fact Comparison -->
-        <div class="intro-slide active" id="intro-slide-0">
-          <div class="intro-slide-content">
-            <span class="intro-step-tag">The Core Standard</span>
-            <h2>100% Deterministic Facts. Zero Speculation.</h2>
-            <p>Commercial websites charge for speculative "chance percentages" that fuel student panic. Because admissions are qualitative and holistic, no algorithm can predict them. AdmitAI operates strictly on verified government facts: codified state laws, published median score bands, and exact AP credit equivalencies.</p>
-            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-              <button type="button" class="btn-primary" onclick="App.nextIntroSlide()">
-                See Guaranteed State Laws →
-              </button>
-              <button type="button" class="btn-secondary" onclick="App.showAuthStage('signup')">
-                Create Account
-              </button>
-            </div>
-          </div>
-          <div class="intro-visual-card" id="card-slide-0">
-            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
-              <!-- Commercial Predictor Box (Muted, Clean) -->
-              <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 10px; padding: 1.1rem 1.25rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                  <span style="font-size: 0.78rem; color: #FCA5A5; font-weight: 600;">Commercial "Chance" Calculators</span>
-                  <span style="font-size: 0.7rem; color: #F87171; background: rgba(239, 68, 68, 0.15); padding: 2px 8px; border-radius: 4px; font-weight: 600;">Speculative Guesswork</span>
-                </div>
-                <div style="font-size: 1.8rem; font-weight: 800; color: #EF4444; font-family: var(--font-mono); margin: 0.2rem 0;">74.3% Chance</div>
-                <div style="font-size: 0.76rem; color: var(--text-dim);">Arbitrary black-box formula calculating unverifiable predictions.</div>
-              </div>
-
-              <!-- AdmitAI Standard Box (Clean, Calming Emerald) -->
-              <div style="background: rgba(16, 185, 129, 0.07); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 1.1rem 1.25rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                  <span style="font-size: 0.78rem; color: #6EE7B7; font-weight: 600;">AdmitAI Fact-Based Standard</span>
-                  <span style="font-size: 0.7rem; color: #10B981; background: rgba(16, 185, 129, 0.18); padding: 2px 8px; border-radius: 4px; font-weight: 700;">100% Verifiable</span>
-                </div>
-                <div style="font-size: 1.8rem; font-weight: 800; color: #10B981; font-family: var(--font-mono); margin: 0.2rem 0;">Codified Law &amp; Scorecards</div>
-                <div style="font-size: 0.76rem; color: #A7F3D0;">Direct statutory auto-admit mandates &amp; official U.S. Dept. of Education data.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Slide 1: Statutory Auto-Admissions Radar -->
-        <div class="intro-slide" id="intro-slide-1">
-          <div class="intro-slide-content">
-            <span class="intro-step-tag">Engine 1: Codified Law</span>
-            <h2>State Laws That Legally Guarantee Your Acceptance.</h2>
-            <p>Over 15 states legally mandate automatic college admission based on class rank or academic benchmarks. If state law guarantees your admission, university acceptance is a legal statutory right.</p>
-            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-              <button type="button" class="btn-primary" onclick="App.nextIntroSlide()">
-                Next: Scorecard Data →
-              </button>
-              <button type="button" class="btn-secondary" onclick="App.showAuthStage('signup')">
-                Create Account
-              </button>
-            </div>
-          </div>
-          <div class="intro-visual-card" id="card-slide-1">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
-              <span style="font-size: 0.78rem; color: #FFFFFF; font-weight: 600;">Student: Austin High School</span>
-              <span style="font-size: 0.78rem; color: #60A5FA; font-family: var(--font-mono); font-weight: 800; background: rgba(59, 130, 246, 0.15); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3);">Top 5.8% Rank</span>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 0.55rem;">
-              <div class="statute-animated-card" style="border-radius: 8px; padding: 0.7rem 0.95rem; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <div style="font-weight: 700; font-size: 0.85rem; color: #FFFFFF;">Texas TEC § 51.803 (Top 6%)</div>
-                  <div style="font-size: 0.72rem; color: var(--text-dim);">UT Austin Guaranteed Auto-Admit</div>
-                </div>
-                <span class="rule-status-badge qualified" style="font-size: 0.7rem; padding: 3px 8px;">Guaranteed</span>
-              </div>
-              <div class="statute-animated-card" style="border-radius: 8px; padding: 0.7rem 0.95rem; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <div style="font-weight: 700; font-size: 0.85rem; color: #FFFFFF;">California UC Regents 2102 (Top 9%)</div>
-                  <div style="font-size: 0.72rem; color: var(--text-dim);">Eligible in Local Context (ELC)</div>
-                </div>
-                <span class="rule-status-badge qualified" style="font-size: 0.7rem; padding: 3px 8px;">Guaranteed</span>
-              </div>
-              <div class="statute-animated-card" style="border-radius: 8px; padding: 0.7rem 0.95rem; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <div style="font-weight: 700; font-size: 0.85rem; color: #FFFFFF;">Florida Talented 20 Program</div>
-                  <div style="font-size: 0.72rem; color: var(--text-dim);">State University System of Florida</div>
-                </div>
-                <span class="rule-status-badge qualified" style="font-size: 0.7rem; padding: 3px 8px;">Guaranteed</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Slide 2: Scorecard Middle-50% Laser Gauge -->
-        <div class="intro-slide" id="intro-slide-2">
-          <div class="intro-slide-content">
-            <span class="intro-step-tag">Engine 2: Federal Data</span>
-            <h2>Know Where You Stand in the Real Admitted Class.</h2>
-            <p>We pull direct 25th to 75th percentile SAT and ACT distributions from the official U.S. Department of Education College Scorecard. See the exact median point target without subjective guesswork.</p>
-            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-              <button type="button" class="btn-primary" onclick="App.nextIntroSlide()">
-                Next: Tuition ROI →
-              </button>
-              <button type="button" class="btn-secondary" onclick="App.showAuthStage('signup')">
-                Create Account
-              </button>
-            </div>
-          </div>
-          <div class="intro-visual-card" id="card-slide-2">
-            <div style="margin-bottom: 0.85rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="color: #FFFFFF; font-size: 1rem;">University of Michigan</strong>
-                <span style="font-size: 0.74rem; color: #93C5FD; font-family: var(--font-mono); font-weight: 700; background: rgba(59, 130, 246, 0.15); padding: 2px 8px; border-radius: 4px;">Admit Rate: 18%</span>
-              </div>
-              <div style="font-size: 0.74rem; color: var(--text-dim); margin-top: 3px;">U.S. Dept. of Education Middle-50% Range</div>
-            </div>
-            <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 1.35rem 1rem; position: relative;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--text-dim); margin-bottom: 0.65rem; font-family: var(--font-mono);">
-                <span>25th: 1350</span>
-                <span style="color: #60A5FA; font-weight: 800;">Median: 1440</span>
-                <span>75th: 1530</span>
-              </div>
-              <div class="score-laser-rail">
-                <div class="score-middle-50-zone"></div>
-                <div class="score-student-pin"></div>
-              </div>
-              <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
-                <span style="color: #A7F3D0; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
-                  <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
-                  Your SAT: 1460
-                </span>
-                <span style="color: #93C5FD; font-family: var(--font-mono); font-weight: 700;">+20 pts above median</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Slide 3: AP & IB Tuition ROI Counter -->
-        <div class="intro-slide" id="intro-slide-3">
-          <div class="intro-slide-content">
-            <span class="intro-step-tag">Engine 3: Degree Savings</span>
-            <h2>Convert High School Exams into Real Tuition Dollars.</h2>
-            <p>Every university sets distinct AP/IB cutoffs. AdmitAI matches your scores against institutional registrar catalogs and statewide higher ed mandates, itemizing course codes waived and thousands in tuition saved.</p>
-            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-              <button type="button" class="btn-primary" onclick="App.showAuthStage('signup')" style="background: var(--success); border-color: var(--success);">
-                Create Free Account Now →
-              </button>
-              <button type="button" class="btn-secondary" onclick="App.showAuthStage('signin')">
-                Sign In
-              </button>
-            </div>
-          </div>
-          <div class="intro-visual-card" id="card-slide-3">
-            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.95rem;">
-              <div class="tuition-course-chip">
-                <span style="font-weight: 600;">AP Computer Science A (Score 5)</span>
-                <span style="color: #60A5FA; font-family: var(--font-mono); font-weight: 800;">+4 Credits ($1,940)</span>
-              </div>
-              <div class="tuition-course-chip">
-                <span style="font-weight: 600;">AP Calculus BC (Score 5)</span>
-                <span style="color: #60A5FA; font-family: var(--font-mono); font-weight: 800;">+8 Credits ($3,880)</span>
-              </div>
-              <div class="tuition-course-chip">
-                <span style="font-weight: 600;">AP Chemistry (Score 4)</span>
-                <span style="color: #60A5FA; font-family: var(--font-mono); font-weight: 800;">+3 Credits ($1,455)</span>
-              </div>
-            </div>
-            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 1rem; text-align: center;">
-              <div style="font-size: 0.72rem; text-transform: uppercase; color: #A7F3D0; font-weight: 700; letter-spacing: 0.06em;">Total Calculated Tuition ROI</div>
-              <div class="tuition-big-number" id="tuition-count-display">$7,275 Saved</div>
-              <div style="font-size: 0.78rem; color: #FFFFFF; font-weight: 500;">15 College Credits · 1 Full Semester Skipped</div>
-            </div>
-          </div>
+        <div class="hero-trust-bar">
+          <span class="hero-trust-item">⚖️ 15+ State Statutory Mandates</span>
+          <span class="hero-trust-item">🏛️ Official U.S. Scorecards</span>
+          <span class="hero-trust-item">💰 Flagship AP/IB Catalogs</span>
+          <span class="hero-trust-item">🔒 100% Client-Side Privacy</span>
         </div>
       </div>
 
-      <div class="intro-nav-footer">
-        <div class="intro-controls">
-          <button type="button" class="btn-secondary" id="btn-intro-prev" onclick="App.prevIntroSlide()" style="visibility: hidden;">
-            ← Back
-          </button>
-          <button type="button" class="btn-primary" id="btn-intro-next" onclick="App.nextIntroSlide()">
-            Next: State Laws →
+      <!-- Professional App Window Shell -->
+      <div class="app-window-frame">
+        <!-- macOS Style Window Titlebar -->
+        <div class="app-window-titlebar">
+          <div class="app-window-dots">
+            <span class="app-dot red"></span>
+            <span class="app-dot yellow"></span>
+            <span class="app-dot green"></span>
+          </div>
+          <div class="app-window-address">
+            <span>🔒</span>
+            <span>admitai.org / interactive-engine-demo</span>
+          </div>
+          <div class="app-window-status">
+            <span class="pulse-beacon" style="width: 6px; height: 6px;"></span>
+            <span>Deterministic Engine Active</span>
+          </div>
+        </div>
+
+        <!-- Segmented Interactive Progress Header -->
+        <div class="intro-progress-header">
+          <div class="intro-segment-nav">
+            <button type="button" class="intro-seg-btn active" id="intro-seg-0" onclick="App.setIntroSlide(0)">
+              <div class="seg-bar"><div class="seg-fill" id="seg-fill-0"></div></div>
+              <span class="seg-label">1. Facts Over Guesswork</span>
+            </button>
+            <button type="button" class="intro-seg-btn" id="intro-seg-1" onclick="App.setIntroSlide(1)">
+              <div class="seg-bar"><div class="seg-fill" id="seg-fill-1"></div></div>
+              <span class="seg-label">2. Guaranteed Law</span>
+            </button>
+            <button type="button" class="intro-seg-btn" id="intro-seg-2" onclick="App.setIntroSlide(2)">
+              <div class="seg-bar"><div class="seg-fill" id="seg-fill-2"></div></div>
+              <span class="seg-label">3. Scorecard Medians</span>
+            </button>
+            <button type="button" class="intro-seg-btn" id="intro-seg-3" onclick="App.setIntroSlide(3)">
+              <div class="seg-bar"><div class="seg-fill" id="seg-fill-3"></div></div>
+              <span class="seg-label">4. Tuition Savings</span>
+            </button>
+          </div>
+          <button type="button" class="btn-skip-intro" onclick="App.showAuthStage('signup')">
+            Skip to Sign Up →
           </button>
         </div>
-        <div class="intro-cta-direct">
-          <span>Ready to configure your profile?</span>
-          <button type="button" class="link-btn-highlight" onclick="App.showAuthStage('signup')">Create Free Account</button>
+
+        <div class="intro-viewport" id="intro-viewport">
+          <!-- Slide 0: Clean Fact Comparison -->
+          <div class="intro-slide active" id="intro-slide-0">
+            <div class="intro-slide-content">
+              <span class="intro-step-tag">The Core Standard</span>
+              <h2>100% Deterministic Facts. Zero Speculation.</h2>
+              <p>Commercial websites charge for speculative "chance percentages" that fuel student panic. Because admissions are qualitative and holistic, no algorithm can predict them. AdmitAI operates strictly on verified government facts: codified state laws, published median score bands, and exact AP credit equivalencies.</p>
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn-primary" onclick="App.nextIntroSlide()">
+                  See Guaranteed State Laws →
+                </button>
+                <button type="button" class="btn-secondary" onclick="App.showAuthStage('signup')">
+                  Create Account
+                </button>
+              </div>
+            </div>
+            <div class="intro-visual-card" id="card-slide-0">
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <!-- Commercial Predictor Box (Muted, Clean) -->
+                <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 10px; padding: 1.1rem 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <span style="font-size: 0.78rem; color: #FCA5A5; font-weight: 600;">Commercial "Chance" Calculators</span>
+                    <span style="font-size: 0.7rem; color: #F87171; background: rgba(239, 68, 68, 0.15); padding: 2px 8px; border-radius: 4px; font-weight: 600;">Speculative Guesswork</span>
+                  </div>
+                  <div style="font-size: 1.8rem; font-weight: 800; color: #EF4444; font-family: var(--font-mono); margin: 0.2rem 0;">74.3% Chance</div>
+                  <div style="font-size: 0.76rem; color: var(--text-dim);">Arbitrary black-box formula calculating unverifiable predictions.</div>
+                </div>
+
+                <!-- AdmitAI Standard Box (Clean, Calming Emerald) -->
+                <div style="background: rgba(16, 185, 129, 0.07); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 1.1rem 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <span style="font-size: 0.78rem; color: #6EE7B7; font-weight: 600;">AdmitAI Fact-Based Standard</span>
+                    <span style="font-size: 0.7rem; color: #10B981; background: rgba(16, 185, 129, 0.18); padding: 2px 8px; border-radius: 4px; font-weight: 700;">100% Verifiable</span>
+                  </div>
+                  <div style="font-size: 1.8rem; font-weight: 800; color: #10B981; font-family: var(--font-mono); margin: 0.2rem 0;">Codified Law &amp; Scorecards</div>
+                  <div style="font-size: 0.76rem; color: #A7F3D0;">Direct statutory auto-admit mandates &amp; official U.S. Dept. of Education data.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 1: Statutory Auto-Admissions Radar -->
+          <div class="intro-slide" id="intro-slide-1">
+            <div class="intro-slide-content">
+              <span class="intro-step-tag">Engine 1: Codified Law</span>
+              <h2>State Laws That Legally Guarantee Your Acceptance.</h2>
+              <p>Over 15 states legally mandate automatic college admission based on class rank or academic benchmarks. If state law guarantees your admission, university acceptance is a legal statutory right.</p>
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn-primary" onclick="App.nextIntroSlide()">
+                  Next: Scorecard Data →
+                </button>
+                <button type="button" class="btn-secondary" onclick="App.showAuthStage('signup')">
+                  Create Account
+                </button>
+              </div>
+            </div>
+            <div class="intro-visual-card" id="card-slide-1">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                <div>
+                  <span style="font-size: 0.82rem; color: #FFFFFF; font-weight: 700;">Student: Austin High School</span>
+                  <div style="font-size: 0.72rem; color: var(--text-dim);">Profile: In-State Public High School</div>
+                </div>
+                <span style="font-size: 0.78rem; color: #60A5FA; font-family: var(--font-mono); font-weight: 800; background: rgba(59, 130, 246, 0.15); padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.35);">Top 5.8% Rank</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+                <div class="statute-animated-card" style="border-radius: 8px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.88rem; color: #FFFFFF;">Texas TEC § 51.803 (Top 6%)</div>
+                    <div style="font-size: 0.74rem; color: var(--text-dim);">UT Austin Guaranteed Auto-Admit Mandate</div>
+                  </div>
+                  <span class="rule-status-badge qualified" style="font-size: 0.72rem; padding: 4px 10px; font-weight: 700;">Guaranteed</span>
+                </div>
+                <div class="statute-animated-card" style="border-radius: 8px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.88rem; color: #FFFFFF;">California UC Regents 2102 (Top 9%)</div>
+                    <div style="font-size: 0.74rem; color: var(--text-dim);">Eligible in Local Context (ELC) Guarantee</div>
+                  </div>
+                  <span class="rule-status-badge qualified" style="font-size: 0.72rem; padding: 4px 10px; font-weight: 700;">Guaranteed</span>
+                </div>
+                <div class="statute-animated-card" style="border-radius: 8px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.88rem; color: #FFFFFF;">Florida Talented 20 Program</div>
+                    <div style="font-size: 0.74rem; color: var(--text-dim);">State University System of Florida (BOG 6.002)</div>
+                  </div>
+                  <span class="rule-status-badge qualified" style="font-size: 0.72rem; padding: 4px 10px; font-weight: 700;">Guaranteed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Scorecard Middle-50% Laser Gauge -->
+          <div class="intro-slide" id="intro-slide-2">
+            <div class="intro-slide-content">
+              <span class="intro-step-tag">Engine 2: Federal Data</span>
+              <h2>Know Where You Stand in the Real Admitted Class.</h2>
+              <p>We pull direct 25th to 75th percentile SAT and ACT distributions from the official U.S. Department of Education College Scorecard. See the exact median point target without subjective guesswork.</p>
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn-primary" onclick="App.nextIntroSlide()">
+                  Next: Tuition ROI →
+                </button>
+                <button type="button" class="btn-secondary" onclick="App.showAuthStage('signup')">
+                  Create Account
+                </button>
+              </div>
+            </div>
+            <div class="intro-visual-card" id="card-slide-2">
+              <div style="margin-bottom: 0.85rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: #FFFFFF; font-size: 1rem;">University of Michigan</strong>
+                  <span style="font-size: 0.74rem; color: #93C5FD; font-family: var(--font-mono); font-weight: 700; background: rgba(59, 130, 246, 0.15); padding: 2px 8px; border-radius: 4px;">Admit Rate: 18%</span>
+                </div>
+                <div style="font-size: 0.74rem; color: var(--text-dim); margin-top: 3px;">U.S. Dept. of Education Middle-50% Range</div>
+              </div>
+              <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 1.35rem 1rem; position: relative;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--text-dim); margin-bottom: 0.65rem; font-family: var(--font-mono);">
+                  <span>25th: 1350</span>
+                  <span style="color: #60A5FA; font-weight: 800;">Median: 1440</span>
+                  <span>75th: 1530</span>
+                </div>
+                <div class="score-laser-rail">
+                  <div class="score-middle-50-zone"></div>
+                  <div class="score-student-pin"></div>
+                </div>
+                <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
+                  <span style="color: #A7F3D0; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                    Your SAT: 1460
+                  </span>
+                  <span style="color: #93C5FD; font-family: var(--font-mono); font-weight: 700;">+20 pts above median</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: AP & IB Tuition ROI Counter -->
+          <div class="intro-slide" id="intro-slide-3">
+            <div class="intro-slide-content">
+              <span class="intro-step-tag">Engine 3: Degree Savings</span>
+              <h2>Convert High School Exams into Real Tuition Dollars.</h2>
+              <p>Every university sets distinct AP/IB cutoffs. AdmitAI matches your scores against institutional registrar catalogs and statewide higher ed mandates, itemizing course codes waived and thousands in tuition saved.</p>
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn-primary" onclick="App.showAuthStage('signup')" style="background: var(--success); border-color: var(--success);">
+                  Create Free Account Now →
+                </button>
+                <button type="button" class="btn-secondary" onclick="App.showAuthStage('signin')">
+                  Sign In
+                </button>
+              </div>
+            </div>
+            <div class="intro-visual-card" id="card-slide-3">
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.95rem;">
+                <div class="tuition-course-chip">
+                  <span style="font-weight: 600;">AP Computer Science A (Score 5)</span>
+                  <span style="color: #60A5FA; font-family: var(--font-mono); font-weight: 800;">+4 Credits ($1,940)</span>
+                </div>
+                <div class="tuition-course-chip">
+                  <span style="font-weight: 600;">AP Calculus BC (Score 5)</span>
+                  <span style="color: #60A5FA; font-family: var(--font-mono); font-weight: 800;">+8 Credits ($3,880)</span>
+                </div>
+                <div class="tuition-course-chip">
+                  <span style="font-weight: 600;">AP Chemistry (Score 4)</span>
+                  <span style="color: #60A5FA; font-family: var(--font-mono); font-weight: 800;">+3 Credits ($1,455)</span>
+                </div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 1rem; text-align: center;">
+                <div style="font-size: 0.72rem; text-transform: uppercase; color: #A7F3D0; font-weight: 700; letter-spacing: 0.06em;">Total Calculated Tuition ROI</div>
+                <div class="tuition-big-number" id="tuition-count-display">$7,275 Saved</div>
+                <div style="font-size: 0.78rem; color: #FFFFFF; font-weight: 500;">15 College Credits · 1 Full Semester Skipped</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-nav-footer" style="padding: 1rem 1.5rem; background: rgba(10, 16, 28, 0.7); border-top: 1px solid rgba(255, 255, 255, 0.06);">
+          <div class="intro-controls">
+            <button type="button" class="btn-secondary" id="btn-intro-prev" onclick="App.prevIntroSlide()" style="visibility: hidden;">
+              ← Back
+            </button>
+            <button type="button" class="btn-primary" id="btn-intro-next" onclick="App.nextIntroSlide()">
+              Next: State Laws →
+            </button>
+          </div>
+          <div class="intro-cta-direct">
+            <span>Ready to configure your profile?</span>
+            <button type="button" class="link-btn-highlight" onclick="App.showAuthStage('signup')">Create Free Account →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Bento Grid (Linear Style) -->
+      <div class="landing-bento-section">
+        <div class="landing-bento-header">
+          <h3>Admissions Decoded by Facts, Not Guesswork</h3>
+          <p>Four deterministic engines providing total clarity for students, parents, and high school counselors.</p>
+        </div>
+        <div class="landing-bento-grid">
+          <div class="bento-card">
+            <div class="bento-icon-box">⚖️</div>
+            <h4>Codified State Laws</h4>
+            <p>Automatic admission statutory evaluation across 15+ states with legally mandated acceptance thresholds.</p>
+            <span class="bento-meta-tag">100% Deterministic</span>
+          </div>
+          <div class="bento-card">
+            <div class="bento-icon-box">📊</div>
+            <h4>Federal Scorecard Data</h4>
+            <p>Middle-50% SAT and ACT ranges from official U.S. Dept. of Education records with target delta scores.</p>
+            <span class="bento-meta-tag">6,800+ Institutions</span>
+          </div>
+          <div class="bento-card">
+            <div class="bento-icon-box">💰</div>
+            <h4>Tuition &amp; AP ROI</h4>
+            <p>Instant mapping of exams to institutional course code waivers and calculated credit-hour tuition savings.</p>
+            <span class="bento-meta-tag">Per-Credit Pricing</span>
+          </div>
+          <div class="bento-card">
+            <div class="bento-icon-box">📋</div>
+            <h4>Counselor Dossier</h4>
+            <p>Printable audit-grade PDF summary prepared for high school academic planning and counselor review.</p>
+            <span class="bento-meta-tag">Export Ready</span>
+          </div>
         </div>
       </div>
     </section>
@@ -905,15 +968,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts -->
-  <script src="js/auth.js?v=2.4"></script>
-  <script src="js/onboarding.js?v=2.4"></script>
-  <script src="js/profile.js?v=2.4"></script>
-  <script src="js/status.js?v=2.4"></script>
-  <script src="js/colleges.js?v=2.4"></script>
-  <script src="js/credits.js?v=2.4"></script>
-  <script src="js/roadmap.js?v=2.4"></script>
-  <script src="js/export.js?v=2.4"></script>
-  <script src="js/ai.js?v=2.4"></script>
-  <script src="js/app.js?v=2.4"></script>
+  <script src="js/auth.js?v=2.5"></script>
+  <script src="js/onboarding.js?v=2.5"></script>
+  <script src="js/profile.js?v=2.5"></script>
+  <script src="js/status.js?v=2.5"></script>
+  <script src="js/colleges.js?v=2.5"></script>
+  <script src="js/credits.js?v=2.5"></script>
+  <script src="js/roadmap.js?v=2.5"></script>
+  <script src="js/export.js?v=2.5"></script>
+  <script src="js/ai.js?v=2.5"></script>
+  <script src="js/app.js?v=2.5"></script>
 </body>
 </html>
