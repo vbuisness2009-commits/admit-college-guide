@@ -13,9 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="assets/admit-logo.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=4.4">
-  <link rel="stylesheet" href="css/components.css?v=4.4">
-  <link rel="stylesheet" href="css/twentyfirst.css?v=4.4">
+  <link rel="stylesheet" href="css/main.css?v=4.5">
+  <link rel="stylesheet" href="css/components.css?v=4.5">
+  <link rel="stylesheet" href="css/twentyfirst.css?v=4.5">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -478,37 +478,37 @@
       </div>
 
       <div class="nav-links">
-        <a href="#" class="nav-link active" data-tab="ai" onclick="event.preventDefault(); App.switchTab('ai')">
+        <a href="#" class="nav-link active" data-tab="ai" title="AI College Chances" onclick="event.preventDefault(); App.switchTab('ai')">
           <i class="fas fa-wand-magic-sparkles"></i><span>AI College Chances</span>
         </a>
-        <a href="#" class="nav-link" data-tab="status" onclick="event.preventDefault(); App.switchTab('status')">
+        <a href="#" class="nav-link" data-tab="status" title="Scholarships &amp; Laws" onclick="event.preventDefault(); App.switchTab('status')">
           <i class="fas fa-award"></i><span>Scholarships &amp; Laws</span>
         </a>
-        <a href="#" class="nav-link" data-tab="credits" onclick="event.preventDefault(); App.switchTab('credits')">
+        <a href="#" class="nav-link" data-tab="credits" title="AP Credit Savings" onclick="event.preventDefault(); App.switchTab('credits')">
           <i class="fas fa-sack-dollar"></i><span>AP Credit Savings</span>
         </a>
-        <a href="#" class="nav-link" data-tab="roadmap" onclick="event.preventDefault(); App.switchTab('roadmap')">
+        <a href="#" class="nav-link" data-tab="roadmap" title="High School Plan" onclick="event.preventDefault(); App.switchTab('roadmap')">
           <i class="fas fa-compass"></i><span>High School Plan</span>
         </a>
-        <a href="#" class="nav-link" data-tab="colleges" onclick="event.preventDefault(); App.switchTab('colleges')">
+        <a href="#" class="nav-link" data-tab="colleges" title="All Colleges" onclick="event.preventDefault(); App.switchTab('colleges')">
           <i class="fas fa-building-columns"></i><span>All Colleges</span>
         </a>
       </div>
 
       <!-- Left Sidebar Live Stats Summary (__ Scholarships, __ Auto-Admits, $__ AP Saved) -->
       <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 0.55rem; padding: 0.9rem;">
-        <div style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #93C5FD; padding: 0 0.25rem;">
+        <div class="sidebar-footer-title" style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #93C5FD; padding: 0 0.25rem;">
           Your Unlocked Summary
         </div>
-        <div class="xp-display" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.3);" onclick="App.switchTab('status')">
+        <div class="xp-display" title="View Qualified Scholarships" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.3);" onclick="App.switchTab('status')">
           <i class="fas fa-award" style="color: #60A5FA;"></i>
           <span id="sidebar-stat-laws" style="font-weight: 800; color: #FFFFFF; font-size: 0.84rem;">4 Scholarships</span>
         </div>
-        <div class="streak-display" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(52, 211, 153, 0.28);" onclick="App.switchTab('credits')">
+        <div class="streak-display" title="View AP Tuition Savings" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(52, 211, 153, 0.28);" onclick="App.switchTab('credits')">
           <i class="fas fa-piggy-bank" style="color: #34D399;"></i>
           <span id="sidebar-stat-tuition" style="font-weight: 800; color: #FFFFFF; font-size: 0.84rem;">$7,275 AP Saved</span>
         </div>
-        <div class="streak-display" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(129, 140, 248, 0.12); border: 1px solid rgba(165, 180, 252, 0.28);" onclick="App.switchTab('ai')">
+        <div class="streak-display" title="View Evaluated Colleges" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(129, 140, 248, 0.12); border: 1px solid rgba(165, 180, 252, 0.28);" onclick="App.switchTab('ai')">
           <i class="fas fa-university" style="color: #A5B4FC;"></i>
           <span id="sidebar-stat-colleges" style="font-weight: 800; color: #FFFFFF; font-size: 0.84rem;">5 Colleges Evaluated</span>
         </div>

@@ -458,6 +458,54 @@
     0 6px 16px -4px rgba(37, 99, 235, 0.35);
 }
 
+/* Collapsed rail overrides for 21st.dev [1603] Sidebar */
+#sidebar.collapsed .nav-links {
+  padding: 14px 0 !important;
+  align-items: center !important;
+}
+
+#sidebar.collapsed .nav-link {
+  width: 44px !important;
+  height: 44px !important;
+  margin: 2px auto !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 12px !important;
+  border-left: 1px solid transparent !important;
+}
+
+#sidebar.collapsed .nav-link.active {
+  border: 1px solid rgba(96, 165, 250, 0.55) !important;
+  padding: 0 !important;
+}
+
+#sidebar.collapsed .nav-link i {
+  width: auto !important;
+  margin: 0 !important;
+  font-size: 18px !important;
+}
+
+#sidebar.collapsed .sidebar-footer-title {
+  display: none !important;
+}
+
+#sidebar.collapsed .sidebar-footer {
+  padding: 12px 0 !important;
+  align-items: center !important;
+}
+
+#sidebar.collapsed .sidebar-footer .xp-display,
+#sidebar.collapsed .sidebar-footer .streak-display {
+  width: 44px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 12px !important;
+}
+
 /* 21st.dev [28186] Joyco Chat Input Group & Message Bubbles */
 .tf-chat-viewport {
   background: rgba(7, 12, 24, 0.85) !important;
