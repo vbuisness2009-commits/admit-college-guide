@@ -59,7 +59,7 @@ const DossierExporter = {
           <div class="dossier-branding">
             <div class="dossier-logo">ADMIT</div>
             <div class="dossier-subtitle">Higher Education Academic Standing & Credit Dossier</div>
-            <div class="dossier-meta">Prepared for High School Guidance & Academic Advising · 2026 Congressional App Challenge Submission</div>
+            <div class="dossier-meta">Prepared for High School Guidance &amp; Academic Advising · Official Student Audit Dossier</div>
           </div>
           <div class="dossier-ref-box">
             <div class="ref-label">DOCUMENT CONTROL ID</div>

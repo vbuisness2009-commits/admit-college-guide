@@ -31,9 +31,6 @@
           </div>
         </div>
         <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
-          <button class="btn-secondary" onclick="App.openJudgesModal()">
-            CAC Showcase
-          </button>
           <button class="btn-secondary" onclick="App.openDisclosureModal()">
             Public Data Sources
           </button>
@@ -385,12 +382,12 @@
     <footer class="app-footer">
       <div class="footer-content">
         <div>
-          <strong>AdmitAI</strong> — Congressional App Challenge Submission. Fact-based higher education analytics.
+          <strong>AdmitAI</strong> — Fact-based higher education intelligence. Zero guesswork admissions analytics.
         </div>
         <div class="footer-links">
           <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
           <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">Statutory Citations</a>
-          <button type="button" class="footer-link-btn" onclick="App.openDisclosureModal()">Contest AI Disclosure</button>
+          <button type="button" class="footer-link-btn" onclick="App.openDisclosureModal()">Methodology &amp; Data Sources</button>
         </div>
       </div>
     </footer>
@@ -458,13 +455,8 @@
             <span>Export Dossier (PDF)</span>
           </button>
 
-          <!-- Judges Technical Showcase -->
-          <button class="btn-secondary" onclick="App.openJudgesModal()" title="View technical architecture, problem statement, and judging rubric alignment">
-            <span>CAC Showcase</span>
-          </button>
-
-          <button class="btn-secondary" onclick="App.openDisclosureModal()" title="View technical architecture, official data citations and AI disclosure">
-            <span>Sources</span>
+          <button class="btn-secondary" onclick="App.openDisclosureModal()" title="View data sources, methodology and statutory citations">
+            <span>Data Sources</span>
           </button>
         </div>
       </div>
@@ -522,12 +514,12 @@
     <footer class="app-footer">
       <div class="footer-content">
         <div>
-          <strong>AdmitAI</strong> — Congressional App Challenge Submission. Fact-based higher education analytics.
+          <strong>AdmitAI</strong> — Fact-based higher education intelligence. Zero guesswork admissions analytics.
         </div>
         <div class="footer-links">
           <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener noreferrer">U.S. Dept. of Education Scorecard</a>
           <a href="https://statutes.capitol.texas.gov/Docs/ED/htm/ED.51.htm#51.803" target="_blank" rel="noopener noreferrer">Statutory Citations</a>
-          <button type="button" class="footer-link-btn" onclick="App.openDisclosureModal()">Contest AI Disclosure</button>
+          <button type="button" class="footer-link-btn" onclick="App.openDisclosureModal()">Methodology &amp; Data Sources</button>
         </div>
       </div>
     </footer>
@@ -756,72 +748,52 @@
     </div>
   </div>
 
-  <!-- Modal: Congressional App Challenge Judges & Technical Showcase -->
-  <div class="modal-overlay" id="judges-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-judges">
-    <div class="modal-card" style="max-width: 820px; max-height: 90vh;">
+  <!-- Modal: About & Architecture (clean, consumer-facing) -->
+  <div class="modal-overlay" id="judges-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-about">
+    <div class="modal-card" style="max-width: 800px; max-height: 90vh;">
       <div class="modal-header">
-        <h2 id="modal-title-judges">Congressional App Challenge: Technical Brief & Showcase</h2>
+        <h2 id="modal-title-about">About AdmitAI: Philosophy &amp; Architecture</h2>
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted);">
-        <div style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
-          <strong style="color: #FFFFFF; font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">The Civic Problem Solved</strong>
+        <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+          <strong style="color: #FFFFFF; font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">Our Mission</strong>
           <p style="margin: 0;">
-            The national public high school student-to-counselor ratio exceeds <strong>400:1</strong>, leaving millions of students—particularly low-income and first-generation candidates—without individualized college guidance. Meanwhile, commercial platforms monetize anxiety using black-box "chance predictor" formulas that mislead students. <strong>AdmitAI</strong> democratizes admissions data by functioning as an open, 100% fact-based public utility that never predicts or guesses.
+            With national high school counselor ratios exceeding 400:1, students and families are often targeted by commercial platforms charging fees for speculative "chance calculators." AdmitAI provides a 100% transparent, free, and fact-based higher education intelligence platform based solely on codified statutes and verified federal records.
           </p>
         </div>
 
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">Core Technical Architecture</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">Core Engines</h3>
         <ul style="padding-left: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
           <li>
-            <strong>Deterministic Statutory Rule Engine:</strong> A multi-state logical evaluator (`StatusEngine`) that parses state education codes (Texas TEC § 51.803, California UC Regents 2102, Washington GAP, Florida BOG 6.002) against verified coursework and rank benchmarks without probabilistic guesswork.
+            <strong>Deterministic Statutory Rule Engine:</strong> Evaluates multi-state auto-admission policies (Texas TEC § 51.803, California UC Regents 2102, Washington GAP, Florida BOG 6.002) directly against student rank and course benchmarks.
           </li>
           <li>
-            <strong>Federal Scorecard Percentile Visualizer:</strong> Pulls official middle-50% SAT/ACT ranges from the U.S. Department of Education College Scorecard, plotting student scores on a normalized geometric continuum with precise target point deltas.
+            <strong>Federal Scorecard Percentile Engine:</strong> Visualizes official middle-50% SAT/ACT ranges from the U.S. Department of Education College Scorecard with precise delta targets.
           </li>
           <li>
-            <strong>Higher Education Credit & Tuition ROI Engine:</strong> Cross-references student AP/IB scores against institutional registrar matrices and state AP credit statutes (e.g. Texas HB 1992, California AB 1985), itemizing replaced college course codes and calculating net tuition savings.
+            <strong>AP/IB Higher Education Credit Engine:</strong> Maps exams against verified university registrar catalogs and state credit laws, calculating course code waivers and net tuition dollars saved.
           </li>
           <li>
-            <strong>Interactive What-If Goal Simulator:</strong> Real-time reactive state modeling allowing students to adjust test scores or GPA targets and immediately observe changes in university range classifications.
-          </li>
-          <li>
-            <strong>Counselor Advisory Dossier Generator:</strong> Generates a printable, audit-grade document with verified hashes for guidance counselor meetings and parental review.
+            <strong>Counselor Advisory Dossier:</strong> Generates clean, audit-ready PDF summary reports for guidance counselors and family college planning meetings.
           </li>
         </ul>
-
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">Judging Rubric Alignment (30-Point Framework)</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-            <strong style="color: #93C5FD; font-size: 0.8rem; display: block;">Concept & Civic Need (15 pts)</strong>
-            <span style="font-size: 0.75rem;">Solves real-world counselor shortages, democratizes public educational data, and protects families from predatory admissions tools.</span>
-          </div>
-          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-            <strong style="color: #93C5FD; font-size: 0.8rem; display: block;">Technical Execution (15 pts)</strong>
-            <span style="font-size: 0.75rem;">Modular JavaScript architecture, zero external dependencies, robust local storage session persistence, and fully mobile-responsive accessible UI.</span>
-          </div>
-        </div>
-
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">2026 AI Tool Disclosure & Authorship</h3>
-        <div style="background: rgba(255,255,255,0.03); border-left: 2px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8rem;">
-          In strict compliance with CAC rules, generative AI was utilized solely as a pair programmer for syntax guidance and CSS debugging. All computational rules, data schemas, algorithmic logic, and visual workflows were authored and understood completely by the student applicant.
-        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-primary" onclick="App.closeAllModals()">Close Technical Brief</button>
+        <button type="button" class="btn-primary" onclick="App.closeAllModals()">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Sources, Architecture & CAC AI Disclosure -->
+  <!-- Modal: Sources & Methodology -->
   <div class="modal-overlay" id="disclosure-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-disclosure">
     <div class="modal-card" style="max-width: 720px;">
       <div class="modal-header">
-        <h2 id="modal-title-disclosure">Official Data Sources & AI Tool Disclosure</h2>
+        <h2 id="modal-title-disclosure">Official Data Sources &amp; Methodology</h2>
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted);">
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">1. Official Public Data Sources</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">1. Authoritative Public Data Sources</h3>
         <p style="margin-bottom: 0.85rem;">
           Every numerical distribution and policy cutoff in <strong>AdmitAI</strong> is backed by authoritative public-domain sources:
         </p>
@@ -829,21 +801,18 @@
           <li><strong>U.S. Department of Education College Scorecard:</strong> Official federal database for 25th/75th percentile SAT/ACT ranges, graduation rates, net price, and average tuition.</li>
           <li><strong>State Automatic Admission Statutes:</strong> California UC Regents Policy 2102, Washington RCW 28B.77.020, Georgia USG Policy 4.2, Florida BOG Reg 6.002, and Texas Education Code § 51.803.</li>
           <li><strong>State AP Credit Legislation:</strong> California AB 1985, Illinois Public Act 099-0358, Ohio ORC 3333.163, Florida Title XLVIII, and Texas Education Code § 51.968.</li>
-          <li><strong>University Registrar Catalogs:</strong> Direct credit equivalency tables curated from university testing service offices.</li>
+          <li><strong>University Registrar Catalogs:</strong> Direct credit equivalency tables curated from university testing service and registrar offices.</li>
         </ul>
 
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">2. The Anti-Hallucination Core Principle</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">2. The Anti-Hallucination Standard</h3>
         <p style="margin-bottom: 1rem;">
-          Commercial admissions platforms use proprietary statistical formulas to output speculative "chance percentages". Because university admissions involve qualitative, holistic evaluations, chance estimates are mathematically unverifiable. <strong>AdmitAI strictly outputs verifiable facts:</strong> published score distributions, exact course waivers, and statutory rules.
+          Commercial admissions platforms use black-box formulas to output speculative "chance percentages". Because university admissions involve holistic evaluations, chance estimates are mathematically unverifiable. <strong>AdmitAI strictly outputs verifiable facts:</strong> published score distributions, exact course waivers, and codified statutory rules.
         </p>
 
-        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">3. Congressional App Challenge AI Tool Disclosure</h3>
+        <h3 style="color: #FFFFFF; font-size: 0.95rem; margin-bottom: 0.4rem;">3. Data Freshness &amp; Verification</h3>
         <p style="margin-bottom: 0.5rem;">
-          In accordance with the 2026 Congressional App Challenge rules regarding artificial intelligence:
+          AdmitAI tracks annual College Scorecard data releases and legislative statutory revisions, ensuring all score benchmarks, tuition credit evaluations, and statutory eligibility criteria reflect current institutional and legal standards.
         </p>
-        <div style="background: rgba(255,255,255,0.03); border-left: 2px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8rem;">
-          <em>"AI tools were used as a pair programming mentor for syntax debugging, CSS layout troubleshooting, and JavaScript DOM manipulation patterns. All application architecture, deterministic state-rule logic, JSON data schemas, AP credit mappings, and UX workflows were designed, verified, and authored with full personal human comprehension of every underlying function."</em>
-        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-primary" onclick="App.closeAllModals()">Understood</button>
@@ -936,15 +905,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts -->
-  <script src="js/auth.js?v=2.3"></script>
-  <script src="js/onboarding.js?v=2.3"></script>
-  <script src="js/profile.js?v=2.3"></script>
-  <script src="js/status.js?v=2.3"></script>
-  <script src="js/colleges.js?v=2.3"></script>
-  <script src="js/credits.js?v=2.3"></script>
-  <script src="js/roadmap.js?v=2.3"></script>
-  <script src="js/export.js?v=2.3"></script>
-  <script src="js/ai.js?v=2.3"></script>
-  <script src="js/app.js?v=2.3"></script>
+  <script src="js/auth.js?v=2.4"></script>
+  <script src="js/onboarding.js?v=2.4"></script>
+  <script src="js/profile.js?v=2.4"></script>
+  <script src="js/status.js?v=2.4"></script>
+  <script src="js/colleges.js?v=2.4"></script>
+  <script src="js/credits.js?v=2.4"></script>
+  <script src="js/roadmap.js?v=2.4"></script>
+  <script src="js/export.js?v=2.4"></script>
+  <script src="js/ai.js?v=2.4"></script>
+  <script src="js/app.js?v=2.4"></script>
 </body>
 </html>

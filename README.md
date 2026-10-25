@@ -1,6 +1,6 @@
 # AdmitAI — Fact-Based College Standing & AP Credit ROI Engine
 
-> **2026 Congressional App Challenge Submission**  
+> **AdmitAI Web Application**  
 > *Enter your scores once to see published college score ranges, statutory admission guarantees, and AP/IB credit tuition savings without speculative predictions.*
 
 ---
@@ -107,8 +107,8 @@ All application data is drawn directly from public domain and statutory sources:
 
 ---
 
-## 🤖 2026 Congressional App Challenge AI Tool Disclosure
+## 🏛️ Public Data Standards & Deterministic Architecture
 
-In accordance with the 2026 Congressional App Challenge rules governing the use of artificial intelligence:
-* **Tool Usage:** Generative AI tools (Claude 3.7 / Gemini) were utilized strictly as a technical mentor and pair programmer for debugging JavaScript DOM logic, resolving CSS responsive layout quirks, and reviewing data schemas.
-* **Human Authorship & Contribution:** The application architecture, deterministic rule validation engine, mathematical tuition calculation formulas, state statutory analysis, UI design, and JSON data mapping were conceived, structured, and implemented by the student author. The student has complete comprehension of all underlying functions and logic in the codebase.
+AdmitAI strictly follows an open, deterministic data standard:
+* **Zero Speculation:** All computations rely on codified public statutes and published university score distributions rather than black-box machine learning probability guesses.
+* **Deterministic Logic:** All state law qualifications, middle-50% percentile bands, and course-credit mappings execute locally with transparent mathematical formulas and verified source citations.
