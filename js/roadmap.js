@@ -157,6 +157,46 @@ const RoadmapEngine = {
         </div>
       </div>
 
+      <!-- 9th–11th Grade Strategic High School Blueprint -->
+      <div class="card" style="margin-bottom: 1.75rem; padding: 1.35rem; background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(79, 70, 229, 0.1)); border: 1px solid rgba(96, 165, 250, 0.32);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+          <div>
+            <h3 style="font-size: 1.12rem; font-weight: 700; color: #FFFFFF;">
+              🧭 9th–11th Grade Strategic High School Blueprint &amp; Target Benchmarks
+            </h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+              Exact GPA, class rank, testing, and AP course targets to lock in automatic merit scholarships ($5k–$28k/yr) and guaranteed state admissions.
+            </p>
+          </div>
+          <span style="font-size: 0.74rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 999px; background: rgba(59, 130, 246, 0.2); color: #93C5FD; border: 1px solid rgba(96, 165, 250, 0.35);">
+            Active Track: Grade ${currentGrade}
+          </span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+          <div style="background: rgba(13, 20, 36, 0.75); border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 10px; padding: 1rem;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem;">9th &amp; 10th Grade: Foundation</div>
+            <strong style="color: #FFFFFF; font-size: 0.92rem; display: block; margin-bottom: 0.35rem;">Protect Unweighted GPA &amp; Class Rank</strong>
+            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
+              Target a <strong>3.85+ Unweighted GPA</strong> and <strong>Top 6%–10% Class Rank</strong> to lock in statutory state auto-admit (TX, CA, FL, GA, WA) and take 1–2 starter APs (AP World, AP Human Geo, AP CSP).
+            </p>
+          </div>
+          <div style="background: rgba(13, 20, 36, 0.75); border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 10px; padding: 1rem;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #818CF8; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem;">11th Grade: Scholarship &amp; AP Core</div>
+            <strong style="color: #FFFFFF; font-size: 0.92rem; display: block; margin-bottom: 0.35rem;">Hit 1350–1420+ SAT / 29–32+ ACT</strong>
+            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
+              Crossing <strong>1350–1420+ SAT</strong> unlocks automatic $13,500–$28,000/yr merit tiers. Take high-ROI core waiver APs (AP English Lang, AP Calc AB/BC, AP US History, AP Bio/Chem).
+            </p>
+          </div>
+          <div style="background: rgba(13, 20, 36, 0.75); border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 10px; padding: 1rem;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem;">12th Grade: Claim Aid &amp; Waivers</div>
+            <strong style="color: #FFFFFF; font-size: 0.92rem; display: block; margin-bottom: 0.35rem;">File Before Oct 15 / Nov 1 Cutoffs</strong>
+            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
+              Submit Common App prior to <strong>Nov 1 Early Action</strong> to claim priority institutional scholarships, submit official AP scores for course waivers, and file FAFSA.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Saved College Deadlines & Merit Scholarship Tracker -->
       <div class="card" style="margin-bottom: 2rem; padding: 1.25rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">

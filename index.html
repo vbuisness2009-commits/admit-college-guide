@@ -11,19 +11,41 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="assets/admit-logo.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=3.5">
-  <link rel="stylesheet" href="css/components.css?v=3.5">
+  <link rel="stylesheet" href="css/main.css?v=3.6">
+  <link rel="stylesheet" href="css/components.css?v=3.6">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+  <!-- Shared Brand SVG Defs -->
+  <svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
+    <defs>
+      <linearGradient id="admitLogoGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="55%" stop-color="#4F46E5"/>
+        <stop offset="100%" stop-color="#1E40AF"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
   <!-- Splash Screen (Prime Prep Blueprint) -->
   <div id="splash-screen">
     <div class="splash-glow-ring"></div>
     <div class="splash-particles" id="splash-particles"></div>
     <div class="splash-content">
-      <div class="splash-logo-mark">AI</div>
+      <div class="splash-logo-mark" aria-label="AdmitAI Logo">
+        <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
+          <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
+          <path d="M19.5 29.5V39.5C19.5 43.5 25.1 46.8 32 46.8C38.9 46.8 44.5 43.5 44.5 39.5V29.5L32 35.5L19.5 29.5Z" fill="#DBEAFE" fill-opacity="0.92"/>
+          <path d="M26 24.5L32 20.8L38 24.5" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M48 26.5V37.5" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="48" cy="39" r="2.4" fill="#38BDF8"/>
+          <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
+        </svg>
+      </div>
       <h1 class="splash-title">
         <span class="splash-letter" style="--i:0">A</span><span class="splash-letter" style="--i:1">d</span><span class="splash-letter" style="--i:2">m</span><span class="splash-letter" style="--i:3">i</span><span class="splash-letter" style="--i:4">t</span><span class="splash-spacer" style="display:inline-block;width:12px;"></span><span class="splash-letter" style="--i:5">A</span><span class="splash-letter" style="--i:6">I</span>
       </h1>
@@ -35,7 +57,17 @@
     <header class="landing-nav">
       <div class="landing-nav-inner">
         <div class="brand-group">
-          <div class="brand-logo">AI</div>
+          <div class="brand-logo" aria-label="AdmitAI Logo">
+            <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
+              <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
+              <path d="M19.5 29.5V39.5C19.5 43.5 25.1 46.8 32 46.8C38.9 46.8 44.5 43.5 44.5 39.5V29.5L32 35.5L19.5 29.5Z" fill="#DBEAFE" fill-opacity="0.92"/>
+              <path d="M26 24.5L32 20.8L38 24.5" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M48 26.5V37.5" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="48" cy="39" r="2.4" fill="#38BDF8"/>
+              <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
+            </svg>
+          </div>
           <div class="brand-text">
             <h1>
               AdmitAI
@@ -202,7 +234,17 @@
         <!-- Prime Prep Glassmorphism Auth Card -->
         <div class="landing-auth-card" id="landing-auth-card-anchor" style="position: relative; z-index: 2; width: 100%; max-width: 100%; margin: 0;">
         <div class="landing-auth-header">
-          <div class="brand-logo" style="margin: 0 auto 12px auto; width: 44px; height: 44px; font-size: 1.15rem;">AI</div>
+          <div class="brand-logo" style="margin: 0 auto 12px auto; width: 44px; height: 44px;" aria-label="AdmitAI Logo">
+            <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
+              <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
+              <path d="M19.5 29.5V39.5C19.5 43.5 25.1 46.8 32 46.8C38.9 46.8 44.5 43.5 44.5 39.5V29.5L32 35.5L19.5 29.5Z" fill="#DBEAFE" fill-opacity="0.92"/>
+              <path d="M26 24.5L32 20.8L38 24.5" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M48 26.5V37.5" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="48" cy="39" r="2.4" fill="#38BDF8"/>
+              <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
+            </svg>
+          </div>
           <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem;">Get Started with AdmitAI</h3>
           <p>Unlock your qualified scholarships, admissions &amp; custom guide</p>
         </div>
@@ -354,7 +396,17 @@
       <div class="onboarding-screen-card">
         <div class="onboarding-screen-header">
           <div class="brand-group">
-            <div class="brand-logo">AI</div>
+            <div class="brand-logo" aria-label="AdmitAI Logo">
+              <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
+                <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
+                <path d="M19.5 29.5V39.5C19.5 43.5 25.1 46.8 32 46.8C38.9 46.8 44.5 43.5 44.5 39.5V29.5L32 35.5L19.5 29.5Z" fill="#DBEAFE" fill-opacity="0.92"/>
+                <path d="M26 24.5L32 20.8L38 24.5" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M48 26.5V37.5" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="48" cy="39" r="2.4" fill="#38BDF8"/>
+                <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
+              </svg>
+            </div>
             <div>
               <h2 style="font-size: 1.05rem; color: #FFFFFF; font-weight: 700;">Academic Profile Configuration</h2>
               <span id="onboarding-step-label" style="font-size: 0.72rem; color: #93C5FD; font-weight: 600;">Step 1 of 5</span>
@@ -387,7 +439,17 @@
     <nav id="sidebar" aria-label="Main navigation" role="navigation">
       <div class="sidebar-header">
         <div class="logo">
-          <div class="brand-logo" style="width: 34px; height: 34px; font-size: 0.95rem; border-radius: 9px;">AI</div>
+          <div class="brand-logo" style="width: 34px; height: 34px; border-radius: 9px;" aria-label="AdmitAI Logo">
+            <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
+              <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
+              <path d="M19.5 29.5V39.5C19.5 43.5 25.1 46.8 32 46.8C38.9 46.8 44.5 43.5 44.5 39.5V29.5L32 35.5L19.5 29.5Z" fill="#DBEAFE" fill-opacity="0.92"/>
+              <path d="M26 24.5L32 20.8L38 24.5" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M48 26.5V37.5" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="48" cy="39" r="2.4" fill="#38BDF8"/>
+              <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
+            </svg>
+          </div>
           <span class="logo-text">AdmitAI</span>
         </div>
         <button id="sidebar-toggle" class="icon-btn" aria-label="Toggle sidebar" onclick="App.toggleSidebar()">
@@ -476,7 +538,7 @@
       <!-- Overview / Home View Content (Prime Prep Pattern) -->
       <section id="overview-tab-content" class="tab-content active" aria-label="Home Overview">
         <!-- Dynamic Student Mode Banner (Senior vs High Schooler) -->
-        <div id="overview-pathway-banner" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(16, 185, 129, 0.12)); border: 1px solid rgba(96, 165, 250, 0.35); border-radius: 14px; padding: 1rem 1.35rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div id="overview-pathway-banner" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(79, 70, 229, 0.14)); border: 1px solid rgba(96, 165, 250, 0.35); border-radius: 14px; padding: 1rem 1.35rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <div style="display: flex; align-items: center; gap: 0.85rem;">
             <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(96, 165, 250, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
               🎓
@@ -544,7 +606,17 @@
           </div>
           <div class="hero-visual">
             <div class="hero-logo-showcase">
-              <div class="brand-logo" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 12px auto; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);">AI</div>
+              <div class="brand-logo" style="width: 84px; height: 84px; margin: 0 auto 12px auto; box-shadow: 0 0 38px rgba(37, 99, 235, 0.45); border-radius: 20px;" aria-label="AdmitAI Logo">
+                <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitLogoGrad)" stroke="#60A5FA" stroke-opacity="0.45" stroke-width="1.5"/>
+                  <path d="M32 14L53 24L32 34L11 24L32 14Z" fill="#FFFFFF"/>
+                  <path d="M19.5 29.5V39.5C19.5 43.5 25.1 46.8 32 46.8C38.9 46.8 44.5 43.5 44.5 39.5V29.5L32 35.5L19.5 29.5Z" fill="#DBEAFE" fill-opacity="0.92"/>
+                  <path d="M26 24.5L32 20.8L38 24.5" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M48 26.5V37.5" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+                  <circle cx="48" cy="39" r="2.4" fill="#38BDF8"/>
+                  <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
+                </svg>
+              </div>
               <p class="hero-logo-tagline">— stats to scholarships &amp; roadmaps</p>
             </div>
             <div class="floating-equations">
@@ -568,42 +640,42 @@
         </div>
         <div class="features-grid">
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('status')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #2563EB, #4F46E5); box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);">
               <i class="fas fa-award"></i>
             </div>
             <h3>Scholarships &amp; Auto-Admit</h3>
             <p>See automatic $5,000–$28,000/yr merit scholarships and state-guaranteed university admissions unlocked by your GPA and test scores.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('roadmap')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #3B82F6, #6366F1); box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);">
               <i class="fas fa-compass"></i>
             </div>
             <h3>High School Guide &amp; Plan</h3>
             <p>9th–11th graders get a step-by-step 4-year roadmap for courses and testing; seniors track priority scholarship and application cutoffs.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('credits')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #0284C7, #2563EB); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);">
               <i class="fas fa-sack-dollar"></i>
             </div>
             <h3>AP &amp; Exam Tuition Cash</h3>
             <p>Convert your AP/IB scores into exact college course waivers and thousands in saved tuition dollars across top universities.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('colleges')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #0EA5E9, #3B82F6); box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);">
               <i class="fas fa-chart-column"></i>
             </div>
             <h3>Colleges &amp; Score Ranges</h3>
             <p>Compare your stats against official 25th–75th percentile SAT/ACT score ranges and merit aid policies at flagship institutions.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.switchTab('ai')">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #4F46E5, #6366F1); box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);">
               <i class="fas fa-robot"></i>
             </div>
             <h3>AI Scholarship &amp; Prep Advisor</h3>
             <p>Ask custom questions about which scholarships to start, how many SAT points unlock the next merit tier, or what AP classes to take.</p>
           </div>
           <div class="feature-card glass-card feature-card-link" onclick="App.openExportModal()">
-            <div class="feature-icon" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #1D4ED8, #3B82F6); box-shadow: 0 6px 18px rgba(29, 78, 216, 0.35);">
               <i class="fas fa-file-pdf"></i>
             </div>
             <h3>Printable Student Dossier</h3>
@@ -1023,15 +1095,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts -->
-  <script src="js/auth.js?v=3.5"></script>
-  <script src="js/onboarding.js?v=3.5"></script>
-  <script src="js/profile.js?v=3.5"></script>
-  <script src="js/status.js?v=3.5"></script>
-  <script src="js/colleges.js?v=3.5"></script>
-  <script src="js/credits.js?v=3.5"></script>
-  <script src="js/roadmap.js?v=3.5"></script>
-  <script src="js/export.js?v=3.5"></script>
-  <script src="js/ai.js?v=3.5"></script>
-  <script src="js/app.js?v=3.5"></script>
+  <script src="js/auth.js?v=3.6"></script>
+  <script src="js/onboarding.js?v=3.6"></script>
+  <script src="js/profile.js?v=3.6"></script>
+  <script src="js/status.js?v=3.6"></script>
+  <script src="js/colleges.js?v=3.6"></script>
+  <script src="js/credits.js?v=3.6"></script>
+  <script src="js/roadmap.js?v=3.6"></script>
+  <script src="js/export.js?v=3.6"></script>
+  <script src="js/ai.js?v=3.6"></script>
+  <script src="js/app.js?v=3.6"></script>
 </body>
 </html>

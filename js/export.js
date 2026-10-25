@@ -33,7 +33,7 @@ const DossierExporter = {
     const user = Auth.getCurrentUser();
     const studentName = escapeHTML(user ? user.name : "Student");
     const dateStr = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-    const dossierId = "CAC-2026-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const dossierId = "ADMIT-2026-" + Math.random().toString(36).substring(2, 8).toUpperCase();
 
     const currentGrade = profile.grade_level || 11;
     const residency = profile.residency || "US";
@@ -57,8 +57,11 @@ const DossierExporter = {
         <!-- Document Header / Official Letterhead -->
         <div class="dossier-header">
           <div class="dossier-branding">
-            <div class="dossier-logo">ADMIT</div>
-            <div class="dossier-subtitle">Higher Education Academic Standing & Credit Dossier</div>
+            <div class="dossier-logo" style="display:flex;align-items:center;gap:0.55rem;">
+              <img src="assets/admit-logo.svg" alt="AdmitAI" style="width:28px;height:28px;border-radius:7px;" />
+              <span>AdmitAI</span>
+            </div>
+            <div class="dossier-subtitle">Higher Education Academic Standing &amp; Credit Dossier</div>
             <div class="dossier-meta">Prepared for High School Guidance &amp; Academic Advising · Official Student Audit Dossier</div>
           </div>
           <div class="dossier-ref-box">

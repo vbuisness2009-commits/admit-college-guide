@@ -152,10 +152,12 @@ const AdmitAI = {
       return `### Institutional Diagnostic: ${matchedCollege.name}\n\n* **Scorecard Standing:** ${scoreStatus}\n* **Admit & Graduation Rates:** ${(matchedCollege.admit_rate * 100).toFixed(0)}% admit rate · ${(matchedCollege.grad_rate * 100).toFixed(0)}% graduation rate\n* **Deadlines & Scholarship Cutoffs:** Early: **${matchedCollege.early_deadline || 'N/A'}** · Regular: **${matchedCollege.regular_deadline}** · Scholarship Cutoff: **${matchedCollege.scholarship_deadline}**\n* **Merit & Tuition Grant Policy:** ${matchedCollege.merit_aid_note}\n* **Tuition & Net Cost:** In-State $${matchedCollege.tuition_in_state.toLocaleString()}/yr · Out-of-State $${matchedCollege.tuition_out_of_state.toLocaleString()}/yr · Avg Net Price **$${(matchedCollege.avg_cost || matchedCollege.tuition_in_state).toLocaleString()}/yr**\n* **Your AP Credit Value at ${matchedCollege.short_name}:** **${savings.credits} credit hours** (**$${savings.tuitionSaved.toLocaleString()}** estimated tuition saved)`;
     }
 
-    if (q.includes("deadline") || q.includes("scholarship") || q.includes("early action") || q.includes("financial aid") || q.includes("grant")) {
+    if (q.includes("deadline") || q.includes("scholarship") || q.includes("merit") || q.includes("early action") || q.includes("financial aid") || q.includes("grant")) {
+      const scholarships = StatusEngine.evaluateScholarships ? StatusEngine.evaluateScholarships(profile) : [];
+      const unlockedSch = scholarships.filter(s => s.isQualified);
       const savedColleges = (collegesData || []).filter(c => (profile.saved_colleges || []).includes(c.id));
       const list = savedColleges.length > 0 ? savedColleges : (collegesData || []).slice(0, 5);
-      return `### Saved College Deadlines & Merit Scholarship Cutoffs\n\n${list.map(c => `* **${c.short_name}**: Early **${c.early_deadline}** · Regular **${c.regular_deadline}** · Merit Cutoff **${c.scholarship_deadline}** — *${c.merit_aid_note}*`).join("\n")}\n\n*Open the **Timeline** tab to track your application progress for each university.*`;
+      return `### Automatic Merit Scholarships & Priority Cutoffs (${unlockedSch.length} Unlocked)\n\n${unlockedSch.length > 0 ? unlockedSch.map(s => `* **${s.name}**: **${s.award}** (Cutoff: **${s.deadline}**) — *✓ Qualified by your stats*`).join("\n") : "* Enter or raise your GPA & SAT/ACT scores to unlock automatic institutional merit tiers."}\n\n**Saved University Priority Deadlines:**\n${list.map(c => `* **${c.short_name}**: Early **${c.early_deadline}** · Regular **${c.regular_deadline}** · Merit Cutoff **${c.scholarship_deadline}** — *${c.merit_aid_note}*`).join("\n")}\n\n*Open the **Scholarships & Auto-Admit** or **High School Guide & Plan** tab to claim these awards.*`;
     }
 
     if (q.includes("qualify") || q.includes("eligible") || q.includes("guarantee") || q.includes("auto")) {
@@ -224,12 +226,12 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
     <div class="card" style="margin-bottom: 1.5rem; background: var(--bg-card); border: 1px solid var(--border-subtle);">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div style="width: 32px; height: 32px; border-radius: 6px; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.05em;">
-            AI
+          <div class="brand-logo" style="width: 36px; height: 36px; border-radius: 9px;">
+            <img src="assets/admit-logo.svg" alt="AdmitAI" style="width: 100%; height: 100%; display: block;" />
           </div>
           <div>
             <h3 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 700;">Executive Diagnostic Brief for ${userName}</h3>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">Generated from verified profile parameters & official statutes</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Generated from verified profile parameters &amp; official statutes</span>
           </div>
         </div>
         <button class="btn-secondary" style="font-size: 0.78rem;" onclick="App.openProfileModal()">
@@ -421,6 +423,10 @@ AdmitAI.askQuickQuestion = function(question) {
   this.postUserMessage(question);
 };
 
+AdmitAI.askQuestion = function(question) {
+  this.postUserMessage(question);
+};
+
 AdmitAI.postUserMessage = function(text) {
   const container = document.getElementById("ai-chat-messages");
   if (!container) return;
@@ -436,6 +442,7 @@ AdmitAI.postUserMessage = function(text) {
   const apData = CreditsEngine.apData;
 
   const answerMarkdown = AdmitAI.respondToQuery(text, profile, colleges, rules, apData);
+  this.chatHistory.push({ role: "user", content: text }, { role: "assistant", content: answerMarkdown });
 
   const botBubble = document.createElement("div");
   botBubble.style.cssText = "background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.5; color: var(--text-main); max-width: 95%;";

@@ -35,6 +35,10 @@ const CollegesEngine = {
     return this.collegesData.find(c => c.id === id);
   },
 
+  getById(id) {
+    return this.getCollege(id);
+  },
+
   getEffectiveSat(profile) {
     if (profile.sat_total !== null && profile.sat_total !== undefined && profile.sat_total > 0) {
       return { score: profile.sat_total, isActConcordance: false, label: `SAT ${profile.sat_total}` };
@@ -290,7 +294,7 @@ const CollegesEngine = {
       `;
 
       return `
-        <div class="college-card">
+        <div class="college-card" id="college-card-${col.id}">
           <div class="college-card-header">
             <div class="college-title">
               <h3>${col.name}</h3>

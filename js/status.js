@@ -176,8 +176,16 @@ const StatusEngine = {
     return {
       rule: rule,
       isQualified: allMet,
+      status: allMet ? "qualified" : "action_required",
       criteria: evaluatedCriteria
     };
+  },
+
+  evaluateAll(profile) {
+    if (!this.rulesData || !Array.isArray(this.rulesData)) return [];
+    const userState = (profile && profile.residency) || "TX";
+    const relevant = this.rulesData.filter(r => r.state_code === userState || r.state_code === "ALL");
+    return relevant.map(r => this.evaluateRule(r, profile || {}));
   },
 
   render(containerId, profile, collegesData) {
@@ -195,7 +203,7 @@ const StatusEngine = {
 
     container.innerHTML = `
       <!-- Dynamic Pathway Banner -->
-      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(16, 185, 129, 0.12)); border: 1px solid rgba(96, 165, 250, 0.35); border-radius: var(--radius-lg); padding: 1.15rem 1.35rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(79, 70, 229, 0.14)); border: 1px solid rgba(96, 165, 250, 0.35); border-radius: var(--radius-lg); padding: 1.15rem 1.35rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div style="display: flex; align-items: center; gap: 0.85rem;">
           <div style="width: 38px; height: 38px; border-radius: 10px; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700;">
             ${isSenior ? '🎓' : '🎒'}
@@ -333,7 +341,7 @@ const StatusEngine = {
             </div>
             <div style="display: flex; flex-direction: column; gap: 0.85rem;">
               ${scholarships.map(s => `
-                <div class="rule-card" style="padding: 1.1rem 1.25rem; border-color: ${s.isQualified ? 'rgba(16, 185, 129, 0.35)' : 'rgba(255, 255, 255, 0.08)'};">
+                <div class="rule-card" id="scholarship-card-${s.id}" style="padding: 1.1rem 1.25rem; border-color: ${s.isQualified ? 'rgba(16, 185, 129, 0.35)' : 'rgba(148, 163, 184, 0.14)'};">
                   <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
                     <div>
                       <div style="font-weight: 700; font-size: 0.98rem; color: #FFFFFF;">${s.name}</div>

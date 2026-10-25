@@ -113,24 +113,85 @@ const App = {
       dropdown.innerHTML = "";
       return;
     }
-    const all = CollegesEngine.getAll();
-    const matches = all.filter(c => 
+
+    const scholarshipMatches = (StatusEngine.MERIT_SCHOLARSHIPS || []).filter(s =>
+      s.name.toLowerCase().includes(q) ||
+      s.award.toLowerCase().includes(q) ||
+      s.state.toLowerCase().includes(q) ||
+      "scholarship".includes(q) ||
+      "merit".includes(q)
+    ).slice(0, 3);
+
+    const allColleges = CollegesEngine.getAll();
+    const collegeMatches = allColleges.filter(c => 
       c.name.toLowerCase().includes(q) || 
       c.short_name.toLowerCase().includes(q) || 
+      (c.city && c.city.toLowerCase().includes(q)) ||
       c.state.toLowerCase().includes(q)
-    ).slice(0, 5);
+    ).slice(0, 4);
 
-    if (matches.length === 0) {
-      dropdown.innerHTML = `<div style="padding: 10px; font-size: 0.8rem; color: #94A3B8;">No colleges found matching "${escapeHTML(query)}"</div>`;
-    } else {
-      dropdown.innerHTML = matches.map(c => `
-        <div class="search-result-item" onclick="App.selectCollegeFromSearch('${c.id}')">
-          <div class="result-title">${escapeHTML(c.name)}</div>
-          <div class="result-meta">${escapeHTML(c.city)}, ${escapeHTML(c.state)} · Middle-50%: ${c.sat_25th || 'N/A'}-${c.sat_75th || 'N/A'} SAT</div>
+    const apMatches = (CreditsEngine.AVAILABLE_EXAMS || []).filter(e =>
+      e.name.toLowerCase().includes(q)
+    ).slice(0, 2);
+
+    const itemsHtml = [];
+
+    scholarshipMatches.forEach(s => {
+      itemsHtml.push(`
+        <div class="search-result-item" onclick="App.selectScholarshipFromSearch('${s.id}')">
+          <div class="result-title">💰 ${escapeHTML(s.name)}</div>
+          <div class="result-meta">${escapeHTML(s.award)} · Min ${s.min_gpa.toFixed(2)} GPA · Cutoff: ${escapeHTML(s.deadline)}</div>
         </div>
-      `).join("");
+      `);
+    });
+
+    collegeMatches.forEach(c => {
+      itemsHtml.push(`
+        <div class="search-result-item" onclick="App.selectCollegeFromSearch('${c.id}')">
+          <div class="result-title">🏛️ ${escapeHTML(c.name)}</div>
+          <div class="result-meta">${escapeHTML(c.city)}, ${escapeHTML(c.state)} · Middle-50%: ${c.sat_total_25 || 'N/A'}–${c.sat_total_75 || 'N/A'} SAT</div>
+        </div>
+      `);
+    });
+
+    apMatches.forEach(e => {
+      itemsHtml.push(`
+        <div class="search-result-item" onclick="App.selectApFromSearch('${e.id}')">
+          <div class="result-title">💵 ${escapeHTML(e.name)}</div>
+          <div class="result-meta">AP Course Waiver &amp; Tuition Cash Calculator</div>
+        </div>
+      `);
+    });
+
+    if (itemsHtml.length === 0) {
+      dropdown.innerHTML = `<div style="padding: 10px; font-size: 0.8rem; color: #94A3B8;">No scholarships, colleges, or AP exams found matching "${escapeHTML(query)}"</div>`;
+    } else {
+      dropdown.innerHTML = itemsHtml.join("");
     }
     dropdown.classList.remove("hidden");
+  },
+
+  selectScholarshipFromSearch(scholarshipId) {
+    const dropdown = document.getElementById("search-results");
+    if (dropdown) dropdown.classList.add("hidden");
+    const input = document.getElementById("global-search");
+    if (input) input.value = "";
+    this.switchTab("status");
+    setTimeout(() => {
+      const card = document.getElementById(`scholarship-card-${scholarshipId}`);
+      if (card) {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.style.borderColor = "var(--accent)";
+      }
+    }, 150);
+  },
+
+  selectApFromSearch() {
+    const dropdown = document.getElementById("search-results");
+    if (dropdown) dropdown.classList.add("hidden");
+    const input = document.getElementById("global-search");
+    if (input) input.value = "";
+    this.switchTab("credits");
   },
 
   selectCollegeFromSearch(collegeId) {
@@ -138,6 +199,10 @@ const App = {
     if (dropdown) dropdown.classList.add("hidden");
     const input = document.getElementById("global-search");
     if (input) input.value = "";
+    if (typeof CollegesEngine !== "undefined") {
+      CollegesEngine.activeFilter = "all";
+      CollegesEngine.searchQuery = "";
+    }
     this.switchTab("colleges");
     setTimeout(() => {
       const card = document.getElementById(`college-card-${collegeId}`);
@@ -785,10 +850,12 @@ const App = {
     }
 
     const lawsStat = document.getElementById("sidebar-stat-laws");
-    if (lawsStat && typeof StatusEngine !== "undefined" && StatusEngine.rulesData) {
-      const summary = StatusEngine.evaluateAll(profile);
-      const qualifiedCount = summary.filter(s => s.status === "qualified").length;
-      lawsStat.textContent = `${qualifiedCount} Law${qualifiedCount === 1 ? '' : 's'} Guaranteed`;
+    if (lawsStat && typeof StatusEngine !== "undefined") {
+      const scholarships = StatusEngine.evaluateScholarships ? StatusEngine.evaluateScholarships(profile) : [];
+      const schCount = scholarships.filter(s => s.isQualified).length;
+      const summary = StatusEngine.evaluateAll ? StatusEngine.evaluateAll(profile) : [];
+      const qualifiedCount = summary.filter(s => s.isQualified || s.status === "qualified").length;
+      lawsStat.textContent = `${schCount} Scholarships · ${qualifiedCount} Auto-Admit`;
     }
 
     const tuitionStat = document.getElementById("sidebar-stat-tuition");
@@ -993,7 +1060,7 @@ const App = {
 
   animateNumber(element, start, end, duration = 400, prefix = "", suffix = "") {
     if (!element) return;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (typeof performance === "undefined" || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
       element.textContent = prefix + (typeof end === "number" ? end.toLocaleString() : end) + suffix;
       return;
     }

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="admitBg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="55%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+    <linearGradient id="admitCap" x1="12" y1="16" x2="52" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="admitSpark" x1="42" y1="12" x2="54" y2="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#93C5FD"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded Squircle Badge -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#admitBg)" stroke="#60A5FA" stroke-opacity="0.35" stroke-width="1.5"/>
+  <!-- Inner Subtle Glow -->
+  <path d="M18 6H46C52.6274 6 58 11.3726 58 18V24C44 28 20 28 6 24V18C6 11.3726 11.3726 6 18 6Z" fill="#FFFFFF" fill-opacity="0.07"/>
+  <!-- Academic Mortarboard Diamond -->
+  <path d="M32 15L52 24.5L32 34L12 24.5L32 15Z" fill="url(#admitCap)"/>
+  <!-- Cap Skullcap / Rising Pillar Base -->
+  <path d="M20 29.8V39.5C20 43.2 25.4 46.5 32 46.5C38.6 46.5 44 43.2 44 39.5V29.8L32 35.5L20 29.8Z" fill="#DBEAFE" fill-opacity="0.92"/>
+  <!-- Ascending Trajectory Chevron inside Cap -->
+  <path d="M26 24.8L32 21.2L38 24.8" stroke="#2563EB" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Tassel & Cord -->
+  <path d="M47.5 26.8V37.5" stroke="#38BDF8" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="47.5" cy="39" r="2.3" fill="#38BDF8"/>
+  <!-- North-East Compass Star Accent -->
+  <path d="M49 11L50.3 14.2L53.5 15.5L50.3 16.8L49 20L47.7 16.8L44.5 15.5L47.7 14.2L49 11Z" fill="url(#admitSpark)"/>
+</svg>

@@ -42,7 +42,11 @@ const Onboarding = {
   start() {
     this.init();
     this.renderStep(1);
+    const authView = document.getElementById("view-auth");
+    const appView = document.getElementById("view-app");
     const obContainer = document.getElementById("view-onboarding");
+    if (authView) authView.style.display = "none";
+    if (appView) appView.style.display = "none";
     if (obContainer) obContainer.style.display = "block";
   },
 
@@ -70,6 +74,10 @@ const Onboarding = {
   },
 
   nextStep() {
+    if (this.currentStep >= this.totalSteps) {
+      this.finish();
+      return;
+    }
     this.goToStep(this.currentStep + 1);
   },
 
@@ -84,10 +92,10 @@ const Onboarding = {
         const hsInput = document.getElementById("ob-hs");
         const gradeInput = document.getElementById("ob-grade");
         const resInput = document.getElementById("ob-residency");
-        if (nameInput) this.wizardData.name = nameInput.value.trim();
+        if (nameInput && nameInput.value.trim()) this.wizardData.name = nameInput.value.trim();
         if (hsInput) this.wizardData.high_school = hsInput.value.trim();
-        if (gradeInput) this.wizardData.grade_level = parseInt(gradeInput.value, 10);
-        if (resInput) this.wizardData.residency = resInput.value;
+        if (gradeInput && gradeInput.value) this.wizardData.grade_level = parseInt(gradeInput.value, 10) || 11;
+        if (resInput && resInput.value) this.wizardData.residency = resInput.value;
         break;
       }
       case 2: {
