@@ -11,30 +11,41 @@ const Onboarding = {
   init() {
     this.currentStep = 1;
     const user = Auth.getCurrentUser();
+    const defaultGrade = (typeof App !== "undefined" && App.selectedTrack === "hs") ? 10 : 12;
     if (user && user.profile) {
       this.wizardData = JSON.parse(JSON.stringify(user.profile));
       if (!this.wizardData.name && user.name) this.wizardData.name = user.name;
+      if (!this.wizardData.intended_major) this.wizardData.intended_major = "STEM & Engineering";
+      if (!this.wizardData.extracurricular_tier) this.wizardData.extracurricular_tier = "School Club Officer / Varsity / Research";
+      if (!this.wizardData.primary_goal) this.wizardData.primary_goal = "Maximize Merit Scholarships ($5k–$28k/yr)";
     } else {
       this.wizardData = {
         name: user ? user.name : "",
-        grade_level: 11,
+        grade_level: defaultGrade,
         residency: "TX",
         high_school: "",
-        gpa_unweighted: 3.8,
-        gpa_weighted: 4.2,
-        class_rank: null,
-        class_size: null,
-        class_percentile: null,
-        sat_rw: null,
-        sat_m: null,
-        sat_total: null,
-        act_composite: null,
+        intended_major: "STEM & Engineering",
+        extracurricular_tier: "School Club Officer / Varsity / Research",
+        primary_goal: defaultGrade >= 12 ? "Maximize Merit Scholarships ($5k–$28k/yr)" : "Build My 4-Year High School Game Plan",
+        gpa_unweighted: 3.85,
+        gpa_weighted: 4.3,
+        class_rank: 28,
+        class_size: 520,
+        class_percentile: 5.4,
+        sat_rw: 690,
+        sat_m: 730,
+        sat_total: 1420,
+        act_composite: 31,
         math_years_algebra2: true,
         science_years: 4,
         has_endorsement: true,
-        fl_prep_complete: false,
-        saved_colleges: ["ut-austin", "tamu"],
-        ap_exams: []
+        fl_prep_complete: true,
+        saved_colleges: ["ut-austin", "tamu", "uf", "uga", "purdue"],
+        ap_exams: [
+          { id: "calc_ab", name: "AP Calculus AB", score: 5, status: "completed" },
+          { id: "eng_lang", name: "AP English Language & Composition", score: 4, status: "completed" },
+          { id: "ushist", name: "AP United States History", score: 4, status: "completed" }
+        ]
       };
     }
   },
@@ -51,17 +62,12 @@ const Onboarding = {
   },
 
   open() {
-    this.init();
-    const modal = document.getElementById("onboarding-modal");
-    if (modal) {
-      this.renderStep(1);
-      modal.classList.add("open");
-    } else {
-      this.start();
-    }
+    this.start();
   },
 
   close() {
+    const obContainer = document.getElementById("view-onboarding");
+    if (obContainer) obContainer.style.display = "none";
     const modal = document.getElementById("onboarding-modal");
     if (modal) modal.classList.remove("open");
   },
@@ -92,10 +98,12 @@ const Onboarding = {
         const hsInput = document.getElementById("ob-hs");
         const gradeInput = document.getElementById("ob-grade");
         const resInput = document.getElementById("ob-residency");
+        const majorInput = document.getElementById("ob-major");
         if (nameInput && nameInput.value.trim()) this.wizardData.name = nameInput.value.trim();
         if (hsInput) this.wizardData.high_school = hsInput.value.trim();
         if (gradeInput && gradeInput.value) this.wizardData.grade_level = parseInt(gradeInput.value, 10) || 11;
         if (resInput && resInput.value) this.wizardData.residency = resInput.value;
+        if (majorInput && majorInput.value) this.wizardData.intended_major = majorInput.value;
         break;
       }
       case 2: {
@@ -140,6 +148,8 @@ const Onboarding = {
         const sci = document.getElementById("ob-sci");
         const end = document.getElementById("ob-end");
         const fl = document.getElementById("ob-fl");
+        const ec = document.getElementById("ob-ec");
+        const goal = document.getElementById("ob-goal");
         if (alg2) this.wizardData.math_years_algebra2 = alg2.checked;
         if (sci) {
           const parsedSci = parseInt(sci.value, 10);
@@ -147,6 +157,8 @@ const Onboarding = {
         }
         if (end) this.wizardData.has_endorsement = end.checked;
         if (fl) this.wizardData.fl_prep_complete = fl.checked;
+        if (ec && ec.value) this.wizardData.extracurricular_tier = ec.value;
+        if (goal && goal.value) this.wizardData.primary_goal = goal.value;
         break;
       }
     }
@@ -163,16 +175,16 @@ const Onboarding = {
 
     const percent = ((step - 1) / (this.totalSteps - 1)) * 100;
     if (progressFill) progressFill.style.width = `${percent}%`;
-    if (stepLabel) stepLabel.innerText = `Step ${step} of ${this.totalSteps}`;
+    if (stepLabel) stepLabel.innerText = `Question Set ${step} of ${this.totalSteps}`;
 
     if (prevBtn) prevBtn.style.visibility = step === 1 ? "hidden" : "visible";
     if (nextBtn) {
       if (step === this.totalSteps) {
-        nextBtn.innerText = "Complete Setup & Launch Dashboard →";
+        nextBtn.innerText = "✨ Analyze My Stats & Generate AI Breakdown →";
         nextBtn.className = "btn-primary";
         nextBtn.onclick = () => Onboarding.finish();
       } else {
-        nextBtn.innerText = "Next Step →";
+        nextBtn.innerText = "Next Question Set →";
         nextBtn.className = "btn-primary";
         nextBtn.onclick = () => Onboarding.nextStep();
       }
@@ -182,17 +194,33 @@ const Onboarding = {
 
     switch (step) {
       case 1:
+        const currentGrade = this.wizardData.grade_level || 12;
+        const currentMajor = this.wizardData.intended_major || "STEM & Engineering";
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>Let's start with your location & grade</h3>
-              <p>Where are you attending high school, and what year are you graduating?</p>
+              <h3>1. Your Grade Track, Location & Intended Major</h3>
+              <p>Tell us where you are in high school and what field you want to pursue so the AI can tailor your breakdown.</p>
+            </div>
+
+            <!-- Interactive Track Selector Pills -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+              <button type="button" onclick="Onboarding.selectGradeTrack(12)" style="text-align: left; padding: 0.85rem 1rem; border-radius: 10px; cursor: pointer; border: 1.5px solid ${currentGrade === 12 ? '#3B82F6' : 'var(--border-subtle)'}; background: ${currentGrade === 12 ? 'rgba(37, 99, 235, 0.14)' : 'var(--bg-input)'}; color: var(--text-main);">
+                <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #60A5FA; margin-bottom: 0.2rem;">🎓 Senior / Grad Track</div>
+                <div style="font-size: 0.9rem; font-weight: 700;">12th Grade or High School Grad</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">See scholarships, auto-admit & AP cash unlocked now</div>
+              </button>
+              <button type="button" onclick="Onboarding.selectGradeTrack(10)" style="text-align: left; padding: 0.85rem 1rem; border-radius: 10px; cursor: pointer; border: 1.5px solid ${currentGrade < 12 ? '#818CF8' : 'var(--border-subtle)'}; background: ${currentGrade < 12 ? 'rgba(99, 102, 241, 0.14)' : 'var(--bg-input)'}; color: var(--text-main);">
+                <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #A5B4FC; margin-bottom: 0.2rem;">🗺️ 9th–11th Grade Roadmap</div>
+                <div style="font-size: 0.9rem; font-weight: 700;">Freshman, Sophomore, or Junior</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">Build a custom step-by-step high school guide</div>
+              </button>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
                 <label for="ob-name">Full Name</label>
-                <input type="text" id="ob-name" class="input-control" value="${this.wizardData.name || ''}" placeholder="e.g. John Doe" required>
+                <input type="text" id="ob-name" class="input-control" value="${this.wizardData.name || ''}" placeholder="e.g. Alex Rivera" required>
               </div>
 
               <div class="form-group">
@@ -203,12 +231,12 @@ const Onboarding = {
 
             <div class="form-grid">
               <div class="form-group">
-                <label for="ob-grade">Current Grade Level</label>
+                <label for="ob-grade">Exact Grade Level</label>
                 <select id="ob-grade" class="select-control">
-                  <option value="9" ${this.wizardData.grade_level === 9 ? 'selected' : ''}>9th Grade (Freshman)</option>
-                  <option value="10" ${this.wizardData.grade_level === 10 ? 'selected' : ''}>10th Grade (Sophomore)</option>
-                  <option value="11" ${this.wizardData.grade_level === 11 ? 'selected' : ''}>11th Grade (Junior)</option>
-                  <option value="12" ${this.wizardData.grade_level === 12 ? 'selected' : ''}>12th Grade (Senior)</option>
+                  <option value="9" ${currentGrade === 9 ? 'selected' : ''}>9th Grade (Freshman)</option>
+                  <option value="10" ${currentGrade === 10 ? 'selected' : ''}>10th Grade (Sophomore)</option>
+                  <option value="11" ${currentGrade === 11 ? 'selected' : ''}>11th Grade (Junior)</option>
+                  <option value="12" ${currentGrade === 12 ? 'selected' : ''}>12th Grade (Senior / Grad)</option>
                 </select>
               </div>
 
@@ -271,8 +299,16 @@ const Onboarding = {
               </div>
             </div>
 
-            <div style="background: rgba(37, 99, 235, 0.08); border-left: 3px solid var(--primary); padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
-              ℹ <strong>Why state residency matters:</strong> Public universities across all 50 states evaluate in-state tuition qualifications and state-mandated automatic/direct admissions criteria.
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label for="ob-major">Intended College Major / Career Track</label>
+              <select id="ob-major" class="select-control">
+                <option value="STEM & Engineering" ${currentMajor === 'STEM & Engineering' ? 'selected' : ''}>STEM & Engineering (Mechanical, Aerospace, Electrical, Civil)</option>
+                <option value="Computer Science & Data" ${currentMajor === 'Computer Science & Data' ? 'selected' : ''}>Computer Science, AI & Data Science</option>
+                <option value="Business, Finance & Economics" ${currentMajor === 'Business, Finance & Economics' ? 'selected' : ''}>Business, Finance & Economics</option>
+                <option value="Pre-Med, Biology & Health" ${currentMajor === 'Pre-Med, Biology & Health' ? 'selected' : ''}>Pre-Med, Nursing, Biology & Health Sciences</option>
+                <option value="Humanities, Law & Social Sciences" ${currentMajor === 'Humanities, Law & Social Sciences' ? 'selected' : ''}>Humanities, Pre-Law, Psychology & Political Science</option>
+                <option value="Undecided / Exploring" ${currentMajor === 'Undecided / Exploring' ? 'selected' : ''}>Undecided / Exploring Multiple Tracks</option>
+              </select>
             </div>
           </div>
         `;
@@ -283,8 +319,16 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>Academic Performance & Class Standing</h3>
-              <p>Enter your GPA and class rank to evaluate statutory automatic admission programs.</p>
+              <h3>2. Your GPA & Class Rank Standing</h3>
+              <p>Enter your unweighted/weighted GPA and class rank (or pick a quick estimate below) to unlock merit aid and auto-admission rules.</p>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1rem;">
+              <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center; margin-right: 0.25rem;">Quick GPA Presets:</span>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.95, 4.45, 18, 500)">Straight A's (3.95 UW / Top 4%)</button>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.75, 4.15, 42, 500)">A/B Honor Roll (3.75 UW / Top 9%)</button>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.45, 3.80, 95, 500)">Solid B+ Student (3.45 UW / Top 19%)</button>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.15, 3.35, 160, 500)">B Average (3.15 UW)</button>
             </div>
 
             <div class="form-grid">
@@ -294,20 +338,20 @@ const Onboarding = {
               </div>
 
               <div class="form-group">
-                <label for="ob-gpa-w">Weighted GPA <span class="hint">e.g. 4.50</span></label>
-                <input type="number" step="0.01" min="0" max="6.0" id="ob-gpa-w" class="input-control" value="${this.wizardData.gpa_weighted || ''}" placeholder="4.40">
+                <label for="ob-gpa-w">Weighted GPA <span class="hint">e.g. 4.35</span></label>
+                <input type="number" step="0.01" min="0" max="6.0" id="ob-gpa-w" class="input-control" value="${this.wizardData.gpa_weighted || ''}" placeholder="4.35">
               </div>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
-                <label for="ob-rank">Class Rank <span class="hint">Exact position</span></label>
+                <label for="ob-rank">Class Rank <span class="hint">Optional</span></label>
                 <input type="number" min="1" id="ob-rank" class="input-control" value="${this.wizardData.class_rank || ''}" placeholder="e.g. 24" oninput="Onboarding.updatePercentileLive()">
               </div>
 
               <div class="form-group">
-                <label for="ob-size">Graduating Class Size <span class="hint">Total seniors</span></label>
-                <input type="number" min="1" id="ob-size" class="input-control" value="${this.wizardData.class_size || ''}" placeholder="e.g. 600" oninput="Onboarding.updatePercentileLive()">
+                <label for="ob-size">Graduating Class Size <span class="hint">Optional</span></label>
+                <input type="number" min="1" id="ob-size" class="input-control" value="${this.wizardData.class_size || ''}" placeholder="e.g. 500" oninput="Onboarding.updatePercentileLive()">
               </div>
             </div>
 
@@ -325,15 +369,23 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>Standardized Test Scores</h3>
-              <p>Compare your scores against published middle-50% ranges from the U.S. Dept. of Education.</p>
+              <h3>3. Standardized Test Scores (SAT / ACT)</h3>
+              <p>Enter your current or target SAT/ACT scores so our AI can match you with automatic merit scholarships and university score ranges.</p>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1rem;">
+              <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center; margin-right: 0.25rem;">Quick Score Presets:</span>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(740, 770, 34)">1510 SAT / 34 ACT</button>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(690, 720, 31)">1410 SAT / 31 ACT</button>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(640, 660, 28)">1300 SAT / 28 ACT</button>
+              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(580, 600, 24)">1180 SAT / 24 ACT</button>
             </div>
 
             <label class="checkbox-group" style="margin-bottom: 1rem;">
               <input type="checkbox" id="ob-no-test" onchange="Onboarding.toggleTestInputs(this.checked)" ${this.wizardData.no_test_checked ? 'checked' : ''}>
               <div class="checkbox-label">
-                <strong>I haven't taken the SAT or ACT yet</strong>
-                <span class="checkbox-sub">You can add test scores anytime later from your profile.</span>
+                <strong>I haven't taken the SAT or ACT yet (Test-Optional / Future Tester)</strong>
+                <span class="checkbox-sub">Our AI will recommend a target score timeline and show test-optional pathways.</span>
               </div>
             </label>
 
@@ -341,7 +393,7 @@ const Onboarding = {
               <div class="form-grid">
                 <div class="form-group">
                   <label for="ob-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
-                  <input type="number" min="200" max="800" step="10" id="ob-sat-rw" class="input-control" value="${this.wizardData.sat_rw || ''}" placeholder="680" oninput="Onboarding.updateSatTotalLive()">
+                  <input type="number" min="200" max="800" step="10" id="ob-sat-rw" class="input-control" value="${this.wizardData.sat_rw || ''}" placeholder="690" oninput="Onboarding.updateSatTotalLive()">
                 </div>
 
                 <div class="form-group">
@@ -365,40 +417,64 @@ const Onboarding = {
         break;
 
       case 4:
+        const ecTier = this.wizardData.extracurricular_tier || "strong";
+        const primaryGoal = this.wizardData.primary_goal || "scholarships";
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>National College-Prep Curriculum Check</h3>
-              <p>Public universities nationwide evaluate foundational high school course rigor.</p>
+              <h3>4. Course Rigor, Extracurriculars & Primary Goal</h3>
+              <p>Tell us about your high school curriculum and activities so the AI can spot gaps and suggest high-impact next steps.</p>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div class="form-grid" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label for="ob-ec">Extracurricular & Leadership Involvement</label>
+                <select id="ob-ec" class="select-control">
+                  <option value="national" ${ecTier === 'national' ? 'selected' : ''}>Tier 1: State/National Awards, Olympiad, Research, or Founder</option>
+                  <option value="strong" ${ecTier === 'strong' ? 'selected' : ''}>Tier 2: Club President, Varsity Captain, or Eagle Scout / Gold Award</option>
+                  <option value="developing" ${ecTier === 'developing' ? 'selected' : ''}>Tier 3: Active Club Member, Volunteering, Part-Time Job</option>
+                  <option value="starter" ${ecTier === 'starter' ? 'selected' : ''}>Tier 4: Just Getting Started — Need Activity Ideas & Suggestions</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="ob-goal">What is your #1 Priority right now?</label>
+                <select id="ob-goal" class="select-control">
+                  <option value="scholarships" ${primaryGoal === 'scholarships' ? 'selected' : ''}>Maximize Merit Scholarships & Lower Tuition Costs</option>
+                  <option value="flagship" ${primaryGoal === 'flagship' ? 'selected' : ''}>Get Into Top Flagship & Reach Universities</option>
+                  <option value="roadmap" ${primaryGoal === 'roadmap' ? 'selected' : ''}>Build a Year-by-Year High School Course & Activity Plan</option>
+                  <option value="credits" ${primaryGoal === 'credits' ? 'selected' : ''}>Graduate Early Using AP/IB College Credits</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.65rem;">
               <label class="checkbox-group">
                 <input type="checkbox" id="ob-alg2" ${this.wizardData.math_years_algebra2 ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Completed Algebra II and 4 Mathematics Credits</strong>
-                  <span class="checkbox-sub">Core prerequisite across all 50 states for credit-bearing college math and STEM degrees.</span>
+                  <strong>Completed (or on track for) Algebra II & 4 Years of Math</strong>
+                  <span class="checkbox-sub">Core requirement across all 50 states for automatic admission & STEM degrees.</span>
                 </div>
               </label>
 
-              <div class="form-group" style="margin-top: 0.25rem;">
-                <label for="ob-sci">Total Laboratory Science Courses (Completed or Enrolled)</label>
+              <div class="form-group" style="margin-top: 0.15rem;">
+                <label for="ob-sci">Total Lab Science Years (Biology, Chemistry, Physics)</label>
                 <input type="number" min="0" max="6" id="ob-sci" class="input-control" value="${this.wizardData.science_years ?? 4}">
               </div>
 
               <label class="checkbox-group">
                 <input type="checkbox" id="ob-end" ${this.wizardData.has_endorsement ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Completed Graduation Endorsement & 2+ Years World Language</strong>
-                  <span class="checkbox-sub">Required for Texas Distinguished Level of Achievement (TEC § 51.803) and flagship university admission.</span>
+                  <strong>Distinguished Graduation Endorsement & 2+ Years World Language</strong>
+                  <span class="checkbox-sub">Unlocks Texas Top 10% / Top 5% statutory eligibility and out-of-state merit waivers.</span>
                 </div>
               </label>
 
               <label class="checkbox-group">
                 <input type="checkbox" id="ob-fl" ${this.wizardData.fl_prep_complete ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Advanced / Honors College-Prep Diploma Track</strong>
-                  <span class="checkbox-sub">Enrolled in state advanced diploma, IB diploma, or AP capstone sequence.</span>
+                  <strong>Honors / AP / IB College-Prep Diploma Track</strong>
+                  <span class="checkbox-sub">Taking advanced, dual-enrollment, AP, or IB coursework.</span>
                 </div>
               </label>
             </div>
@@ -415,8 +491,8 @@ const Onboarding = {
         html = `
           <div class="onboarding-step-body">
             <div class="step-title-group">
-              <h3>AP/IB Exams & Target Universities</h3>
-              <p>Add completed or planned exams, and select colleges to track in your dashboard.</p>
+              <h3>5. AP Exams & Target Universities</h3>
+              <p>Add any AP exams you've taken (or plan to take) and check the universities you want in your AI Breakdown.</p>
             </div>
 
             <!-- AP Exams Section -->
@@ -428,7 +504,7 @@ const Onboarding = {
               <div id="ob-exam-list" style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem;">
                 ${currentExams.length === 0 ? `
                   <div style="font-size: 0.8rem; color: var(--text-dim); padding: 0.5rem; background: rgba(255,255,255,0.02); border-radius: 6px;">
-                    No AP exams added yet. Select an exam below and click '+ Add'.
+                    No AP exams added yet. Select an exam below and click '+ Add', or let our AI suggest the best APs for your major!
                   </div>
                 ` : currentExams.map((e, idx) => `
                   <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.82rem;">
@@ -455,7 +531,7 @@ const Onboarding = {
             <!-- College Selection Checklist -->
             <div>
               <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
-                Select Target Colleges to Track (${savedColleges.length} selected):
+                Select Target Colleges to Analyze (${savedColleges.length} selected):
               </label>
               <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.5rem; max-height: 180px; overflow-y: auto; padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
                 ${collegesList.map(c => `
@@ -472,6 +548,46 @@ const Onboarding = {
     }
 
     container.innerHTML = html;
+  },
+
+  selectGradeTrack(grade) {
+    this.harvestCurrentStepData();
+    this.wizardData.grade_level = grade;
+    this.renderStep(1);
+  },
+
+  setGpaPreset(uw, w, rank, size) {
+    this.wizardData.gpa_unweighted = uw;
+    this.wizardData.gpa_weighted = w;
+    this.wizardData.class_rank = rank;
+    this.wizardData.class_size = size;
+    this.renderStep(2);
+    const uwEl = document.getElementById("ob-gpa-uw");
+    const wEl = document.getElementById("ob-gpa-w");
+    const rankEl = document.getElementById("ob-rank");
+    const sizeEl = document.getElementById("ob-size");
+    if (uwEl) uwEl.value = uw;
+    if (wEl) wEl.value = w;
+    if (rankEl) rankEl.value = rank;
+    if (sizeEl) sizeEl.value = size;
+    this.updatePercentileLive();
+  },
+
+  setScorePreset(rw, m, act) {
+    this.wizardData.no_test_checked = false;
+    this.wizardData.sat_rw = rw;
+    this.wizardData.sat_m = m;
+    this.wizardData.act_composite = act;
+    this.renderStep(3);
+    const noTestEl = document.getElementById("ob-no-test");
+    const rwEl = document.getElementById("ob-sat-rw");
+    const mEl = document.getElementById("ob-sat-m");
+    const actEl = document.getElementById("ob-act");
+    if (noTestEl) noTestEl.checked = false;
+    if (rwEl) { rwEl.value = rw; rwEl.disabled = false; }
+    if (mEl) { mEl.value = m; mEl.disabled = false; }
+    if (actEl) { actEl.value = act; actEl.disabled = false; }
+    this.updateSatTotalLive();
   },
 
   toggleTestInputs(isNoTest) {
@@ -555,7 +671,9 @@ const Onboarding = {
     ProfileManager.save(this.wizardData);
 
     this.close();
+    App.activeTab = "ai";
     App.updateAppView();
-    App.showToast("Setup complete! Your dashboard is active.", "success");
+    App.switchTab("ai");
+    App.showToast("✨ Survey analyzed! Here is your custom AI Breakdown & Suggestions.", "success");
   }
 };

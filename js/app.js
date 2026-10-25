@@ -5,7 +5,8 @@
  */
 
 const App = {
-  activeTab: "status",
+  activeTab: "ai",
+  selectedTrack: "senior",
   collegesData: [],
 
   async init() {
@@ -65,18 +66,34 @@ const App = {
     }
   },
 
-  continueAsGuest(mode = "senior") {
-    const res = Auth.continueAsGuest(mode);
-    if (res.success) {
-      this.updateAppView();
-      if (mode === "hs") {
-        this.switchTab("roadmap");
-        this.showToast("Loaded 10th Grade High School Guide & 4-Year Strategy!", "success");
-      } else {
-        this.switchTab("status");
-        this.showToast("Loaded Senior Profile: Scholarships & Auto-Admit Unlocked!", "success");
-      }
+  promptEnterStats(track = null) {
+    if (track === "hs" || track === "senior") {
+      this.selectedTrack = track;
+      this.switchTrackPreview(track);
     }
+    this.switchLandingAuthTab("signup");
+    const promptBanner = document.getElementById("landing-auth-prompt");
+    if (promptBanner) {
+      promptBanner.innerHTML = this.selectedTrack === "hs"
+        ? "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second High School Stats Survey so AdmitAI can generate your custom 4-Year Guide &amp; Scholarship Targets."
+        : "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second Academic Stats Survey so AdmitAI can generate your personalized Scholarship, Auto-Admit &amp; College Breakdown.";
+      promptBanner.style.display = "block";
+    }
+    const cardAnchor = document.getElementById("landing-auth-card-anchor");
+    if (cardAnchor) {
+      cardAnchor.scrollIntoView({ behavior: "smooth", block: "center" });
+      cardAnchor.style.borderColor = "#3B82F6";
+      cardAnchor.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.55), 0 20px 50px rgba(37, 99, 235, 0.35)";
+    }
+    const nameInput = document.getElementById("auth-signup-name");
+    if (nameInput && nameInput.focus) {
+      setTimeout(() => nameInput.focus(), 200);
+    }
+    this.showToast("Create your free account to enter your stats & unlock your AI breakdown!", "info");
+  },
+
+  continueAsGuest(mode = "senior") {
+    this.promptEnterStats(mode);
   },
 
   quickSetGradeMode(mode) {
@@ -392,20 +409,12 @@ const App = {
       if (formSignIn) formSignIn.style.display = "block";
       if (formSignUp) formSignUp.style.display = "none";
       if (googleBtnLabel) googleBtnLabel.textContent = "Sign in with Google";
-      if (navBtnAuth) {
-        navBtnAuth.textContent = "Create Account";
-        navBtnAuth.onclick = () => this.showAuthStage("signup");
-      }
     } else {
       if (tabSignUp) tabSignUp.classList.add("active");
       if (tabSignIn) tabSignIn.classList.remove("active");
       if (formSignUp) formSignUp.style.display = "block";
       if (formSignIn) formSignIn.style.display = "none";
       if (googleBtnLabel) googleBtnLabel.textContent = "Create account with Google";
-      if (navBtnAuth) {
-        navBtnAuth.textContent = "Sign In";
-        navBtnAuth.onclick = () => this.showAuthStage("signin");
-      }
     }
   },
 

@@ -88,25 +88,132 @@ const AdmitAI = {
     const { maxCredits: maxCreditsSaved, maxTuition: maxTuitionSaved, bestCollege: bestSchoolForCredits } = 
       CreditsEngine.calculateMaxSavings(savedColleges, completedExams, residency);
 
+    const allScholarships = StatusEngine.evaluateScholarships ? StatusEngine.evaluateScholarships(profile) : [];
+    const scholarshipsUnlocked = allScholarships.filter(s => s.isQualified);
+    const scholarshipsStretch = allScholarships.filter(s => !s.isQualified);
+
+    const grade = parseInt(profile.grade_level, 10) || 12;
+    const isSenior = grade >= 12;
+    const major = profile.intended_major || "STEM & Engineering";
+    const ecTier = profile.extracurricular_tier || "strong";
+    const primaryGoal = profile.primary_goal || "scholarships";
+
+    const majorBlueprints = {
+      "STEM & Engineering": {
+        recommendedAps: ["calc_bc", "phys_c_mech", "chem"],
+        apNames: "AP Calculus BC, AP Physics C: Mechanics, and AP Chemistry",
+        opportunities: " TSA (Technology Student Association), FIRST Robotics, Science Olympiad, NASA High School Aerospace Scholars, or university engineering design labs.",
+        insight: "Engineering admissions heavily weight Calculus and Calculus-based Physics readiness plus hands-on build/design competitions."
+      },
+      "Computer Science & Data": {
+        recommendedAps: ["csa", "calc_bc", "stats"],
+        apNames: "AP Computer Science A, AP Calculus BC, and AP Statistics",
+        opportunities: "USACO (USA Computing Olympiad), Congressional App Challenge, open-source GitHub capstone projects, or AI/data science hackathons.",
+        insight: "Top CS programs look for discrete math/calculus rigor and verifiable software or algorithm projects outside the classroom."
+      },
+      "Business, Finance & Economics": {
+        recommendedAps: ["macro", "micro", "stats", "calc_ab"],
+        apNames: "AP Macroeconomics, AP Microeconomics, AP Statistics, and AP Calculus",
+        opportunities: "DECA, FBLA, Wharton Global High School Investment Competition, Diamond Challenge entrepreneurship pitch, or founding a local micro-business.",
+        insight: "Flagship business schools (like McCombs, Ross, and Warrington) value quantitative calculus/statistics preparation paired with leadership impact."
+      },
+      "Pre-Med, Biology & Health": {
+        recommendedAps: ["bio", "chem", "stats", "psych"],
+        apNames: "AP Biology, AP Chemistry, AP Statistics, and AP Psychology",
+        opportunities: "HOSA Future Health Professionals, certified hospital clinical volunteering, university wet-lab summer research, or Red Cross youth leadership.",
+        insight: "Pre-med tracks require strong lab science foundations; earning AP credit in Statistics and Psychology frees up schedule space for Organic Chemistry."
+      },
+      "Humanities, Law & Social Sciences": {
+        recommendedAps: ["eng_lang", "ushist", "gov", "eng_lit"],
+        apNames: "AP English Language, AP U.S. History, and AP U.S. Government",
+        opportunities: "Mock Trial, Speech & Debate (NSDA), Model UN, Scholastic Writing Awards, Senate Page programs, or publishing in The Concord Review.",
+        insight: "Selective liberal arts and pre-law programs prioritize analytical writing awards, debate leadership, and civic engagement."
+      },
+      "Undecided / Exploring": {
+        recommendedAps: ["eng_lang", "calc_ab", "ushist", "stats"],
+        apNames: "AP English Language, AP Calculus AB, AP U.S. History, and AP Statistics",
+        opportunities: "Student Government, National Honor Society leadership, Eagle Scout / Gold Award capstone project, or cross-disciplinary summer pre-college programs.",
+        insight: "Completing core general-education APs waives universal freshman requirements at any public university regardless of which major you declare."
+      }
+    };
+
+    const blueprint = majorBlueprints[major] || majorBlueprints["STEM & Engineering"];
+    const existingApIds = (profile.ap_exams || []).map(e => e.id);
+    const missingMajorAps = blueprint.recommendedAps.filter(id => !existingApIds.includes(id));
+
+    const recommendedColleges = (collegesData || [])
+      .filter(c => !(profile.saved_colleges || []).includes(c.id))
+      .filter(c => {
+        if (!studentSat) return true;
+        return studentSat >= c.sat_total_25 - 60 && studentSat <= c.sat_total_75 + 90;
+      })
+      .slice(0, 3);
+
+    const personalizedSuggestions = [
+      {
+        category: `Major Strategy · ${major}`,
+        badge: "Academic ROI",
+        title: `Recommended Coursework & AP Stack for ${major}`,
+        body: `${blueprint.insight} Target **${blueprint.apNames}** to waive foundational weed-out classes and save up to **$4,800+** in freshman tuition.`,
+        actionLabel: missingMajorAps.length > 0 ? `+ Add Recommended APs to My Profile` : `Explore AP Credit Matrix →`,
+        actionOnClick: missingMajorAps.length > 0 ? `AdmitAI.addRecommendedAps('${missingMajorAps.join(",")}')` : `App.switchTab('credits')`
+      },
+      {
+        category: `Opportunities & Extracurriculars`,
+        badge: ecTier === "national" || ecTier === "strong" ? "Leadership Edge" : "High-Impact Boost",
+        title: `Stand-Out Activities & Competitions to Start Now`,
+        body: `For **${major}** applicants at your current activity tier, admission officers respond strongest to measurable impact: consider **${blueprint.opportunities}**`,
+        actionLabel: `Open High School Action Plan →`,
+        actionOnClick: `App.switchTab('roadmap')`
+      },
+      {
+        category: `Merit Aid & Scholarship Strategy`,
+        badge: `${scholarshipsUnlocked.length} Unlocked`,
+        title: scholarshipsUnlocked.length > 0
+          ? `You Qualify for ${scholarshipsUnlocked.length} Automatic Merit Programs`
+          : `Unlock Automatic GPA & SAT Merit Scholarship Tiers`,
+        body: scholarshipsUnlocked.length > 0
+          ? `Your stats currently unlock **${scholarshipsUnlocked.map(s => `${s.name} (${s.award})`).slice(0, 2).join(" & ")}**. ${scholarshipsStretch.length > 0 ? `Next stretch target: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText}.` : 'Submit applications before priority merit deadlines!'}`
+          : scholarshipsStretch.length > 0
+            ? `Closest merit tier: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText}.`
+            : `Log both GPA and SAT/ACT scores in your survey to unlock automatic institutional scholarship tiers.`,
+        actionLabel: `View All Scholarships & Cutoffs →`,
+        actionOnClick: `App.switchTab('status')`
+      },
+      {
+        category: isSenior ? `12th Grade Senior Execution Plan` : `${grade}th Grade Multi-Year Roadmap`,
+        badge: isSenior ? "Immediate Deadlines" : `Class of ${new Date().getFullYear() + (12 - grade)}`,
+        title: isSenior
+          ? `Lock In Priority Merit Cutoffs & Official Transcripts`
+          : `Your Step-by-Step High School Milestone Focus`,
+        body: isSenior
+          ? `Submit Early Action applications by **Oct 15 – Nov 1** (essential for flagship merit aid), file the FAFSA, and send official SAT/ACT & AP score reports to your top universities.`
+          : `Focus this semester on protecting your unweighted GPA (${studentGpa.toFixed(2)}), completing Algebra II / Lab Science prerequisites, and preparing for PSAT/NMSQT & spring AP exams.`,
+        actionLabel: isSenior ? `Open Application Deadlines →` : `View Year-by-Year Guide →`,
+        actionOnClick: `App.switchTab('roadmap')`
+      }
+    ];
+
     const executiveSummary = {
-      overallHealth: qualifications.length > 0 ? "EXCELLENT (Statutorily Protected)" : disqualifications.length === 0 ? "STRONG" : "NEEDS COURSEWORK / TESTING ACTION",
+      overallHealth: qualifications.length > 0 ? "EXCELLENT (Auto-Admit + Merit Ready)" : disqualifications.length === 0 ? "STRONG COMPETITIVE STANDING" : "ACTION NEEDED ON KEY GAPS",
       keyStrengths: [
-        studentGpa >= 3.8 ? `High academic baseline: Unweighted GPA of ${studentGpa.toFixed(2)} demonstrates mastery in core coursework.` : `Solid GPA baseline (${studentGpa.toFixed(2)}).`,
-        qualifications.length > 0 ? `Statutory Auto-Admission Protection: Legally guaranteed admission to ${qualifications.length} state university system(s).` : `Tested within range for ${middleTarget.length + strongAnchor.length} of your saved universities.`,
-        completedExams.length > 0 ? `Active College Credit Accumulation: ${completedExams.length} AP exams completed, yielding up to ${maxCreditsSaved} college credit hours (approx. $${maxTuitionSaved.toLocaleString()} tuition value).` : `Opportunity to capitalize on upcoming AP exams for degree acceleration.`
+        studentGpa >= 3.8 ? `High academic baseline: Unweighted GPA of ${studentGpa.toFixed(2)} demonstrates mastery in core coursework.` : `Solid GPA baseline (${studentGpa.toFixed(2)} UW / ${(profile.gpa_weighted || studentGpa).toFixed(2)} W).`,
+        scholarshipsUnlocked.length > 0 ? `Merit Scholarship Qualification: Statistically eligible for ${scholarshipsUnlocked.length} automatic merit scholarship tier(s).` : `Targeted for ${major} pathway across ${savedColleges.length} universities.`,
+        qualifications.length > 0 ? `Statutory Auto-Admission Protection: Legally guaranteed admission to ${qualifications.length} state university system(s).` : `Tested within or above range for ${middleTarget.length + strongAnchor.length} of your saved universities.`,
+        completedExams.length > 0 ? `Active College Credit Accumulation: ${completedExams.length} AP exams completed, yielding up to ${maxCreditsSaved} college credit hours (approx. $${maxTuitionSaved.toLocaleString()} tuition value).` : `High-ROI opportunity to add ${blueprint.apNames} for college credit.`
       ],
       criticalVulnerabilities: [
         ...disqualifications.map(d => `${d.title}: ${d.reason} ${d.fix ? `Fix: ${d.fix}` : ''}`),
-        ...(studentSat === null ? ["No standardized test score logged: Add an SAT or ACT score in your profile to benchmark against university middle-50% ranges."] : []),
+        ...(studentSat === null ? ["No standardized test score logged: Add an SAT or ACT score in your survey to unlock merit scholarship tiers and middle-50% university matching."] : []),
         ...competitiveReach.map(r => `Test Score Gap at ${r.college.short_name}: ${r.delta} points below published 25th percentile (${r.college.sat_total_25}).`)
       ],
       immediateActionItem: disqualifications.length > 0 && disqualifications[0].fix 
         ? disqualifications[0].fix 
         : studentSat === null
-          ? "Take an official SAT or ACT exam and log your score to evaluate your standing across target universities."
+          ? "Take an official SAT or ACT exam (or enter a target score in the Stats Survey) to unlock automatic merit scholarships."
           : competitiveReach.length > 0 
-            ? `Target a ${competitiveReach[0].delta + 40}-point SAT score increase to clear the 25th percentile threshold at ${competitiveReach[0].college.short_name}.`
-            : `Maintain rigorous senior year course grades and submit official AP score reports during university registration.`
+            ? `Target a ${competitiveReach[0].delta + 40}-point SAT score increase to clear the 25th percentile threshold at ${competitiveReach[0].college.short_name} and unlock higher merit tiers.`
+            : `Submit Early Action applications before November 1 to capture priority merit scholarships (${scholarshipsUnlocked.length} unlocked) and claim ${maxCreditsSaved} AP credits.`
     };
 
     return {
@@ -118,7 +225,15 @@ const AdmitAI = {
       strongAnchor,
       bestSchoolForCredits,
       maxCreditsSaved,
-      maxTuitionSaved
+      maxTuitionSaved,
+      scholarshipsUnlocked,
+      scholarshipsStretch,
+      personalizedSuggestions,
+      recommendedColleges,
+      major,
+      isSenior,
+      grade,
+      primaryGoal
     };
   },
 
@@ -186,17 +301,21 @@ const AdmitAI = {
       return `### AP/IB Credit & Tuition ROI Assessment\n\n* **Completed AP Exams:** ${completed.length} logged (${completed.map(e => `${e.name}: ${e.score}`).join(", ") || "None"}).\n* **Maximum Estimated Tuition Saved:** **$${audit.maxTuitionSaved.toLocaleString()}** (representing approx. **${audit.maxCreditsSaved} college credits** at ${audit.bestSchoolForCredits ? audit.bestSchoolForCredits.short_name : "your saved schools"}).\n* **Planned Exams:** ${planned.length} upcoming (${planned.map(e => e.name).join(", ") || "None"}).\n\n**High-Value Advice:** Under state law (such as Texas HB 1992 / TEC § 51.968), public universities cannot require more than a score of 3 for credit unless special exemptions apply. Scoring a 4 or 5 in planned exams like Calculus BC or Chemistry directly waives up to 8 credits per subject, bypassing introductory lab weed-out courses.`;
     }
 
+    if (q.includes("major") || q.includes("opportunit") || q.includes("activity") || q.includes("extracurricular") || q.includes("suggest") || q.includes("club") || q.includes("start")) {
+      return `### Personalized Suggestions & Opportunities (${audit.major})\n\n${audit.personalizedSuggestions.map(s => `* **${s.title}:** ${s.body}`).join("\n\n")}\n\n*Click any suggestion card above to add recommended AP exams or open your step-by-step roadmap.*`;
+    }
+
     if (q.includes("fix") || q.includes("do next") || q.includes("roadmap") || q.includes("priority") || q.includes("improve")) {
       return `### Priority Diagnostic: Your #1 Action Item\n\n**Primary Focus:**\n> **${audit.executiveSummary.immediateActionItem}**\n\n**Secondary Priorities:**\n${audit.executiveSummary.criticalVulnerabilities.slice(0, 3).map((v, i) => `${i + 1}. ${v}`).join("\n")}\n\nThis sequence addresses hard statutory barriers first, followed by score competitive positioning.`;
     }
 
-    return `### Academic Profile Diagnostics\n\n**Executive Health Rating:** ${audit.executiveSummary.overallHealth}\n\n**Top Strengths:**\n${audit.executiveSummary.keyStrengths.map(s => `* ${s}`).join("\n")}\n\n**Identified Deficits & Disqualifications:**\n${audit.executiveSummary.criticalVulnerabilities.length > 0 ? audit.executiveSummary.criticalVulnerabilities.map(v => `* ${v}`).join("\n") : "* No critical disqualifications detected."}\n\n**Recommended Immediate Action:**\n> ${audit.executiveSummary.immediateActionItem}\n\n*Tip: You can ask me specific questions like: "Do I qualify for Texas Top 10%?", "How do my SAT scores compare?", or "How much money do my APs save me?"*`;
+    return `### Academic Profile Diagnostics\n\n**Executive Health Rating:** ${audit.executiveSummary.overallHealth}\n\n**Top Strengths:**\n${audit.executiveSummary.keyStrengths.map(s => `* ${s}`).join("\n")}\n\n**Identified Deficits & Disqualifications:**\n${audit.executiveSummary.criticalVulnerabilities.length > 0 ? audit.executiveSummary.criticalVulnerabilities.map(v => `* ${v}`).join("\n") : "* No critical disqualifications detected."}\n\n**Recommended Immediate Action:**\n> ${audit.executiveSummary.immediateActionItem}\n\n*Tip: You can ask me specific questions like: "What opportunities fit my major?", "Do I qualify for scholarships?", "How do my SAT scores compare?", or "How much money do my APs save me?"*`;
   }
 };
 
 
 /**
- * UI Renderer for Tab 5: AI Audit & Interactive Advisor
+ * UI Renderer for Tab 1: AI Personal Stats Breakdown & Suggestions Hub
  */
 AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData) {
   const container = document.getElementById(containerId);
@@ -205,21 +324,145 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
   const audit = this.generateAudit(profile, collegesData, rulesData, apData);
   const user = Auth.getCurrentUser();
   const userName = user ? user.name.split(" ")[0] : "Student";
+  const eff = CollegesEngine.getEffectiveSat(profile);
+  const gpaUw = (profile.gpa_unweighted || 3.85).toFixed(2);
+  const gpaW = profile.gpa_weighted ? profile.gpa_weighted.toFixed(2) : "—";
+  const pctText = profile.class_percentile ? `Top ${profile.class_percentile}%` : "Rank Unspecified";
+  const formatSuggestionBody = (str) => str.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#F8FAFC;">$1</strong>');
 
   container.innerHTML = `
-    <div class="section-header">
+    <div class="section-header" style="margin-bottom: 1.25rem;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
         <div>
-          <h2>Admit AI Diagnostic Audit & Interactive Advisor</h2>
-          <p>Multi-vector algorithmic analysis of your academic profile against official state laws, published score percentiles, and university credit matrices.</p>
+          <div style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #60A5FA; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(59, 130, 246, 0.32); padding: 0.28rem 0.7rem; border-radius: 999px; margin-bottom: 0.5rem;">
+            ✨ Personalized AI Survey Breakdown · ${audit.isSenior ? 'Senior / Grad Track' : `${audit.grade}th Grade High School Roadmap`}
+          </div>
+          <h2>${userName}'s AI Stats Breakdown & Personalized Suggestions</h2>
+          <p>Generated directly from your Academic Stats & Goals Survey — covering scholarships unlocked, statutory auto-admit standing, AP tuition savings, and tailored next steps.</p>
         </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center;">
-          <span style="font-size: 0.78rem; color: var(--text-muted);">Audit Status:</span>
-          <span class="range-verdict in-range" style="font-size: 0.8rem; padding: 4px 10px;">
-            ${audit.executiveSummary.overallHealth}
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+          <button class="btn-secondary" style="font-size: 0.8rem; padding: 0.48rem 0.9rem;" onclick="Onboarding.open()">
+            📋 Retake / Update Stats Survey
+          </button>
+          <button class="btn-primary" style="font-size: 0.8rem; padding: 0.48rem 0.9rem;" onclick="App.openProfileModal()">
+            ⚡ Quick Adjust Stats
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Survey Snapshot Strip -->
+    <div class="card" style="margin-bottom: 1.25rem; padding: 0.95rem 1.25rem; background: linear-gradient(135deg, rgba(19, 30, 51, 0.95) 0%, rgba(15, 23, 42, 0.92) 100%); border: 1px solid rgba(59, 130, 246, 0.25);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+          <div>
+            <span style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); display: block; font-weight: 700;">Intended Major</span>
+            <strong style="font-size: 0.9rem; color: #93C5FD;">${audit.major}</strong>
+          </div>
+          <div style="height: 26px; width: 1px; background: var(--border-subtle);"></div>
+          <div>
+            <span style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); display: block; font-weight: 700;">GPA (UW / W)</span>
+            <strong style="font-size: 0.9rem; color: #FFFFFF;">${gpaUw} / ${gpaW}</strong>
+          </div>
+          <div style="height: 26px; width: 1px; background: var(--border-subtle);"></div>
+          <div>
+            <span style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); display: block; font-weight: 700;">Test Score</span>
+            <strong style="font-size: 0.9rem; color: #34D399;">${eff.score ? eff.label : 'Test-Optional / Future'}</strong>
+          </div>
+          <div style="height: 26px; width: 1px; background: var(--border-subtle);"></div>
+          <div>
+            <span style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); display: block; font-weight: 700;">Class Standing</span>
+            <strong style="font-size: 0.9rem; color: #FFFFFF;">${pctText} · ${profile.residency || 'TX'} Resident</strong>
+          </div>
+        </div>
+        <span class="range-verdict in-range" style="font-size: 0.76rem; padding: 4px 10px;">
+          ${audit.executiveSummary.overallHealth}
+        </span>
+      </div>
+    </div>
+
+    <!-- 4-Card AI Executive KPI Strip -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+      <div class="card" style="padding: 1.1rem; border-top: 3px solid #3B82F6; cursor: pointer;" onclick="App.switchTab('status')">
+        <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #60A5FA; margin-bottom: 0.3rem;">💰 Merit Scholarships</div>
+        <div style="font-size: 1.55rem; font-weight: 800; color: #FFFFFF; line-height: 1.15;">${audit.scholarshipsUnlocked.length} Unlocked</div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem;">
+          ${audit.scholarshipsUnlocked.length > 0 ? `Up to ${audit.scholarshipsUnlocked[0].award} automatic merit` : `${audit.scholarshipsStretch.length} stretch tiers in reach`}
+        </div>
+      </div>
+
+      <div class="card" style="padding: 1.1rem; border-top: 3px solid #10B981; cursor: pointer;" onclick="App.switchTab('status')">
+        <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #34D399; margin-bottom: 0.3rem;">🏛️ State Auto-Admit</div>
+        <div style="font-size: 1.55rem; font-weight: 800; color: #FFFFFF; line-height: 1.15;">${audit.qualifications.length > 0 ? `${audit.qualifications.length} Guaranteed` : 'Holistic Track'}</div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem;">
+          ${audit.qualifications.length > 0 ? audit.qualifications[0].title : 'Click to inspect statutory rules'}
+        </div>
+      </div>
+
+      <div class="card" style="padding: 1.1rem; border-top: 3px solid #818CF8; cursor: pointer;" onclick="App.switchTab('credits')">
+        <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #A5B4FC; margin-bottom: 0.3rem;">🎓 AP Tuition Value</div>
+        <div style="font-size: 1.55rem; font-weight: 800; color: #FFFFFF; line-height: 1.15;">$${audit.maxTuitionSaved.toLocaleString()}</div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem;">
+          Up to ${audit.maxCreditsSaved} college credit hrs waived
+        </div>
+      </div>
+
+      <div class="card" style="padding: 1.1rem; border-top: 3px solid #F59E0B; cursor: pointer;" onclick="App.switchTab('colleges')">
+        <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #FBBF24; margin-bottom: 0.3rem;">🎯 Target Universities</div>
+        <div style="font-size: 1.55rem; font-weight: 800; color: #FFFFFF; line-height: 1.15;">${audit.strongAnchor.length + audit.middleTarget.length} In-Range</div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem;">
+          ${audit.strongAnchor.length} Safety · ${audit.middleTarget.length} Target · ${audit.competitiveReach.length} Reach
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Personalized Suggestions & Opportunities Grid -->
+    <div class="card" style="margin-bottom: 1.5rem; background: var(--bg-card); border: 1px solid var(--border-subtle);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+        <div>
+          <h3 style="font-size: 1.12rem; color: #FFFFFF; font-weight: 800;">
+            🚀 AI Personalized Suggestions, Opportunities & Next Steps
+          </h3>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">
+            Tailored to your <strong>${audit.major}</strong> track, <strong>${audit.isSenior ? '12th Grade Senior' : `${audit.grade}th Grade`}</strong> timeline, and survey stats
           </span>
         </div>
       </div>
+
+      <div class="ai-layout-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        ${audit.personalizedSuggestions.map(s => `
+          <div style="background: rgba(15, 23, 42, 0.72); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.05rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem;">
+                <span style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #60A5FA;">${s.category}</span>
+                <span style="font-size: 0.68rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; background: rgba(59, 130, 246, 0.14); color: #93C5FD;">${s.badge}</span>
+              </div>
+              <h4 style="font-size: 0.96rem; font-weight: 700; color: #FFFFFF; margin-bottom: 0.4rem;">${s.title}</h4>
+              <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">${formatSuggestionBody(s.body)}</p>
+            </div>
+            <div>
+              <button class="btn-secondary" style="font-size: 0.76rem; padding: 0.38rem 0.75rem;" onclick="${s.actionOnClick}">
+                ${s.actionLabel}
+              </button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      ${audit.recommendedColleges.length > 0 ? `
+        <div style="margin-top: 1.1rem; padding-top: 0.95rem; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted);">
+            💡 <strong>AI Suggested Universities for Your Stats:</strong> Add these strong-match schools to your dashboard with 1 click:
+          </span>
+          <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
+            ${audit.recommendedColleges.map(c => `
+              <button class="pill-btn" style="font-size: 0.74rem; padding: 0.28rem 0.65rem;" onclick="AdmitAI.addRecommendedCollege('${c.id}')">
+                + Add ${c.short_name} (${c.sat_total_25}–${c.sat_total_75} SAT)
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
     </div>
 
     <!-- AI Executive Verdict Card -->
@@ -230,13 +473,10 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
             <img src="assets/admit-logo.svg" alt="AdmitAI" style="width: 100%; height: 100%; display: block;" />
           </div>
           <div>
-            <h3 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 700;">Executive Diagnostic Brief for ${userName}</h3>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">Generated from verified profile parameters &amp; official statutes</span>
+            <h3 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 700;">Executive Strengths & Vulnerability Breakdown for ${userName}</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Deterministic audit against state statutes, merit aid tiers &amp; federal scorecards</span>
           </div>
         </div>
-        <button class="btn-secondary" style="font-size: 0.78rem;" onclick="App.openProfileModal()">
-          Adjust Stats & Re-Scan
-        </button>
       </div>
 
       <div class="ai-layout-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
@@ -286,8 +526,24 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         <!-- Qualifications Card -->
         <div class="card">
           <h3 style="font-size: 1.05rem; font-weight: 700; color: #34D399; margin-bottom: 0.75rem;">
-            Confirmed Qualifications (${audit.qualifications.length})
+            Confirmed Qualifications & Scholarships (${audit.qualifications.length + audit.scholarshipsUnlocked.length})
           </h3>
+          ${audit.scholarshipsUnlocked.length > 0 ? `
+            <div style="margin-bottom: 0.85rem;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.45rem;">
+                Automatic Merit Scholarships Unlocked (${audit.scholarshipsUnlocked.length}):
+              </div>
+              ${audit.scholarshipsUnlocked.slice(0, 3).map(s => `
+                <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: var(--radius-md); padding: 0.65rem 0.8rem; margin-bottom: 0.45rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+                  <div>
+                    <strong style="color: #FFFFFF; font-size: 0.84rem; display: block;">${s.name}</strong>
+                    <span style="font-size: 0.74rem; color: var(--text-muted);">Cutoff: ${s.deadline}</span>
+                  </div>
+                  <span style="font-size: 0.78rem; font-weight: 800; color: #34D399; white-space: nowrap;">${s.award}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
           ${audit.qualifications.length === 0 ? `
             <p style="font-size: 0.84rem; color: var(--text-dim); padding: 0.5rem 0;">No guaranteed statutory admissions confirmed based on current inputs.</p>
           ` : audit.qualifications.map(q => `
@@ -365,7 +621,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
             <h3 style="font-size: 1.05rem; font-weight: 700; color: #FFFFFF;">
               Interactive Admissions Advisor
             </h3>
-            <span style="font-size: 0.74rem; color: var(--text-muted);">Instant responses grounded in your active stats</span>
+            <span style="font-size: 0.74rem; color: var(--text-muted);">Instant responses grounded in your survey stats</span>
           </div>
           <button class="btn-secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="AdmitAI.clearChat()">
             Clear Chat
@@ -374,14 +630,14 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
         <!-- Preset Suggested Questions -->
         <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
-          <button class="pill-btn" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="AdmitAI.askQuickQuestion('What do I qualify for right now?')">
-            "What do I qualify for?"
+          <button class="pill-btn" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="AdmitAI.askQuickQuestion('What opportunities and suggestions fit my major?')">
+            "Opportunities for my major?"
+          </button>
+          <button class="pill-btn" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="AdmitAI.askQuickQuestion('What scholarships do I qualify for right now?')">
+            "What scholarships do I unlock?"
           </button>
           <button class="pill-btn" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="AdmitAI.askQuickQuestion('How does my SAT compare to my saved schools?')">
             "How does my SAT compare?"
-          </button>
-          <button class="pill-btn" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="AdmitAI.askQuickQuestion('How much money do my AP exams save me?')">
-            "How much do my APs save?"
           </button>
           <button class="pill-btn" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" onclick="AdmitAI.askQuickQuestion('What is my single biggest fix to qualify for more schools?')">
             "What is my #1 fix?"
@@ -393,13 +649,13 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           <!-- Default welcome message -->
           <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.45; color: var(--text-main);">
             <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">Admit AI Advisor:</strong>
-            Hello ${userName}! I've completed a full diagnostic scan of your academic profile. Ask me any question about your statutory eligibility, test score percentile standing, or AP course equivalencies.
+            Hello ${userName}! I've analyzed your Academic Stats & Goals Survey for <strong>${audit.major}</strong>. Ask me any question about scholarships you unlock, opportunities to start, test score targets, or AP course waivers.
           </div>
         </div>
 
         <!-- Input Box & Send Button -->
         <form id="ai-chat-form" onsubmit="event.preventDefault(); AdmitAI.handleChatSubmit();" style="display: flex; gap: 0.5rem;">
-          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask anything: e.g. Do I qualify for UT Austin? How many SAT points do I need?" style="font-size: 0.85rem;" autocomplete="off" required>
+          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask anything: e.g. What opportunities fit my major? Do I qualify for UT Austin?" style="font-size: 0.85rem;" autocomplete="off" required>
           <button type="submit" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem; white-space: nowrap;">
             Ask AI →
           </button>
@@ -407,6 +663,44 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       </div>
     </div>
   `;
+};
+
+AdmitAI.addRecommendedAps = function(idsCsv) {
+  if (!idsCsv) return;
+  const ids = idsCsv.split(",").filter(Boolean);
+  const profile = ProfileManager.get();
+  if (!profile.ap_exams) profile.ap_exams = [];
+  const catalog = CreditsEngine.AVAILABLE_EXAMS || [];
+  let added = 0;
+
+  ids.forEach(id => {
+    if (!profile.ap_exams.some(e => e.id === id)) {
+      const found = catalog.find(a => a.id === id);
+      if (found) {
+        profile.ap_exams.push({
+          id: found.id,
+          name: found.name,
+          score: 5,
+          status: profile.grade_level >= 12 ? "completed" : "planned"
+        });
+        added++;
+      }
+    }
+  });
+
+  if (added > 0) {
+    ProfileManager.save(profile);
+    App.showToast(`Added ${added} major-recommended AP exam(s) to your profile!`, "success");
+  } else {
+    App.switchTab("credits");
+  }
+};
+
+AdmitAI.addRecommendedCollege = function(collegeId) {
+  if (!collegeId) return;
+  ProfileManager.toggleSavedCollege(collegeId);
+  const col = CollegesEngine.getById(collegeId);
+  App.showToast(`Added ${col ? col.short_name : collegeId} to your target college list!`, "success");
 };
 
 AdmitAI.handleChatSubmit = function() {

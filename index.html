@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="assets/admit-logo.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=3.6">
-  <link rel="stylesheet" href="css/components.css?v=3.6">
+  <link rel="stylesheet" href="css/main.css?v=3.7">
+  <link rel="stylesheet" href="css/components.css?v=3.7">
   <!-- Official Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -79,8 +79,11 @@
           <button class="btn-secondary" onclick="App.openDisclosureModal()">
             Public Data Sources
           </button>
-          <button class="btn-primary" id="nav-btn-auth" onclick="App.showAuthStage('signup')">
-            Create Account
+          <button class="btn-secondary" onclick="App.showAuthStage('signin')">
+            Sign In
+          </button>
+          <button class="btn-primary" id="nav-btn-auth" onclick="App.promptEnterStats()">
+            <i class="fas fa-chart-line"></i> Enter Your Stats
           </button>
         </div>
       </div>
@@ -103,10 +106,18 @@
         <h1 class="hero-glamour-title">
           Turn Your Stats Into <span class="gradient-shimmer-text">Scholarships</span>, Guaranteed Admissions &amp; A Winning Game Plan.
         </h1>
-        <p class="hero-glamour-subtitle" style="margin: 0.85rem auto 1.5rem auto; max-width: 820px;">
+        <p class="hero-glamour-subtitle" style="margin: 0.85rem auto 1.35rem auto; max-width: 820px;">
           <strong>Seniors &amp; Grads:</strong> Enter your GPA and test scores to instantly see the automatic merit scholarships, guaranteed college admissions, and AP tuition dollars you qualify for right now.<br>
           <strong>In High School (9th–11th)?</strong> Get a personalized, step-by-step 4-year roadmap to unlock maximum aid and top acceptances.
         </p>
+        <div class="hero-masthead-actions" style="margin-bottom: 1.35rem;">
+          <button type="button" class="btn btn-primary btn-lg" onclick="App.promptEnterStats('senior')">
+            <i class="fas fa-chart-line"></i> Enter Your Stats — Get AI Breakdown
+          </button>
+          <button type="button" class="btn btn-glass btn-lg" onclick="App.promptEnterStats('hs')">
+            <i class="fas fa-compass"></i> I'm in High School (9th–11th) — Build My Guide
+          </button>
+        </div>
         <div class="hero-trust-bar" style="justify-content: center;">
           <span class="hero-trust-item">💰 $5k–$28k/yr Merit Scholarships</span>
           <span class="hero-trust-item">⚖️ 15+ State Auto-Admit Guarantees</span>
@@ -142,40 +153,40 @@
               <span class="track-header-badge">Instant Qualification Check</span>
             </div>
             <div class="track-grid">
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">💰</div>
                 <div class="track-feature-text">
                   <h4>Automatic Merit Scholarships ($5k–$28k/yr)</h4>
                   <p>Match your GPA &amp; SAT/ACT against institutional scholarship tiers that award up to $112,000 over 4 years with zero extra essays.</p>
                 </div>
               </div>
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">⚖️</div>
                 <div class="track-feature-text">
                   <h4>Guaranteed College Acceptance</h4>
                   <p>Instantly verify state laws that legally guarantee your admission into flagship universities based on your class rank or GPA.</p>
                 </div>
               </div>
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">💵</div>
                 <div class="track-feature-text">
                   <h4>Cash In Your AP &amp; IB Credits</h4>
                   <p>See exact university course codes waived and thousands in tuition saved ($7,200+ avg) from exams you already passed.</p>
                 </div>
               </div>
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
                 <div class="track-feature-icon">⚡</div>
                 <div class="track-feature-text">
-                  <h4>Actionable Next Steps to Start Now</h4>
-                  <p>Get direct priority scholarship cutoffs, honors college deadlines, and fee-waiver opportunities you can claim immediately.</p>
+                  <h4>AI Breakdown &amp; Next Steps</h4>
+                  <p>Get a full AI breakdown of your stats with scholarship cutoffs, honors college deadlines, and personalized suggestions.</p>
                 </div>
               </div>
             </div>
             <div class="track-cta-strip">
-              <span><strong>Have your GPA or test scores ready?</strong> See every scholarship and admission guarantee you unlock.</span>
+              <span><strong>Have your GPA or test scores ready?</strong> Create an account to enter your stats and get your AI breakdown.</span>
               <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <button type="button" class="btn-primary" style="font-size: 0.8rem; padding: 0.45rem 0.95rem;" onclick="App.continueAsGuest('senior')">
-                  <i class="fas fa-bolt" style="margin-right: 4px;"></i> Try Senior Demo Instantly
+                <button type="button" class="btn-primary" style="font-size: 0.82rem; padding: 0.5rem 1.05rem;" onclick="App.promptEnterStats('senior')">
+                  <i class="fas fa-chart-line" style="margin-right: 4px;"></i> Enter Your Stats →
                 </button>
               </div>
             </div>
@@ -191,40 +202,40 @@
               <span class="track-header-badge" style="background: rgba(59, 130, 246, 0.18); color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">Step-by-Step 4-Year Guide</span>
             </div>
             <div class="track-grid">
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">🧭</div>
                 <div class="track-feature-text">
                   <h4>Custom Grade-by-Grade Roadmap</h4>
                   <p>Know exactly what courses, extracurriculars, and summer milestones to hit in 9th, 10th, and 11th grade for top universities.</p>
                 </div>
               </div>
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">🎯</div>
                 <div class="track-feature-text">
                   <h4>Scholarship &amp; Auto-Admit Targets</h4>
                   <p>See the exact GPA, class rank percentile, and SAT/ACT score you need to lock in guaranteed admissions and full-tuition merit aid.</p>
                 </div>
               </div>
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">📚</div>
                 <div class="track-feature-text">
                   <h4>High-ROI AP Course Selection</h4>
                   <p>Don't guess which AP classes to take. Discover which exams waive actual degree requirements and save the most money at your target schools.</p>
                 </div>
               </div>
-              <div class="track-feature-item">
+              <div class="track-feature-item" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
                 <div class="track-feature-icon">⏰</div>
                 <div class="track-feature-text">
-                  <h4>Testing &amp; Prep Timeline</h4>
-                  <p>Get a tailored schedule for PSAT/NMSQT National Merit qualification, SAT/ACT target windows, and early action preparation.</p>
+                  <h4>AI Testing &amp; Prep Suggestions</h4>
+                  <p>Get a tailored AI schedule for PSAT/NMSQT National Merit qualification, SAT/ACT target windows, and major-specific prep.</p>
                 </div>
               </div>
             </div>
             <div class="track-cta-strip">
-              <span><strong>In 9th, 10th, or 11th grade?</strong> Build your custom high school guide and see your target benchmarks.</span>
+              <span><strong>In 9th, 10th, or 11th grade?</strong> Create an account to enter your stats and generate your AI 4-year guide.</span>
               <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <button type="button" class="btn-primary" style="font-size: 0.8rem; padding: 0.45rem 0.95rem;" onclick="App.continueAsGuest('hs')">
-                  <i class="fas fa-compass" style="margin-right: 4px;"></i> Try High School Guide Demo
+                <button type="button" class="btn-primary" style="font-size: 0.82rem; padding: 0.5rem 1.05rem;" onclick="App.promptEnterStats('hs')">
+                  <i class="fas fa-compass" style="margin-right: 4px;"></i> Enter Your Stats →
                 </button>
               </div>
             </div>
@@ -245,9 +256,12 @@
               <path d="M49 10.5L50.3 13.7L53.5 15L50.3 16.3L49 19.5L47.7 16.3L44.5 15L47.7 13.7L49 10.5Z" fill="#38BDF8"/>
             </svg>
           </div>
-          <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem;">Get Started with AdmitAI</h3>
-          <p>Unlock your qualified scholarships, admissions &amp; custom guide</p>
+          <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem;">Create Account to Enter Stats</h3>
+          <p>Create your free account to unlock the Stats Survey &amp; your custom AI Breakdown</p>
         </div>
+
+        <!-- Dynamic Prompt Banner when user clicks "Enter Your Stats" -->
+        <div id="landing-auth-prompt" style="display: none; background: linear-gradient(135deg, rgba(37, 99, 235, 0.22), rgba(79, 70, 229, 0.16)); border: 1px solid rgba(96, 165, 250, 0.45); color: #DBEAFE; padding: 0.7rem 0.9rem; border-radius: 10px; font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.45;"></div>
 
         <!-- Auth Tabs: Sign In / Create Account -->
         <div class="auth-tabs">
@@ -304,8 +318,8 @@
             <input type="password" id="auth-signup-confirm" class="input-control" placeholder="••••••••" minlength="6" required>
           </div>
 
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.72rem; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem;">
-            <i class="fas fa-rocket" style="margin-right: 6px;"></i> Enter Stats &amp; Unlock My Plan
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem; font-weight: 700; margin-bottom: 0.75rem;">
+            <i class="fas fa-rocket" style="margin-right: 6px;"></i> Create Account &amp; Start Stats Survey →
           </button>
         </form>
 
@@ -321,21 +335,21 @@
             <input type="password" id="auth-login-password" class="input-control" placeholder="••••••••" required>
           </div>
 
-          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.72rem; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem;">
-            <i class="fas fa-arrow-right" style="margin-right: 6px;"></i> Sign In to Dashboard
+          <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem; font-weight: 700; margin-bottom: 0.75rem;">
+            <i class="fas fa-arrow-right" style="margin-right: 6px;"></i> Sign In to My AI Breakdown
           </button>
         </form>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <button type="button" class="auth-guest-btn" onclick="App.continueAsGuest('senior')" style="font-size: 0.76rem; padding: 0.6rem 0.5rem;">
-            <i class="fas fa-graduation-cap"></i> Guest: Senior Demo
-          </button>
-          <button type="button" class="auth-guest-btn" onclick="App.continueAsGuest('hs')" style="font-size: 0.76rem; padding: 0.6rem 0.5rem;">
-            <i class="fas fa-compass"></i> Guest: 9th–11th Guide
-          </button>
+        <!-- Clean 3-Step How It Works Strip -->
+        <div style="background: rgba(9, 13, 22, 0.55); border: 1px solid rgba(148, 163, 184, 0.14); border-radius: 10px; padding: 0.65rem 0.75rem; margin-top: 0.4rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: #93C5FD; font-weight: 600;">
+          <span>① Create Account</span>
+          <span style="color: var(--text-dim);">→</span>
+          <span>② Stats Survey</span>
+          <span style="color: var(--text-dim);">→</span>
+          <span>③ AI Breakdown</span>
         </div>
 
-        <div style="font-size: 0.72rem; color: var(--text-dim); text-align: center; margin-top: 0.85rem; line-height: 1.4;">
+        <div style="font-size: 0.72rem; color: var(--text-dim); text-align: center; margin-top: 0.75rem; line-height: 1.4;">
           All student academic records are stored locally in your client session.
         </div>
       </div>
@@ -344,33 +358,33 @@
       <!-- Feature Bento Grid (Linear Style) -->
       <div class="landing-bento-section" style="width: 100%; max-width: 1240px; margin-top: 1rem;">
         <div class="landing-bento-header">
-          <h3>One Profile. Every Scholarship, Guarantee &amp; Next Step.</h3>
-          <p>Whether you're graduating this year or just starting high school, we turn your academic stats into actionable opportunities.</p>
+          <h3>One Stats Survey. Full AI Breakdown, Scholarships &amp; Game Plan.</h3>
+          <p>Create your account, answer our guided stats survey, and let AdmitAI build your personalized admissions and scholarship report.</p>
         </div>
         <div class="landing-bento-grid">
-          <div class="bento-card">
+          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
             <div class="bento-icon-box">💰</div>
             <h4>Merit Scholarships &amp; Aid</h4>
             <p>See automatic $5,000–$28,000/yr university scholarships and state tuition grants your GPA and SAT/ACT unlock right now.</p>
-            <span class="bento-meta-tag">Instant Qualification</span>
+            <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
-          <div class="bento-card">
+          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
             <div class="bento-icon-box">⚖️</div>
             <h4>Guaranteed Admissions</h4>
             <p>Check 15+ state laws that legally guarantee university acceptance when you meet class rank or GPA thresholds.</p>
-            <span class="bento-meta-tag">100% Verified</span>
+            <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
-          <div class="bento-card">
+          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('senior')">
             <div class="bento-icon-box">💵</div>
             <h4>AP &amp; Exam Tuition Cash</h4>
             <p>Convert your AP/IB scores into exact college course waivers and thousands in saved tuition across flagship universities.</p>
-            <span class="bento-meta-tag">$7,200+ Avg Savings</span>
+            <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
-          <div class="bento-card">
+          <div class="bento-card" style="cursor: pointer;" onclick="App.promptEnterStats('hs')">
             <div class="bento-icon-box">🗺️</div>
-            <h4>9th–12th Grade Roadmap</h4>
+            <h4>9th–12th Grade AI Guide</h4>
             <p>Underclassmen get a custom year-by-year guide for courses, testing, and GPA targets; seniors get priority application deadlines.</p>
-            <span class="bento-meta-tag">Step-by-Step Guide</span>
+            <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
         </div>
       </div>
@@ -408,8 +422,8 @@
               </svg>
             </div>
             <div>
-              <h2 style="font-size: 1.05rem; color: #FFFFFF; font-weight: 700;">Academic Profile Configuration</h2>
-              <span id="onboarding-step-label" style="font-size: 0.72rem; color: #93C5FD; font-weight: 600;">Step 1 of 5</span>
+              <h2 style="font-size: 1.08rem; color: #FFFFFF; font-weight: 700;">Your Academic Stats &amp; Goals Survey</h2>
+              <span id="onboarding-step-label" style="font-size: 0.72rem; color: #93C5FD; font-weight: 600;">Step 1 of 5 · Feeds directly into your AI Breakdown</span>
             </div>
           </div>
           <button class="btn-secondary" style="font-size: 0.72rem;" onclick="App.handleLogout()">
@@ -458,8 +472,8 @@
       </div>
 
       <div class="nav-links">
-        <a href="#" class="nav-link active" data-tab="overview" onclick="event.preventDefault(); App.switchTab('overview')">
-          <i class="fas fa-home"></i><span>Home</span>
+        <a href="#" class="nav-link active" data-tab="ai" onclick="event.preventDefault(); App.switchTab('ai')">
+          <i class="fas fa-wand-magic-sparkles"></i><span>AI Breakdown &amp; Plan</span>
         </a>
         <a href="#" class="nav-link" data-tab="status" onclick="event.preventDefault(); App.switchTab('status')">
           <i class="fas fa-award"></i><span>Scholarships &amp; Auto-Admit</span>
@@ -473,8 +487,8 @@
         <a href="#" class="nav-link" data-tab="colleges" onclick="event.preventDefault(); App.switchTab('colleges')">
           <i class="fas fa-building-columns"></i><span>Colleges &amp; Ranges</span>
         </a>
-        <a href="#" class="nav-link" data-tab="ai" onclick="event.preventDefault(); App.switchTab('ai')">
-          <i class="fas fa-robot"></i><span>AI Advisor</span>
+        <a href="#" class="nav-link" data-tab="overview" onclick="event.preventDefault(); App.switchTab('overview')">
+          <i class="fas fa-th-large"></i><span>All Modules</span>
         </a>
       </div>
 
@@ -505,6 +519,11 @@
         </div>
 
         <div class="topbar-right">
+          <!-- Retake Stats Survey Button -->
+          <button class="btn-secondary" style="font-size: 0.76rem; padding: 0.35rem 0.7rem;" onclick="Onboarding.open()" title="Retake or Update Your Stats Survey">
+            <i class="fas fa-sliders"></i> <span>Stats Survey</span>
+          </button>
+
           <!-- Student Stats Quick Pill -->
           <div class="profile-pill" id="header-profile-pill" onclick="App.openProfileModal()" title="Edit Student Academic Stats">
             <span class="dot"></span>
@@ -528,15 +547,15 @@
 
       <!-- Hidden Tab Buttons for Headless/Test Suite Compatibility -->
       <div style="display: none;">
-        <button class="tab-btn active" data-tab="status" onclick="App.switchTab('status')"></button>
+        <button class="tab-btn" data-tab="status" onclick="App.switchTab('status')"></button>
         <button class="tab-btn" data-tab="colleges" onclick="App.switchTab('colleges')"></button>
         <button class="tab-btn" data-tab="credits" onclick="App.switchTab('credits')"></button>
         <button class="tab-btn" data-tab="roadmap" onclick="App.switchTab('roadmap')"></button>
-        <button class="tab-btn" data-tab="ai" onclick="App.switchTab('ai')"></button>
+        <button class="tab-btn active" data-tab="ai" onclick="App.switchTab('ai')"></button>
       </div>
 
       <!-- Overview / Home View Content (Prime Prep Pattern) -->
-      <section id="overview-tab-content" class="tab-content active" aria-label="Home Overview">
+      <section id="overview-tab-content" class="tab-content" aria-label="Home Overview">
         <!-- Dynamic Student Mode Banner (Senior vs High Schooler) -->
         <div id="overview-pathway-banner" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(79, 70, 229, 0.14)); border: 1px solid rgba(96, 165, 250, 0.35); border-radius: 14px; padding: 1rem 1.35rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <div style="display: flex; align-items: center; gap: 0.85rem;">
@@ -697,7 +716,7 @@
       <section id="roadmap-tab-content" class="tab-content" aria-label="Personalized Action Roadmap"></section>
 
       <!-- Tab 5: AI Audit & Advisor -->
-      <section id="ai-tab-content" class="tab-content" aria-label="AI Diagnostic Audit & Interactive Advisor"></section>
+      <section id="ai-tab-content" class="tab-content active" aria-label="AI Diagnostic Audit & Interactive Advisor"></section>
 
       <!-- Footer inside main -->
       <footer class="app-footer" style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.06);">
@@ -1095,15 +1114,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts -->
-  <script src="js/auth.js?v=3.6"></script>
-  <script src="js/onboarding.js?v=3.6"></script>
-  <script src="js/profile.js?v=3.6"></script>
-  <script src="js/status.js?v=3.6"></script>
-  <script src="js/colleges.js?v=3.6"></script>
-  <script src="js/credits.js?v=3.6"></script>
-  <script src="js/roadmap.js?v=3.6"></script>
-  <script src="js/export.js?v=3.6"></script>
-  <script src="js/ai.js?v=3.6"></script>
-  <script src="js/app.js?v=3.6"></script>
+  <script src="js/auth.js?v=3.7"></script>
+  <script src="js/onboarding.js?v=3.7"></script>
+  <script src="js/profile.js?v=3.7"></script>
+  <script src="js/status.js?v=3.7"></script>
+  <script src="js/colleges.js?v=3.7"></script>
+  <script src="js/credits.js?v=3.7"></script>
+  <script src="js/roadmap.js?v=3.7"></script>
+  <script src="js/export.js?v=3.7"></script>
+  <script src="js/ai.js?v=3.7"></script>
+  <script src="js/app.js?v=3.7"></script>
 </body>
 </html>

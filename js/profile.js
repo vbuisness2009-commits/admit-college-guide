@@ -6,11 +6,14 @@
 const ProfileManager = {
   getBlankProfile() {
     return {
-      grade_level: 11,
+      grade_level: 12,
       residency: "TX",
       high_school: "",
-      gpa_unweighted: 3.8,
-      gpa_weighted: 4.2,
+      intended_major: "STEM & Engineering",
+      extracurricular_tier: "strong",
+      primary_goal: "scholarships",
+      gpa_unweighted: 3.85,
+      gpa_weighted: 4.25,
       class_rank: null,
       class_size: null,
       class_percentile: null,
@@ -22,7 +25,7 @@ const ProfileManager = {
       science_years: 4,
       has_endorsement: true,
       fl_prep_complete: false,
-      saved_colleges: [],
+      saved_colleges: ["ut-austin", "tamu", "uf"],
       ap_exams: [],
       application_tracker: {}
     };
