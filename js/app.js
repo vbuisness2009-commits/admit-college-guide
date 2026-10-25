@@ -450,6 +450,10 @@ const App = {
   },
 
   handleGoogleButtonClick() {
+    if (typeof window !== "undefined" && window.google && window.google.accounts && window.google.accounts.oauth2) {
+      this.launchGoogleOAuthPopup();
+      return;
+    }
     this.openGoogleAuthModal();
   },
 
