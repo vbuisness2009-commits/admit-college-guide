@@ -478,33 +478,38 @@
 
       <div class="nav-links">
         <a href="#" class="nav-link active" data-tab="ai" onclick="event.preventDefault(); App.switchTab('ai')">
-          <i class="fas fa-wand-magic-sparkles"></i><span>AI Breakdown &amp; Plan</span>
+          <i class="fas fa-wand-magic-sparkles"></i><span>AI College Chances</span>
         </a>
         <a href="#" class="nav-link" data-tab="status" onclick="event.preventDefault(); App.switchTab('status')">
-          <i class="fas fa-award"></i><span>Scholarships &amp; Auto-Admit</span>
-        </a>
-        <a href="#" class="nav-link" data-tab="roadmap" onclick="event.preventDefault(); App.switchTab('roadmap')">
-          <i class="fas fa-compass"></i><span>High School Guide &amp; Plan</span>
+          <i class="fas fa-award"></i><span>Scholarships &amp; Laws</span>
         </a>
         <a href="#" class="nav-link" data-tab="credits" onclick="event.preventDefault(); App.switchTab('credits')">
-          <i class="fas fa-sack-dollar"></i><span>AP &amp; Tuition Cash</span>
+          <i class="fas fa-sack-dollar"></i><span>AP Credit Savings</span>
+        </a>
+        <a href="#" class="nav-link" data-tab="roadmap" onclick="event.preventDefault(); App.switchTab('roadmap')">
+          <i class="fas fa-compass"></i><span>High School Plan</span>
         </a>
         <a href="#" class="nav-link" data-tab="colleges" onclick="event.preventDefault(); App.switchTab('colleges')">
-          <i class="fas fa-building-columns"></i><span>Colleges &amp; Ranges</span>
-        </a>
-        <a href="#" class="nav-link" data-tab="overview" onclick="event.preventDefault(); App.switchTab('overview')">
-          <i class="fas fa-th-large"></i><span>All Modules</span>
+          <i class="fas fa-building-columns"></i><span>All Colleges</span>
         </a>
       </div>
 
-      <div class="sidebar-footer">
-        <div class="xp-display">
-          <i class="fas fa-award"></i>
-          <span id="sidebar-stat-laws">Scholarships Unlocked</span>
+      <!-- Left Sidebar Live Stats Summary (__ Scholarships, __ Auto-Admits, $__ AP Saved) -->
+      <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 0.55rem; padding: 0.9rem;">
+        <div style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #93C5FD; padding: 0 0.25rem;">
+          Your Unlocked Summary
         </div>
-        <div class="streak-display">
-          <i class="fas fa-piggy-bank"></i>
-          <span id="sidebar-stat-tuition">$7,275 Saved</span>
+        <div class="xp-display" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(96, 165, 250, 0.3);" onclick="App.switchTab('status')">
+          <i class="fas fa-award" style="color: #60A5FA;"></i>
+          <span id="sidebar-stat-laws" style="font-weight: 800; color: #FFFFFF; font-size: 0.84rem;">4 Scholarships</span>
+        </div>
+        <div class="streak-display" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(52, 211, 153, 0.28);" onclick="App.switchTab('credits')">
+          <i class="fas fa-piggy-bank" style="color: #34D399;"></i>
+          <span id="sidebar-stat-tuition" style="font-weight: 800; color: #FFFFFF; font-size: 0.84rem;">$7,275 AP Saved</span>
+        </div>
+        <div class="streak-display" style="cursor: pointer; padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(129, 140, 248, 0.12); border: 1px solid rgba(165, 180, 252, 0.28);" onclick="App.switchTab('ai')">
+          <i class="fas fa-university" style="color: #A5B4FC;"></i>
+          <span id="sidebar-stat-colleges" style="font-weight: 800; color: #FFFFFF; font-size: 0.84rem;">5 Colleges Evaluated</span>
         </div>
       </div>
     </nav>
@@ -1113,15 +1118,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts -->
-  <script src="js/auth.js?v=4.2"></script>
-  <script src="js/onboarding.js?v=4.2"></script>
-  <script src="js/profile.js?v=4.2"></script>
-  <script src="js/status.js?v=4.2"></script>
-  <script src="js/colleges.js?v=4.2"></script>
-  <script src="js/credits.js?v=4.2"></script>
-  <script src="js/roadmap.js?v=4.2"></script>
-  <script src="js/export.js?v=4.2"></script>
-  <script src="js/ai.js?v=4.2"></script>
-  <script src="js/app.js?v=4.2"></script>
+  <script src="js/auth.js?v=4.3"></script>
+  <script src="js/onboarding.js?v=4.3"></script>
+  <script src="js/profile.js?v=4.3"></script>
+  <script src="js/status.js?v=4.3"></script>
+  <script src="js/colleges.js?v=4.3"></script>
+  <script src="js/credits.js?v=4.3"></script>
+  <script src="js/roadmap.js?v=4.3"></script>
+  <script src="js/export.js?v=4.3"></script>
+  <script src="js/ai.js?v=4.3"></script>
+  <script src="js/app.js?v=4.3"></script>
 </body>
 </html>

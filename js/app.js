@@ -859,8 +859,14 @@ const App = {
     const tuitionStat = document.getElementById("sidebar-stat-tuition");
     if (tuitionStat && typeof CreditsEngine !== "undefined") {
       const savedColleges = (profile.saved_colleges || []).map(id => CollegesEngine.getById(id)).filter(Boolean);
-      const { maxTuition } = CreditsEngine.calculateMaxSavings(savedColleges, profile.ap_exams || [], profile.residency);
-      tuitionStat.textContent = maxTuition ? `$${maxTuition.toLocaleString()} Saved` : "$7,275 Saved";
+      const { maxTuition, maxCredits } = CreditsEngine.calculateMaxSavings(savedColleges, profile.ap_exams || [], profile.residency);
+      tuitionStat.textContent = maxTuition ? `$${maxTuition.toLocaleString()} AP Saved (${maxCredits} Cr)` : "$7,275 AP Saved";
+    }
+
+    const colStat = document.getElementById("sidebar-stat-colleges");
+    if (colStat) {
+      const savedCount = (profile.saved_colleges || []).length;
+      colStat.textContent = `${savedCount} Colleges Evaluated`;
     }
   },
 

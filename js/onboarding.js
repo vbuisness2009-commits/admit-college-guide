@@ -16,8 +16,14 @@ const Onboarding = {
       this.wizardData = JSON.parse(JSON.stringify(user.profile));
       if (!this.wizardData.name && user.name) this.wizardData.name = user.name;
       if (!this.wizardData.intended_major) this.wizardData.intended_major = "STEM & Engineering";
-      if (!this.wizardData.extracurricular_tier) this.wizardData.extracurricular_tier = "School Club Officer / Varsity / Research";
-      if (!this.wizardData.primary_goal) this.wizardData.primary_goal = "Maximize Merit Scholarships ($5k–$28k/yr)";
+      if (!["national", "strong", "developing", "starter"].includes(this.wizardData.extracurricular_tier)) {
+        this.wizardData.extracurricular_tier = "strong";
+      }
+      if (!["scholarships", "flagship", "roadmap", "credits"].includes(this.wizardData.primary_goal)) {
+        this.wizardData.primary_goal = defaultGrade >= 12 ? "scholarships" : "roadmap";
+      }
+      if (typeof this.wizardData.extracurricular_details !== "string") this.wizardData.extracurricular_details = "";
+      if (typeof this.wizardData.priority_goal_details !== "string") this.wizardData.priority_goal_details = "";
     } else {
       this.wizardData = {
         name: user ? user.name : "",
@@ -25,8 +31,10 @@ const Onboarding = {
         residency: "TX",
         high_school: "",
         intended_major: "STEM & Engineering",
-        extracurricular_tier: "School Club Officer / Varsity / Research",
-        primary_goal: defaultGrade >= 12 ? "Maximize Merit Scholarships ($5k–$28k/yr)" : "Build My 4-Year High School Game Plan",
+        extracurricular_tier: "strong",
+        extracurricular_details: "",
+        primary_goal: defaultGrade >= 12 ? "scholarships" : "roadmap",
+        priority_goal_details: "",
         gpa_unweighted: 3.85,
         gpa_weighted: 4.3,
         class_rank: 28,
@@ -150,6 +158,8 @@ const Onboarding = {
         const fl = document.getElementById("ob-fl");
         const ec = document.getElementById("ob-ec");
         const goal = document.getElementById("ob-goal");
+        const ecDetails = document.getElementById("ob-ec-details");
+        const goalDetails = document.getElementById("ob-goal-details");
         if (alg2) this.wizardData.math_years_algebra2 = alg2.checked;
         if (sci) {
           const parsedSci = parseInt(sci.value, 10);
@@ -159,6 +169,12 @@ const Onboarding = {
         if (fl) this.wizardData.fl_prep_complete = fl.checked;
         if (ec && ec.value) this.wizardData.extracurricular_tier = ec.value;
         if (goal && goal.value) this.wizardData.primary_goal = goal.value;
+        if (ecDetails && ecDetails.value !== undefined && ecDetails.value.trim() !== "") {
+          this.wizardData.extracurricular_details = ecDetails.value.trim();
+        }
+        if (goalDetails && goalDetails.value !== undefined && goalDetails.value.trim() !== "") {
+          this.wizardData.priority_goal_details = goalDetails.value.trim();
+        }
         break;
       }
     }
@@ -530,17 +546,61 @@ const Onboarding = {
       case 4: {
         const ecTier = this.wizardData.extracurricular_tier || "strong";
         const primaryGoal = this.wizardData.primary_goal || "scholarships";
+        const ecDetails = this.wizardData.extracurricular_details || "";
+        const goalDetails = this.wizardData.priority_goal_details || "";
         const sciYears = this.wizardData.science_years ?? 4;
+
+        const ecPrompts = {
+          national: {
+            label: "✍️ Tell us your State/National Extracurriculars & Exactly What You Did:",
+            placeholder: "Example: TSA Webmaster State Finalist (built full-stack web app), USACO Gold Division, Science Olympiad 2nd Place State, or 150+ hrs independent research..."
+          },
+          strong: {
+            label: "✍️ Tell us your Leadership Roles, Clubs & Exactly What You Did:",
+            placeholder: "Example: President of Computer Science Club (taught 45 members Python), Varsity Tennis Captain, Robotics Lead Programmer, Eagle Scout project..."
+          },
+          developing: {
+            label: "✍️ Tell us your Clubs, Volunteering & Exactly What You Did:",
+            placeholder: "Example: Active member of DECA and Robotics Club, 80 hours tutoring math at local library, part-time barista (12 hrs/wk)..."
+          },
+          starter: {
+            label: "✍️ Tell us your Interests or Activities You've Tried & What You Want to Do:",
+            placeholder: "Example: Interested in coding web apps, robotics, business competitions, or pre-med volunteering — looking for top clubs & competitions to join..."
+          }
+        };
+
+        const goalPrompts = {
+          scholarships: {
+            label: "🎯 Tell us your Scholarship Target & Exactly What You're Aiming For:",
+            placeholder: "Example: Aiming for $15,000–$28,000/yr in automatic merit scholarships at flagship universities to graduate debt-free..."
+          },
+          flagship: {
+            label: "🎯 Tell us which Flagship / Reach Universities & Programs You're Targeting:",
+            placeholder: "Example: Targeting UT Austin Computer Science, Georgia Tech, and Texas A&M Engineering — want to maximize my acceptance chances..."
+          },
+          roadmap: {
+            label: "🎯 Tell us what Milestones You Want in Your High School Roadmap:",
+            placeholder: "Example: Want a step-by-step plan to reach a 1500+ SAT, win a state TSA/DECA award, and pick the best junior/senior AP classes..."
+          },
+          credits: {
+            label: "🎯 Tell us your AP Credit & Early Graduation Goals:",
+            placeholder: "Example: Want to skip freshman Calculus, Physics, and English weed-out classes and save $8,000+ in college tuition..."
+          }
+        };
+
+        const curEcPrompt = ecPrompts[ecTier] || ecPrompts.strong;
+        const curGoalPrompt = goalPrompts[primaryGoal] || goalPrompts.scholarships;
+
         html = `
           <div class="onboarding-step-body">
             ${stepNavHtml}
             <div class="step-title-group">
               <h3>4. Activities, #1 Priority Goal & Course Rigor</h3>
-              <p>Click your current extracurricular tier and #1 priority below so the AI can tailor your opportunities.</p>
+              <p>Click your current extracurricular tier and #1 priority below, then type what you did in the text box that appears.</p>
             </div>
 
             <!-- 1-Click Extracurricular Tier Cards -->
-            <div style="margin-bottom: 1.5rem;">
+            <div style="margin-bottom: 1.65rem;">
               <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
                 Your Extracurricular & Leadership Profile (1-Click):
               </label>
@@ -569,10 +629,36 @@ const Onboarding = {
                 <option value="developing" ${ecTier === 'developing' ? 'selected' : ''}>Tier 3</option>
                 <option value="starter" ${ecTier === 'starter' ? 'selected' : ''}>Tier 4</option>
               </select>
+
+              <!-- Dynamic Text Box for Extracurricular Details -->
+              <div id="ob-ec-details-box" style="margin-top: 0.85rem; background: rgba(15, 23, 42, 0.88); border: 1.5px solid rgba(59, 130, 246, 0.45); border-radius: 14px; padding: 1.05rem 1.2rem; box-shadow: 0 8px 22px rgba(2, 6, 23, 0.35);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+                  <label for="ob-ec-details" style="font-size: 0.92rem; font-weight: 800; color: #93C5FD; margin: 0;">
+                    ${curEcPrompt.label}
+                  </label>
+                  <span style="font-size: 0.74rem; color: #34D399; font-weight: 700;">Feeds into AI Acceptance Evaluation</span>
+                </div>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+                  <span style="font-size: 0.74rem; color: var(--text-muted); align-self: center; margin-right: 0.2rem;">Quick Add:</span>
+                  ${[
+                    "TSA / Robotics Competition",
+                    "DECA / FBLA Officer",
+                    "HOSA / Science Olympiad",
+                    "Varsity Athletics Captain",
+                    "NHS / Student Council",
+                    "100+ Hrs Volunteering",
+                    "Independent Coding / App Project",
+                    "Part-Time Job / Internship"
+                  ].map(tag => `
+                    <button type="button" class="ob-score-pill" style="font-size: 0.73rem; padding: 0.25rem 0.6rem;" onclick="Onboarding.appendEcDetail('${tag}')">+ ${tag}</button>
+                  `).join('')}
+                </div>
+                <textarea id="ob-ec-details" class="input-control" rows="3" style="width: 100%; min-height: 82px; font-size: 0.94rem; line-height: 1.45; resize: vertical;" placeholder="${curEcPrompt.placeholder}" oninput="Onboarding.wizardData.extracurricular_details = this.value">${ecDetails}</textarea>
+              </div>
             </div>
 
             <!-- 1-Click Primary Goal Cards -->
-            <div style="margin-bottom: 1.5rem;">
+            <div style="margin-bottom: 1.65rem;">
               <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
                 What is your #1 Priority right now? (1-Click):
               </label>
@@ -601,6 +687,29 @@ const Onboarding = {
                 <option value="roadmap" ${primaryGoal === 'roadmap' ? 'selected' : ''}>Roadmap</option>
                 <option value="credits" ${primaryGoal === 'credits' ? 'selected' : ''}>Credits</option>
               </select>
+
+              <!-- Dynamic Text Box for Priority Goal Details -->
+              <div id="ob-goal-details-box" style="margin-top: 0.85rem; background: rgba(15, 23, 42, 0.88); border: 1.5px solid rgba(52, 211, 153, 0.42); border-radius: 14px; padding: 1.05rem 1.2rem; box-shadow: 0 8px 22px rgba(2, 6, 23, 0.35);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+                  <label for="ob-goal-details" style="font-size: 0.92rem; font-weight: 800; color: #6EE7B7; margin: 0;">
+                    ${curGoalPrompt.label}
+                  </label>
+                  <span style="font-size: 0.74rem; color: #93C5FD; font-weight: 700;">Tailors Your AI Strategy</span>
+                </div>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+                  <span style="font-size: 0.74rem; color: var(--text-muted); align-self: center; margin-right: 0.2rem;">Quick Add:</span>
+                  ${[
+                    "Win $15k–$28k/yr Merit Scholarship",
+                    "Qualify for Top 5% / Top 10% Auto-Admit",
+                    "Get Into Top CS / Engineering Program",
+                    "Boost SAT Score by +80 Points",
+                    "Waive Freshman Calculus & Lab Sciences"
+                  ].map(tag => `
+                    <button type="button" class="ob-score-pill" style="font-size: 0.73rem; padding: 0.25rem 0.6rem;" onclick="Onboarding.appendGoalDetail('${tag}')">+ ${tag}</button>
+                  `).join('')}
+                </div>
+                <textarea id="ob-goal-details" class="input-control" rows="2" style="width: 100%; min-height: 74px; font-size: 0.94rem; line-height: 1.45; resize: vertical;" placeholder="${curGoalPrompt.placeholder}" oninput="Onboarding.wizardData.priority_goal_details = this.value">${goalDetails}</textarea>
+              </div>
             </div>
 
             <!-- High School Course Rigor Checklist -->
@@ -843,6 +952,22 @@ const Onboarding = {
     this.renderStep(4);
     const ecEl = document.getElementById("ob-ec");
     if (ecEl) ecEl.value = tier;
+    const ecBox = document.getElementById("ob-ec-details");
+    if (ecBox && ecBox.focus) ecBox.focus();
+  },
+
+  appendEcDetail(tag) {
+    this.harvestCurrentStepData();
+    const cur = (this.wizardData.extracurricular_details || "").trim();
+    if (!cur.toLowerCase().includes(tag.toLowerCase())) {
+      this.wizardData.extracurricular_details = cur ? `${cur}, ${tag}` : tag;
+    }
+    this.renderStep(4);
+    const ecBox = document.getElementById("ob-ec-details");
+    if (ecBox) {
+      ecBox.value = this.wizardData.extracurricular_details;
+      if (ecBox.focus) ecBox.focus();
+    }
   },
 
   selectPrimaryGoal(goal) {
@@ -851,6 +976,25 @@ const Onboarding = {
     this.renderStep(4);
     const goalEl = document.getElementById("ob-goal");
     if (goalEl) goalEl.value = goal;
+    const goalBox = document.getElementById("ob-goal-details");
+    if (goalBox) {
+      goalBox.value = this.wizardData.priority_goal_details || "";
+      if (goalBox.focus) goalBox.focus();
+    }
+  },
+
+  appendGoalDetail(tag) {
+    this.harvestCurrentStepData();
+    const cur = (this.wizardData.priority_goal_details || "").trim();
+    if (!cur.toLowerCase().includes(tag.toLowerCase())) {
+      this.wizardData.priority_goal_details = cur ? `${cur}, ${tag}` : tag;
+    }
+    this.renderStep(4);
+    const goalBox = document.getElementById("ob-goal-details");
+    if (goalBox) {
+      goalBox.value = this.wizardData.priority_goal_details;
+      if (goalBox.focus) goalBox.focus();
+    }
   },
 
   setScienceYears(yrs) {
