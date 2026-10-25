@@ -164,6 +164,8 @@ const Onboarding = {
     }
   },
 
+  collegeSearchQuery: "",
+
   renderStep(step) {
     const container = document.getElementById("onboarding-step-container");
     const progressFill = document.getElementById("onboarding-progress-fill");
@@ -175,7 +177,7 @@ const Onboarding = {
 
     const percent = ((step - 1) / (this.totalSteps - 1)) * 100;
     if (progressFill) progressFill.style.width = `${percent}%`;
-    if (stepLabel) stepLabel.innerText = `Question Set ${step} of ${this.totalSteps}`;
+    if (stepLabel) stepLabel.innerText = `Question Set ${step} of ${this.totalSteps} · Click any step tab below to jump directly`;
 
     if (prevBtn) prevBtn.style.visibility = step === 1 ? "hidden" : "visible";
     if (nextBtn) {
@@ -190,36 +192,124 @@ const Onboarding = {
       }
     }
 
+    const stepTitles = [
+      { num: 1, title: "Track & Major", sub: "Grade & State" },
+      { num: 2, title: "GPA & Rank", sub: "1-Click Presets" },
+      { num: 3, title: "SAT / ACT", sub: "Test Scores" },
+      { num: 4, title: "Activities & Goal", sub: "Course Rigor" },
+      { num: 5, title: "APs & Colleges", sub: "1-Click Tap Grid" }
+    ];
+
+    const stepNavHtml = `
+      <div class="ob-step-nav">
+        ${stepTitles.map(st => `
+          <button type="button" class="ob-step-pill ${st.num === step ? 'active' : (st.num < step ? 'completed' : '')}" onclick="Onboarding.goToStep(${st.num})">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: ${st.num === step ? '#2563EB' : (st.num < step ? '#059669' : 'rgba(255,255,255,0.08)')}; color: #FFFFFF; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              ${st.num < step ? '✓' : st.num}
+            </div>
+            <div>
+              <div style="font-size: 0.82rem; font-weight: 800; line-height: 1.15; color: #FFFFFF;">${st.title}</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">${st.sub}</div>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    `;
+
     let html = "";
 
     switch (step) {
-      case 1:
+      case 1: {
         const currentGrade = this.wizardData.grade_level || 12;
         const currentMajor = this.wizardData.intended_major || "STEM & Engineering";
+        const currentRes = this.wizardData.residency || "TX";
+        const majorsList = [
+          { val: "STEM & Engineering", icon: "⚙️", title: "STEM & Engineering", sub: "Mechanical, Aerospace, Electrical, Civil" },
+          { val: "Computer Science & Data", icon: "💻", title: "Computer Science & AI", sub: "Software, AI/ML, Data Science, Cyber" },
+          { val: "Business, Finance & Economics", icon: "📈", title: "Business & Finance", sub: "Finance, Accounting, Marketing, Econ" },
+          { val: "Pre-Med, Biology & Health", icon: "🧬", title: "Pre-Med & Health", sub: "Biology, Nursing, Pre-Health, Chemistry" },
+          { val: "Humanities, Law & Social Sciences", icon: "⚖️", title: "Humanities & Pre-Law", sub: "Government, Psychology, English, History" },
+          { val: "Undecided / Exploring", icon: "🧭", title: "Undecided / Exploring", sub: "Compare multiple majors & core waivers" }
+        ];
+        const quickStates = [
+          { code: "TX", label: "TX · Texas" },
+          { code: "CA", label: "CA · California" },
+          { code: "FL", label: "FL · Florida" },
+          { code: "GA", label: "GA · Georgia" },
+          { code: "WA", label: "WA · Washington" },
+          { code: "NY", label: "NY · New York" },
+          { code: "IL", label: "IL · Illinois" },
+          { code: "MI", label: "MI · Michigan" }
+        ];
+
         html = `
           <div class="onboarding-step-body">
+            ${stepNavHtml}
             <div class="step-title-group">
-              <h3>1. Your Grade Track, Location & Intended Major</h3>
-              <p>Tell us where you are in high school and what field you want to pursue so the AI can tailor your breakdown.</p>
+              <h3>1. Your Grade Level, Location & Intended Major</h3>
+              <p>Click any card below to set your grade track, intended major, and state in seconds.</p>
             </div>
 
-            <!-- Interactive Track Selector Pills -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
-              <button type="button" onclick="Onboarding.selectGradeTrack(12)" style="text-align: left; padding: 0.85rem 1rem; border-radius: 10px; cursor: pointer; border: 1.5px solid ${currentGrade === 12 ? '#3B82F6' : 'var(--border-subtle)'}; background: ${currentGrade === 12 ? 'rgba(37, 99, 235, 0.14)' : 'var(--bg-input)'}; color: var(--text-main);">
-                <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #60A5FA; margin-bottom: 0.2rem;">🎓 Senior / Grad Track</div>
-                <div style="font-size: 0.9rem; font-weight: 700;">12th Grade or High School Grad</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">See scholarships, auto-admit & AP cash unlocked now</div>
-              </button>
-              <button type="button" onclick="Onboarding.selectGradeTrack(10)" style="text-align: left; padding: 0.85rem 1rem; border-radius: 10px; cursor: pointer; border: 1.5px solid ${currentGrade < 12 ? '#818CF8' : 'var(--border-subtle)'}; background: ${currentGrade < 12 ? 'rgba(99, 102, 241, 0.14)' : 'var(--bg-input)'}; color: var(--text-main);">
-                <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #A5B4FC; margin-bottom: 0.2rem;">🗺️ 9th–11th Grade Roadmap</div>
-                <div style="font-size: 0.9rem; font-weight: 700;">Freshman, Sophomore, or Junior</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">Build a custom step-by-step high school guide</div>
-              </button>
+            <!-- 1-Click Grade Level Cards -->
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+                Select Your Current Grade Level (1-Click):
+              </label>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+                ${[
+                  { g: 12, badge: "🎓 Senior / Grad", title: "12th Grade / Grad", desc: "Unlock scholarships, auto-admit & AP cash now" },
+                  { g: 11, badge: "🚀 Junior", title: "11th Grade (Junior)", desc: "SAT/ACT peak window & junior year roadmap" },
+                  { g: 10, badge: "🗺️ Sophomore", title: "10th Grade (Sophomore)", desc: "PSAT prep, AP ramp-up & 3-year blueprint" },
+                  { g: 9, badge: "🌱 Freshman", title: "9th Grade (Freshman)", desc: "4-year high school course & activity guide" }
+                ].map(item => `
+                  <button type="button" class="ob-choice-card ${currentGrade === item.g ? 'selected' : ''}" onclick="Onboarding.selectGradeTrack(${item.g})">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                        <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #60A5FA;">${item.badge}</span>
+                        ${currentGrade === item.g ? '<span style="color: #34D399; font-weight: 800; font-size: 0.85rem;">✓ Selected</span>' : ''}
+                      </div>
+                      <div style="font-size: 1rem; font-weight: 800; color: #FFFFFF;">${item.title}</div>
+                      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">${item.desc}</div>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+              <select id="ob-grade" class="select-control" style="display: none;">
+                <option value="9" ${currentGrade === 9 ? 'selected' : ''}>9th Grade</option>
+                <option value="10" ${currentGrade === 10 ? 'selected' : ''}>10th Grade</option>
+                <option value="11" ${currentGrade === 11 ? 'selected' : ''}>11th Grade</option>
+                <option value="12" ${currentGrade === 12 ? 'selected' : ''}>12th Grade</option>
+              </select>
             </div>
 
-            <div class="form-grid">
+            <!-- 1-Click Intended Major Cards -->
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+                Select Your Intended Major / Career Interest (1-Click):
+              </label>
+              <div class="ob-choice-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                ${majorsList.map(m => `
+                  <button type="button" class="ob-choice-card ${currentMajor === m.val ? 'selected' : ''}" onclick="Onboarding.selectMajor('${m.val}')">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 1.25rem;">${m.icon}</span>
+                        ${currentMajor === m.val ? '<span style="color: #34D399; font-weight: 800; font-size: 0.82rem;">✓ Active</span>' : ''}
+                      </div>
+                      <div style="font-size: 1rem; font-weight: 800; color: #FFFFFF; margin-top: 0.3rem;">${m.title}</div>
+                      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem;">${m.sub}</div>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+              <select id="ob-major" class="select-control" style="display: none;">
+                ${majorsList.map(m => `<option value="${m.val}" ${currentMajor === m.val ? 'selected' : ''}>${m.val}</option>`).join('')}
+              </select>
+            </div>
+
+            <!-- Name, High School & State Residency -->
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
               <div class="form-group">
-                <label for="ob-name">Full Name</label>
+                <label for="ob-name">Your Name</label>
                 <input type="text" id="ob-name" class="input-control" value="${this.wizardData.name || ''}" placeholder="e.g. Alex Rivera" required>
               </div>
 
@@ -227,324 +317,497 @@ const Onboarding = {
                 <label for="ob-hs">High School Name <span class="hint">(optional)</span></label>
                 <input type="text" id="ob-hs" class="input-control" value="${this.wizardData.high_school || ''}" placeholder="e.g. Westlake High School">
               </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="ob-grade">Exact Grade Level</label>
-                <select id="ob-grade" class="select-control">
-                  <option value="9" ${currentGrade === 9 ? 'selected' : ''}>9th Grade (Freshman)</option>
-                  <option value="10" ${currentGrade === 10 ? 'selected' : ''}>10th Grade (Sophomore)</option>
-                  <option value="11" ${currentGrade === 11 ? 'selected' : ''}>11th Grade (Junior)</option>
-                  <option value="12" ${currentGrade === 12 ? 'selected' : ''}>12th Grade (Senior / Grad)</option>
-                </select>
-              </div>
 
               <div class="form-group">
-                <label for="ob-residency">State of Legal Residency</label>
-                <select id="ob-residency" class="select-control">
-                  <option value="AL">Alabama (AL)</option>
-                  <option value="AK">Alaska (AK)</option>
-                  <option value="AZ">Arizona (AZ)</option>
-                  <option value="AR">Arkansas (AR)</option>
-                  <option value="CA" ${this.wizardData.residency === 'CA' ? 'selected' : ''}>California (CA)</option>
-                  <option value="CO">Colorado (CO)</option>
-                  <option value="CT">Connecticut (CT)</option>
-                  <option value="DE">Delaware (DE)</option>
-                  <option value="DC">District of Columbia (DC)</option>
-                  <option value="FL" ${this.wizardData.residency === 'FL' ? 'selected' : ''}>Florida (FL)</option>
-                  <option value="GA" ${this.wizardData.residency === 'GA' ? 'selected' : ''}>Georgia (GA)</option>
-                  <option value="HI">Hawaii (HI)</option>
-                  <option value="ID">Idaho (ID)</option>
-                  <option value="IL">Illinois (IL)</option>
-                  <option value="IN">Indiana (IN)</option>
-                  <option value="IA">Iowa (IA)</option>
-                  <option value="KS">Kansas (KS)</option>
-                  <option value="KY">Kentucky (KY)</option>
-                  <option value="LA">Louisiana (LA)</option>
-                  <option value="ME">Maine (ME)</option>
-                  <option value="MD">Maryland (MD)</option>
-                  <option value="MA">Massachusetts (MA)</option>
-                  <option value="MI">Michigan (MI)</option>
-                  <option value="MN">Minnesota (MN)</option>
-                  <option value="MS">Mississippi (MS)</option>
-                  <option value="MO">Missouri (MO)</option>
-                  <option value="MT">Montana (MT)</option>
-                  <option value="NE">Nebraska (NE)</option>
-                  <option value="NV">Nevada (NV)</option>
-                  <option value="NH">New Hampshire (NH)</option>
-                  <option value="NJ">New Jersey (NJ)</option>
-                  <option value="NM">New Mexico (NM)</option>
-                  <option value="NY">New York (NY)</option>
-                  <option value="NC">North Carolina (NC)</option>
-                  <option value="ND">North Dakota (ND)</option>
-                  <option value="OH">Ohio (OH)</option>
-                  <option value="OK">Oklahoma (OK)</option>
-                  <option value="OR">Oregon (OR)</option>
-                  <option value="PA">Pennsylvania (PA)</option>
-                  <option value="RI">Rhode Island (RI)</option>
-                  <option value="SC">South Carolina (SC)</option>
-                  <option value="SD">South Dakota (SD)</option>
-                  <option value="TN">Tennessee (TN)</option>
-                  <option value="TX" ${this.wizardData.residency === 'TX' ? 'selected' : ''}>Texas (TX)</option>
-                  <option value="UT">Utah (UT)</option>
-                  <option value="VT">Vermont (VT)</option>
-                  <option value="VA">Virginia (VA)</option>
-                  <option value="WA" ${this.wizardData.residency === 'WA' ? 'selected' : ''}>Washington (WA)</option>
-                  <option value="WV">West Virginia (WV)</option>
-                  <option value="WI">Wisconsin (WI)</option>
-                  <option value="WY">Wyoming (WY)</option>
-                  <option value="OTHER" ${this.wizardData.residency === 'OTHER' ? 'selected' : ''}>U.S. Territory / International</option>
+                <label for="ob-residency">State Residency</label>
+                <select id="ob-residency" class="select-control" onchange="Onboarding.selectResidency(this.value)">
+                  <option value="AL" ${currentRes === 'AL' ? 'selected' : ''}>Alabama (AL)</option>
+                  <option value="AK" ${currentRes === 'AK' ? 'selected' : ''}>Alaska (AK)</option>
+                  <option value="AZ" ${currentRes === 'AZ' ? 'selected' : ''}>Arizona (AZ)</option>
+                  <option value="AR" ${currentRes === 'AR' ? 'selected' : ''}>Arkansas (AR)</option>
+                  <option value="CA" ${currentRes === 'CA' ? 'selected' : ''}>California (CA)</option>
+                  <option value="CO" ${currentRes === 'CO' ? 'selected' : ''}>Colorado (CO)</option>
+                  <option value="CT" ${currentRes === 'CT' ? 'selected' : ''}>Connecticut (CT)</option>
+                  <option value="DE" ${currentRes === 'DE' ? 'selected' : ''}>Delaware (DE)</option>
+                  <option value="DC" ${currentRes === 'DC' ? 'selected' : ''}>District of Columbia (DC)</option>
+                  <option value="FL" ${currentRes === 'FL' ? 'selected' : ''}>Florida (FL)</option>
+                  <option value="GA" ${currentRes === 'GA' ? 'selected' : ''}>Georgia (GA)</option>
+                  <option value="HI" ${currentRes === 'HI' ? 'selected' : ''}>Hawaii (HI)</option>
+                  <option value="ID" ${currentRes === 'ID' ? 'selected' : ''}>Idaho (ID)</option>
+                  <option value="IL" ${currentRes === 'IL' ? 'selected' : ''}>Illinois (IL)</option>
+                  <option value="IN" ${currentRes === 'IN' ? 'selected' : ''}>Indiana (IN)</option>
+                  <option value="IA" ${currentRes === 'IA' ? 'selected' : ''}>Iowa (IA)</option>
+                  <option value="KS" ${currentRes === 'KS' ? 'selected' : ''}>Kansas (KS)</option>
+                  <option value="KY" ${currentRes === 'KY' ? 'selected' : ''}>Kentucky (KY)</option>
+                  <option value="LA" ${currentRes === 'LA' ? 'selected' : ''}>Louisiana (LA)</option>
+                  <option value="ME" ${currentRes === 'ME' ? 'selected' : ''}>Maine (ME)</option>
+                  <option value="MD" ${currentRes === 'MD' ? 'selected' : ''}>Maryland (MD)</option>
+                  <option value="MA" ${currentRes === 'MA' ? 'selected' : ''}>Massachusetts (MA)</option>
+                  <option value="MI" ${currentRes === 'MI' ? 'selected' : ''}>Michigan (MI)</option>
+                  <option value="MN" ${currentRes === 'MN' ? 'selected' : ''}>Minnesota (MN)</option>
+                  <option value="MS" ${currentRes === 'MS' ? 'selected' : ''}>Mississippi (MS)</option>
+                  <option value="MO" ${currentRes === 'MO' ? 'selected' : ''}>Missouri (MO)</option>
+                  <option value="MT" ${currentRes === 'MT' ? 'selected' : ''}>Montana (MT)</option>
+                  <option value="NE" ${currentRes === 'NE' ? 'selected' : ''}>Nebraska (NE)</option>
+                  <option value="NV" ${currentRes === 'NV' ? 'selected' : ''}>Nevada (NV)</option>
+                  <option value="NH" ${currentRes === 'NH' ? 'selected' : ''}>New Hampshire (NH)</option>
+                  <option value="NJ" ${currentRes === 'NJ' ? 'selected' : ''}>New Jersey (NJ)</option>
+                  <option value="NM" ${currentRes === 'NM' ? 'selected' : ''}>New Mexico (NM)</option>
+                  <option value="NY" ${currentRes === 'NY' ? 'selected' : ''}>New York (NY)</option>
+                  <option value="NC" ${currentRes === 'NC' ? 'selected' : ''}>North Carolina (NC)</option>
+                  <option value="ND" ${currentRes === 'ND' ? 'selected' : ''}>North Dakota (ND)</option>
+                  <option value="OH" ${currentRes === 'OH' ? 'selected' : ''}>Ohio (OH)</option>
+                  <option value="OK" ${currentRes === 'OK' ? 'selected' : ''}>Oklahoma (OK)</option>
+                  <option value="OR" ${currentRes === 'OR' ? 'selected' : ''}>Oregon (OR)</option>
+                  <option value="PA" ${currentRes === 'PA' ? 'selected' : ''}>Pennsylvania (PA)</option>
+                  <option value="RI" ${currentRes === 'RI' ? 'selected' : ''}>Rhode Island (RI)</option>
+                  <option value="SC" ${currentRes === 'SC' ? 'selected' : ''}>South Carolina (SC)</option>
+                  <option value="SD" ${currentRes === 'SD' ? 'selected' : ''}>South Dakota (SD)</option>
+                  <option value="TN" ${currentRes === 'TN' ? 'selected' : ''}>Tennessee (TN)</option>
+                  <option value="TX" ${currentRes === 'TX' ? 'selected' : ''}>Texas (TX)</option>
+                  <option value="UT" ${currentRes === 'UT' ? 'selected' : ''}>Utah (UT)</option>
+                  <option value="VT" ${currentRes === 'VT' ? 'selected' : ''}>Vermont (VT)</option>
+                  <option value="VA" ${currentRes === 'VA' ? 'selected' : ''}>Virginia (VA)</option>
+                  <option value="WA" ${currentRes === 'WA' ? 'selected' : ''}>Washington (WA)</option>
+                  <option value="WV" ${currentRes === 'WV' ? 'selected' : ''}>West Virginia (WV)</option>
+                  <option value="WI" ${currentRes === 'WI' ? 'selected' : ''}>Wisconsin (WI)</option>
+                  <option value="WY" ${currentRes === 'WY' ? 'selected' : ''}>Wyoming (WY)</option>
+                  <option value="OTHER" ${currentRes === 'OTHER' ? 'selected' : ''}>U.S. Territory / International</option>
                 </select>
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: 0.75rem;">
-              <label for="ob-major">Intended College Major / Career Track</label>
-              <select id="ob-major" class="select-control">
-                <option value="STEM & Engineering" ${currentMajor === 'STEM & Engineering' ? 'selected' : ''}>STEM & Engineering (Mechanical, Aerospace, Electrical, Civil)</option>
-                <option value="Computer Science & Data" ${currentMajor === 'Computer Science & Data' ? 'selected' : ''}>Computer Science, AI & Data Science</option>
-                <option value="Business, Finance & Economics" ${currentMajor === 'Business, Finance & Economics' ? 'selected' : ''}>Business, Finance & Economics</option>
-                <option value="Pre-Med, Biology & Health" ${currentMajor === 'Pre-Med, Biology & Health' ? 'selected' : ''}>Pre-Med, Nursing, Biology & Health Sciences</option>
-                <option value="Humanities, Law & Social Sciences" ${currentMajor === 'Humanities, Law & Social Sciences' ? 'selected' : ''}>Humanities, Pre-Law, Psychology & Political Science</option>
-                <option value="Undecided / Exploring" ${currentMajor === 'Undecided / Exploring' ? 'selected' : ''}>Undecided / Exploring Multiple Tracks</option>
-              </select>
+            <!-- 1-Click Popular State Buttons -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem;">
+              <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Quick State Tap:</span>
+              ${quickStates.map(st => `
+                <button type="button" class="ob-score-pill ${currentRes === st.code ? 'active' : ''}" onclick="Onboarding.selectResidency('${st.code}')">
+                  ${st.label}
+                </button>
+              `).join('')}
             </div>
           </div>
         `;
         break;
+      }
 
-      case 2:
+      case 2: {
         const pct = (this.wizardData.class_rank && this.wizardData.class_size) ? ((this.wizardData.class_rank / this.wizardData.class_size) * 100).toFixed(1) : null;
+        const curUw = parseFloat(this.wizardData.gpa_unweighted) || 3.85;
         html = `
           <div class="onboarding-step-body">
+            ${stepNavHtml}
             <div class="step-title-group">
               <h3>2. Your GPA & Class Rank Standing</h3>
-              <p>Enter your unweighted/weighted GPA and class rank (or pick a quick estimate below) to unlock merit aid and auto-admission rules.</p>
+              <p>Click a 1-click GPA preset card below, or fine-tune your exact GPA and class rank.</p>
             </div>
 
-            <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1rem;">
-              <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center; margin-right: 0.25rem;">Quick GPA Presets:</span>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.95, 4.45, 18, 500)">Straight A's (3.95 UW / Top 4%)</button>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.75, 4.15, 42, 500)">A/B Honor Roll (3.75 UW / Top 9%)</button>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.45, 3.80, 95, 500)">Solid B+ Student (3.45 UW / Top 19%)</button>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setGpaPreset(3.15, 3.35, 160, 500)">B Average (3.15 UW)</button>
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+                Quick GPA & Class Rank Presets (1-Click):
+              </label>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 0.8rem;">
+                ${[
+                  { uw: 3.95, w: 4.45, r: 18, s: 500, badge: "🌟 Top 4% Rank", title: "Straight A's (3.95 UW)", desc: "4.45 Weighted · Unlocks top merit & UT/TAMU auto-admit" },
+                  { uw: 3.75, w: 4.15, r: 42, s: 500, badge: "🏅 Top 9% Rank", title: "A / B+ Honor Roll (3.75 UW)", desc: "4.15 Weighted · Qualifies for Top 10% & flagship merit" },
+                  { uw: 3.45, w: 3.80, r: 95, s: 500, badge: "📘 Top 19% Rank", title: "Solid B+ Average (3.45 UW)", desc: "3.80 Weighted · Strong state university & merit match" },
+                  { uw: 3.15, w: 3.35, r: 160, s: 500, badge: "📗 Top 32% Rank", title: "B Average (3.15 UW)", desc: "3.35 Weighted · Qualifies for direct state admissions" }
+                ].map(p => `
+                  <button type="button" class="ob-choice-card ${Math.abs(curUw - p.uw) < 0.03 ? 'selected' : ''}" onclick="Onboarding.setGpaPreset(${p.uw}, ${p.w}, ${p.r}, ${p.s})">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                        <span style="font-size: 0.72rem; font-weight: 800; color: #60A5FA;">${p.badge}</span>
+                        ${Math.abs(curUw - p.uw) < 0.03 ? '<span style="color: #34D399; font-weight: 800; font-size: 0.8rem;">✓ Active</span>' : ''}
+                      </div>
+                      <div style="font-size: 1rem; font-weight: 800; color: #FFFFFF;">${p.title}</div>
+                      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">${p.desc}</div>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
             </div>
 
-            <div class="form-grid">
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem;">
               <div class="form-group">
-                <label for="ob-gpa-uw">Unweighted GPA <span class="hint">0.00 – 4.00</span></label>
+                <label for="ob-gpa-uw">Unweighted GPA <span class="hint">(0.00 – 4.00)</span></label>
                 <input type="number" step="0.01" min="0" max="4.0" id="ob-gpa-uw" class="input-control" value="${this.wizardData.gpa_unweighted || ''}" placeholder="3.85">
               </div>
 
               <div class="form-group">
-                <label for="ob-gpa-w">Weighted GPA <span class="hint">e.g. 4.35</span></label>
+                <label for="ob-gpa-w">Weighted GPA <span class="hint">(e.g. 4.35)</span></label>
                 <input type="number" step="0.01" min="0" max="6.0" id="ob-gpa-w" class="input-control" value="${this.wizardData.gpa_weighted || ''}" placeholder="4.35">
               </div>
-            </div>
 
-            <div class="form-grid">
               <div class="form-group">
-                <label for="ob-rank">Class Rank <span class="hint">Optional</span></label>
+                <label for="ob-rank">Class Rank <span class="hint">(Optional)</span></label>
                 <input type="number" min="1" id="ob-rank" class="input-control" value="${this.wizardData.class_rank || ''}" placeholder="e.g. 24" oninput="Onboarding.updatePercentileLive()">
               </div>
 
               <div class="form-group">
-                <label for="ob-size">Graduating Class Size <span class="hint">Optional</span></label>
+                <label for="ob-size">Graduating Class Size <span class="hint">(Optional)</span></label>
                 <input type="number" min="1" id="ob-size" class="input-control" value="${this.wizardData.class_size || ''}" placeholder="e.g. 500" oninput="Onboarding.updatePercentileLive()">
               </div>
             </div>
 
-            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
-              <span style="font-size: 0.84rem; color: var(--text-muted);">Calculated Class Percentile:</span>
-              <strong style="color: #60A5FA; font-size: 1.05rem;" id="ob-percentile-live">${pct ? `Top ${pct}%` : 'Enter rank & size above'}</strong>
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(96, 165, 250, 0.3); border-radius: 12px; padding: 1.1rem 1.35rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem;">
+              <span style="font-size: 0.95rem; color: #E2E8F0; font-weight: 600;">Calculated Class Standing Percentile:</span>
+              <strong style="color: #60A5FA; font-size: 1.25rem; font-weight: 800;" id="ob-percentile-live">${pct ? `Top ${pct}%` : 'Enter rank & size above'}</strong>
             </div>
           </div>
         `;
         break;
+      }
 
-      case 3:
-        const hasScores = this.wizardData.sat_rw && this.wizardData.sat_m;
-        const totalSat = hasScores ? (this.wizardData.sat_rw + this.wizardData.sat_m) : "N/A";
+      case 3: {
+        const hasScores = !this.wizardData.no_test_checked && this.wizardData.sat_rw && this.wizardData.sat_m;
+        const totalSat = hasScores ? (this.wizardData.sat_rw + this.wizardData.sat_m) : "Test-Optional / Not Entered";
         html = `
           <div class="onboarding-step-body">
+            ${stepNavHtml}
             <div class="step-title-group">
               <h3>3. Standardized Test Scores (SAT / ACT)</h3>
-              <p>Enter your current or target SAT/ACT scores so our AI can match you with automatic merit scholarships and university score ranges.</p>
+              <p>Click any 1-click score preset card below, enter your exact section scores, or select Test-Optional.</p>
             </div>
 
-            <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1rem;">
-              <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center; margin-right: 0.25rem;">Quick Score Presets:</span>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(740, 770, 34)">1510 SAT / 34 ACT</button>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(690, 720, 31)">1410 SAT / 31 ACT</button>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(640, 660, 28)">1300 SAT / 28 ACT</button>
-              <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="Onboarding.setScorePreset(580, 600, 24)">1180 SAT / 24 ACT</button>
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+                Quick Score Presets (1-Click):
+              </label>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem;">
+                ${[
+                  { rw: 740, m: 770, act: 34, badge: "🔥 99th Percentile", title: "1510 SAT / 34 ACT", desc: "740 RW + 770 Math · Unlocks max $28k/yr merit" },
+                  { rw: 690, m: 720, act: 31, badge: "⭐ 95th Percentile", title: "1410 SAT / 31 ACT", desc: "690 RW + 720 Math · Flagship & Bright Futures 100%" },
+                  { rw: 640, m: 660, act: 28, badge: "✅ 87th Percentile", title: "1300 SAT / 28 ACT", desc: "640 RW + 660 Math · Strong merit & state match" },
+                  { rw: 580, m: 600, act: 24, badge: "📈 College Ready", title: "1180 SAT / 24 ACT", desc: "580 RW + 600 Math · Clears readiness benchmarks" }
+                ].map(p => `
+                  <button type="button" class="ob-choice-card ${(!this.wizardData.no_test_checked && (this.wizardData.sat_rw + this.wizardData.sat_m) === (p.rw + p.m)) ? 'selected' : ''}" onclick="Onboarding.setScorePreset(${p.rw}, ${p.m}, ${p.act})">
+                    <div>
+                      <div style="font-size: 0.72rem; font-weight: 800; color: #60A5FA; margin-bottom: 0.2rem;">${p.badge}</div>
+                      <div style="font-size: 1.02rem; font-weight: 800; color: #FFFFFF;">${p.title}</div>
+                      <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.2rem;">${p.desc}</div>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
             </div>
 
-            <label class="checkbox-group" style="margin-bottom: 1rem;">
-              <input type="checkbox" id="ob-no-test" onchange="Onboarding.toggleTestInputs(this.checked)" ${this.wizardData.no_test_checked ? 'checked' : ''}>
+            <label class="checkbox-group" style="margin-bottom: 1.25rem; padding: 1rem 1.15rem; border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" id="ob-no-test" style="width: 20px; height: 20px;" onchange="Onboarding.toggleTestInputs(this.checked)" ${this.wizardData.no_test_checked ? 'checked' : ''}>
               <div class="checkbox-label">
-                <strong>I haven't taken the SAT or ACT yet (Test-Optional / Future Tester)</strong>
-                <span class="checkbox-sub">Our AI will recommend a target score timeline and show test-optional pathways.</span>
+                <strong style="font-size: 0.98rem;">I haven't taken the SAT or ACT yet (Test-Optional / Future Tester)</strong>
+                <span class="checkbox-sub" style="font-size: 0.84rem;">Our AI will build a test prep timeline and show test-optional university pathways.</span>
               </div>
             </label>
 
             <div id="ob-test-fields" style="opacity: ${this.wizardData.no_test_checked ? '0.4' : '1'};">
-              <div class="form-grid">
+              <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
                 <div class="form-group">
-                  <label for="ob-sat-rw">SAT Reading & Writing <span class="hint">200–800</span></label>
+                  <label for="ob-sat-rw">SAT Reading & Writing <span class="hint">(200–800)</span></label>
                   <input type="number" min="200" max="800" step="10" id="ob-sat-rw" class="input-control" value="${this.wizardData.sat_rw || ''}" placeholder="690" oninput="Onboarding.updateSatTotalLive()">
                 </div>
 
                 <div class="form-group">
-                  <label for="ob-sat-m">SAT Math <span class="hint">200–800</span></label>
+                  <label for="ob-sat-m">SAT Math <span class="hint">(200–800)</span></label>
                   <input type="number" min="200" max="800" step="10" id="ob-sat-m" class="input-control" value="${this.wizardData.sat_m || ''}" placeholder="720" oninput="Onboarding.updateSatTotalLive()">
                 </div>
 
                 <div class="form-group">
-                  <label for="ob-act">ACT Composite <span class="hint">1–36</span></label>
+                  <label for="ob-act">ACT Composite <span class="hint">(1–36)</span></label>
                   <input type="number" min="1" max="36" id="ob-act" class="input-control" value="${this.wizardData.act_composite || ''}" placeholder="31">
                 </div>
               </div>
 
-              <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
-                <span style="font-size: 0.84rem; color: var(--text-muted);">Combined Total SAT Score:</span>
-                <strong style="color: #34D399; font-size: 1.15rem;" id="ob-sat-total-live">${totalSat}</strong>
+              <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(52, 211, 153, 0.35); border-radius: 12px; padding: 1.1rem 1.35rem; display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem;">
+                <span style="font-size: 0.95rem; color: #E2E8F0; font-weight: 600;">Combined Total SAT Score:</span>
+                <strong style="color: #34D399; font-size: 1.35rem; font-weight: 800;" id="ob-sat-total-live">${totalSat}</strong>
               </div>
             </div>
           </div>
         `;
         break;
+      }
 
-      case 4:
+      case 4: {
         const ecTier = this.wizardData.extracurricular_tier || "strong";
         const primaryGoal = this.wizardData.primary_goal || "scholarships";
+        const sciYears = this.wizardData.science_years ?? 4;
         html = `
           <div class="onboarding-step-body">
+            ${stepNavHtml}
             <div class="step-title-group">
-              <h3>4. Course Rigor, Extracurriculars & Primary Goal</h3>
-              <p>Tell us about your high school curriculum and activities so the AI can spot gaps and suggest high-impact next steps.</p>
+              <h3>4. Activities, #1 Priority Goal & Course Rigor</h3>
+              <p>Click your current extracurricular tier and #1 priority below so the AI can tailor your opportunities.</p>
             </div>
 
-            <div class="form-grid" style="margin-bottom: 1rem;">
-              <div class="form-group">
-                <label for="ob-ec">Extracurricular & Leadership Involvement</label>
-                <select id="ob-ec" class="select-control">
-                  <option value="national" ${ecTier === 'national' ? 'selected' : ''}>Tier 1: State/National Awards, Olympiad, Research, or Founder</option>
-                  <option value="strong" ${ecTier === 'strong' ? 'selected' : ''}>Tier 2: Club President, Varsity Captain, or Eagle Scout / Gold Award</option>
-                  <option value="developing" ${ecTier === 'developing' ? 'selected' : ''}>Tier 3: Active Club Member, Volunteering, Part-Time Job</option>
-                  <option value="starter" ${ecTier === 'starter' ? 'selected' : ''}>Tier 4: Just Getting Started — Need Activity Ideas & Suggestions</option>
-                </select>
+            <!-- 1-Click Extracurricular Tier Cards -->
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+                Your Extracurricular & Leadership Profile (1-Click):
+              </label>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+                ${[
+                  { val: "national", badge: "🏆 Tier 1 · National/State", title: "State / National Recognition", desc: "Olympiad, TSA/DECA/HOSA state finalist, published research, or founder" },
+                  { val: "strong", badge: "⭐ Tier 2 · School Leader", title: "Club President / Captain", desc: "Student org officer, Varsity captain, Eagle Scout / Gold Award" },
+                  { val: "developing", badge: "📈 Tier 3 · Active Member", title: "Club Member & Volunteering", desc: "Consistent club participation, community service, or part-time job" },
+                  { val: "starter", badge: "🚀 Tier 4 · Building Now", title: "Need Activity Suggestions", desc: "Have our AI suggest high-impact competitions & projects to start now" }
+                ].map(item => `
+                  <button type="button" class="ob-choice-card ${ecTier === item.val ? 'selected' : ''}" onclick="Onboarding.selectEcTier('${item.val}')">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                        <span style="font-size: 0.72rem; font-weight: 800; color: #60A5FA;">${item.badge}</span>
+                        ${ecTier === item.val ? '<span style="color: #34D399; font-weight: 800; font-size: 0.8rem;">✓</span>' : ''}
+                      </div>
+                      <div style="font-size: 0.98rem; font-weight: 800; color: #FFFFFF;">${item.title}</div>
+                      <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.2rem;">${item.desc}</div>
+                    </div>
+                  </button>
+                `).join('')}
               </div>
-
-              <div class="form-group">
-                <label for="ob-goal">What is your #1 Priority right now?</label>
-                <select id="ob-goal" class="select-control">
-                  <option value="scholarships" ${primaryGoal === 'scholarships' ? 'selected' : ''}>Maximize Merit Scholarships & Lower Tuition Costs</option>
-                  <option value="flagship" ${primaryGoal === 'flagship' ? 'selected' : ''}>Get Into Top Flagship & Reach Universities</option>
-                  <option value="roadmap" ${primaryGoal === 'roadmap' ? 'selected' : ''}>Build a Year-by-Year High School Course & Activity Plan</option>
-                  <option value="credits" ${primaryGoal === 'credits' ? 'selected' : ''}>Graduate Early Using AP/IB College Credits</option>
-                </select>
-              </div>
+              <select id="ob-ec" class="select-control" style="display: none;">
+                <option value="national" ${ecTier === 'national' ? 'selected' : ''}>Tier 1</option>
+                <option value="strong" ${ecTier === 'strong' ? 'selected' : ''}>Tier 2</option>
+                <option value="developing" ${ecTier === 'developing' ? 'selected' : ''}>Tier 3</option>
+                <option value="starter" ${ecTier === 'starter' ? 'selected' : ''}>Tier 4</option>
+              </select>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.65rem;">
-              <label class="checkbox-group">
-                <input type="checkbox" id="ob-alg2" ${this.wizardData.math_years_algebra2 ? 'checked' : ''}>
+            <!-- 1-Click Primary Goal Cards -->
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.55rem;">
+                What is your #1 Priority right now? (1-Click):
+              </label>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+                ${[
+                  { val: "scholarships", icon: "💰", title: "Maximize Merit Scholarships", desc: "Find $5k–$28k/yr automatic GPA & SAT awards" },
+                  { val: "flagship", icon: "🏛️", title: "Get Into Flagship & Reach Schools", desc: "Clear score cutoffs & statutory auto-admit" },
+                  { val: "roadmap", icon: "🗺️", title: "Build My High School Roadmap", desc: "Step-by-step courses, clubs & test timeline" },
+                  { val: "credits", icon: "🎓", title: "Save Tuition With AP Credits", desc: "Skip freshman weed-out classes & save cash" }
+                ].map(item => `
+                  <button type="button" class="ob-choice-card ${primaryGoal === item.val ? 'selected' : ''}" onclick="Onboarding.selectPrimaryGoal('${item.val}')">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 1.2rem;">${item.icon}</span>
+                        ${primaryGoal === item.val ? '<span style="color: #34D399; font-weight: 800; font-size: 0.8rem;">✓ Selected</span>' : ''}
+                      </div>
+                      <div style="font-size: 0.98rem; font-weight: 800; color: #FFFFFF; margin-top: 0.25rem;">${item.title}</div>
+                      <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.15rem;">${item.desc}</div>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+              <select id="ob-goal" class="select-control" style="display: none;">
+                <option value="scholarships" ${primaryGoal === 'scholarships' ? 'selected' : ''}>Scholarships</option>
+                <option value="flagship" ${primaryGoal === 'flagship' ? 'selected' : ''}>Flagship</option>
+                <option value="roadmap" ${primaryGoal === 'roadmap' ? 'selected' : ''}>Roadmap</option>
+                <option value="credits" ${primaryGoal === 'credits' ? 'selected' : ''}>Credits</option>
+              </select>
+            </div>
+
+            <!-- High School Course Rigor Checklist -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem; flex-wrap: wrap; gap: 0.5rem;">
+              <label style="font-size: 0.9rem; font-weight: 700; color: #E2E8F0;">High School Core Coursework Check:</label>
+              <button type="button" class="ob-score-pill" onclick="Onboarding.checkAllCoursework()">✓ Check All Core Prerequisites</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem;">
+              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: 12px; cursor: pointer;">
+                <input type="checkbox" id="ob-alg2" style="width: 20px; height: 20px;" ${this.wizardData.math_years_algebra2 ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Completed (or on track for) Algebra II & 4 Years of Math</strong>
-                  <span class="checkbox-sub">Core requirement across all 50 states for automatic admission & STEM degrees.</span>
+                  <strong style="font-size: 0.94rem;">Algebra II & 4 Years of Math</strong>
+                  <span class="checkbox-sub">Required across all 50 states for auto-admit & STEM degrees.</span>
                 </div>
               </label>
 
-              <div class="form-group" style="margin-top: 0.15rem;">
-                <label for="ob-sci">Total Lab Science Years (Biology, Chemistry, Physics)</label>
-                <input type="number" min="0" max="6" id="ob-sci" class="input-control" value="${this.wizardData.science_years ?? 4}">
-              </div>
-
-              <label class="checkbox-group">
-                <input type="checkbox" id="ob-end" ${this.wizardData.has_endorsement ? 'checked' : ''}>
+              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: 12px; cursor: pointer;">
+                <input type="checkbox" id="ob-end" style="width: 20px; height: 20px;" ${this.wizardData.has_endorsement ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Distinguished Graduation Endorsement & 2+ Years World Language</strong>
-                  <span class="checkbox-sub">Unlocks Texas Top 10% / Top 5% statutory eligibility and out-of-state merit waivers.</span>
+                  <strong style="font-size: 0.94rem;">Distinguished Endorsement & 2+ Yrs World Language</strong>
+                  <span class="checkbox-sub">Unlocks Texas Top 10% / Top 5% & flagship eligibility.</span>
                 </div>
               </label>
 
-              <label class="checkbox-group">
-                <input type="checkbox" id="ob-fl" ${this.wizardData.fl_prep_complete ? 'checked' : ''}>
+              <label class="checkbox-group" style="padding: 0.95rem 1.1rem; border-radius: 12px; cursor: pointer;">
+                <input type="checkbox" id="ob-fl" style="width: 20px; height: 20px;" ${this.wizardData.fl_prep_complete ? 'checked' : ''}>
                 <div class="checkbox-label">
-                  <strong>Honors / AP / IB College-Prep Diploma Track</strong>
+                  <strong style="font-size: 0.94rem;">Honors / AP / IB College-Prep Track</strong>
                   <span class="checkbox-sub">Taking advanced, dual-enrollment, AP, or IB coursework.</span>
                 </div>
               </label>
+
+              <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 0.95rem 1.1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.45rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="ob-sci" style="font-size: 0.92rem; font-weight: 700; color: #FFFFFF; margin: 0;">Lab Science Years (Bio, Chem, Physics)</label>
+                  <input type="number" min="0" max="6" id="ob-sci" class="input-control" style="width: 72px; min-height: 36px; padding: 0.3rem 0.5rem; text-align: center;" value="${sciYears}">
+                </div>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                  ${[2, 3, 4, 5].map(yr => `
+                    <button type="button" class="ob-score-pill ${sciYears === yr ? 'active' : ''}" onclick="Onboarding.setScienceYears(${yr})">${yr} Years</button>
+                  `).join('')}
+                </div>
+              </div>
             </div>
           </div>
         `;
         break;
+      }
 
-      case 5:
+      case 5: {
         const currentExams = this.wizardData.ap_exams || [];
         const savedColleges = this.wizardData.saved_colleges || [];
         const collegesList = CollegesEngine.getAll();
         const availableExamOptions = CreditsEngine.AVAILABLE_EXAMS;
+        const searchQ = (this.collegeSearchQuery || "").toLowerCase().trim();
+        const filteredColleges = searchQ
+          ? collegesList.filter(c => c.name.toLowerCase().includes(searchQ) || c.short_name.toLowerCase().includes(searchQ) || c.state.toLowerCase().includes(searchQ))
+          : collegesList;
 
         html = `
           <div class="onboarding-step-body">
+            ${stepNavHtml}
             <div class="step-title-group">
-              <h3>5. AP Exams & Target Universities</h3>
-              <p>Add any AP exams you've taken (or plan to take) and check the universities you want in your AI Breakdown.</p>
+              <h3>5. Click Your AP Exams & Target Universities</h3>
+              <p>Just tap any AP exam or university card below to toggle it on/off — or use our 1-click Smart Bundles!</p>
             </div>
 
-            <!-- AP Exams Section -->
-            <div style="margin-bottom: 1.5rem;">
-              <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
-                Your AP Exams (${currentExams.length} added):
-              </label>
-
-              <div id="ob-exam-list" style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem;">
-                ${currentExams.length === 0 ? `
-                  <div style="font-size: 0.8rem; color: var(--text-dim); padding: 0.5rem; background: rgba(255,255,255,0.02); border-radius: 6px;">
-                    No AP exams added yet. Select an exam below and click '+ Add', or let our AI suggest the best APs for your major!
-                  </div>
-                ` : currentExams.map((e, idx) => `
-                  <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.82rem;">
-                    <span><strong>${e.name}</strong> (${e.status === 'completed' ? `Score: ${e.score}` : 'Planned'})</span>
-                    <button class="btn-secondary" style="padding: 0.15rem 0.4rem; font-size: 0.7rem; color: #F87171;" onclick="Onboarding.removeExam(${idx})">✕</button>
-                  </div>
-                `).join('')}
+            <!-- AP EXAMS 1-CLICK INTERACTIVE GRID -->
+            <div style="background: rgba(15, 23, 42, 0.55); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 1.35rem; margin-bottom: 1.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                  <h4 style="font-size: 1.12rem; font-weight: 800; color: #FFFFFF; margin: 0;">
+                    🎓 Your AP Exams <span style="color: #60A5FA;">(${currentExams.length} selected)</span>
+                  </h4>
+                  <span style="font-size: 0.82rem; color: var(--text-muted);">Tap any exam card to add/remove it, and tap <strong>5 / 4 / 3 / Planned</strong> to set your score.</span>
+                </div>
+                <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
+                  <button type="button" class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="Onboarding.addMajorRecommendedAps()">
+                    ✨ Auto-Add Best APs for ${this.wizardData.intended_major || 'My Major'}
+                  </button>
+                  <button type="button" class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.8rem;" onclick="Onboarding.addApBundle('core')">
+                    + Core Starter Pack
+                  </button>
+                  <button type="button" class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.8rem;" onclick="Onboarding.addApBundle('stem')">
+                    + STEM & CS Pack
+                  </button>
+                  ${currentExams.length > 0 ? `
+                    <button type="button" class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.75rem; color: #FCA5A5;" onclick="Onboarding.clearAllExams()">
+                      Clear APs
+                    </button>
+                  ` : ''}
+                </div>
               </div>
 
-              <div style="display: flex; gap: 0.5rem;">
-                <select id="ob-exam-select" class="select-control" style="font-size: 0.8rem;">
+              <!-- 1-Click AP Cards Grid -->
+              <div id="ob-exam-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 0.75rem;">
+                ${availableExamOptions.map(ae => {
+                  const existingIdx = currentExams.findIndex(e => e.id === ae.id);
+                  const existing = existingIdx > -1 ? currentExams[existingIdx] : null;
+                  const isSelected = !!existing;
+                  const curScore = existing ? (existing.status === 'planned' ? 0 : existing.score) : 5;
+                  return `
+                    <div class="ob-choice-card ${isSelected ? 'selected' : ''}" style="padding: 0.9rem 1rem;" onclick="Onboarding.toggleExamCard('${ae.id}', '${ae.name.replace(/'/g, "\\'")}', event)">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+                        <div>
+                          <div style="font-size: 0.95rem; font-weight: 800; color: #FFFFFF;">${ae.name}</div>
+                          <div style="font-size: 0.75rem; color: ${isSelected ? '#34D399' : 'var(--text-muted)'}; margin-top: 0.15rem; font-weight: 600;">
+                            ${isSelected ? (existing.status === 'planned' ? '✓ Added · Planned Exam' : `✓ Added · Score: ${existing.score}`) : 'Click card to add exam'}
+                          </div>
+                        </div>
+                        <div style="width: 24px; height: 24px; border-radius: 6px; background: ${isSelected ? '#2563EB' : 'rgba(255,255,255,0.06)'}; border: 1px solid ${isSelected ? '#60A5FA' : 'var(--border-subtle)'}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; flex-shrink: 0;">
+                          ${isSelected ? '✓' : '+'}
+                        </div>
+                      </div>
+                      ${isSelected ? `
+                        <div style="display: flex; align-items: center; gap: 0.35rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);" onclick="event.stopPropagation();">
+                          <span style="font-size: 0.72rem; color: #93C5FD; font-weight: 700; margin-right: 0.15rem;">Score:</span>
+                          ${[5, 4, 3, 0].map(sc => `
+                            <button type="button" class="ob-score-pill ${curScore === sc ? 'active' : ''}" style="padding: 0.22rem 0.5rem; font-size: 0.72rem;" onclick="Onboarding.setExamScoreInline('${ae.id}', ${sc})">
+                              ${sc === 0 ? 'Planned' : sc}
+                            </button>
+                          `).join('')}
+                        </div>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- Hidden/Fallback Select Controls for Automated Compatibility -->
+              <div style="display: none;">
+                <select id="ob-exam-select">
                   ${availableExamOptions.map(ae => `<option value="${ae.id}|${ae.name}">${ae.name}</option>`).join('')}
                 </select>
-                <select id="ob-exam-score-select" class="select-control" style="width: auto; font-size: 0.8rem;">
+                <select id="ob-exam-score-select">
                   <option value="5">Score: 5</option>
                   <option value="4" selected>Score: 4</option>
                   <option value="3">Score: 3</option>
-                  <option value="0">Planned (Future)</option>
+                  <option value="0">Planned</option>
                 </select>
-                <button class="btn-secondary" style="font-size: 0.8rem; white-space: nowrap;" onclick="Onboarding.addExam()">+ Add</button>
               </div>
             </div>
 
-            <!-- College Selection Checklist -->
-            <div>
-              <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
-                Select Target Colleges to Analyze (${savedColleges.length} selected):
-              </label>
-              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.5rem; max-height: 180px; overflow-y: auto; padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
-                ${collegesList.map(c => `
-                  <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; cursor: pointer;">
-                    <input type="checkbox" ${savedColleges.includes(c.id) ? 'checked' : ''} onchange="Onboarding.toggleCollege('${c.id}')">
-                    <span>${c.short_name} (${c.state})</span>
-                  </label>
-                `).join('')}
+            <!-- TARGET UNIVERSITIES 1-CLICK INTERACTIVE GRID -->
+            <div style="background: rgba(15, 23, 42, 0.55); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 1.35rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                  <h4 style="font-size: 1.12rem; font-weight: 800; color: #FFFFFF; margin: 0;">
+                    🏛️ Target Universities to Analyze <span style="color: #34D399;">(${savedColleges.length} selected)</span>
+                  </h4>
+                  <span style="font-size: 0.82rem; color: var(--text-muted);">Tap any university card below to add or remove it from your AI Breakdown.</span>
+                </div>
+                <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
+                  <button type="button" class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="Onboarding.addCollegeBundle('smart')">
+                    ✨ Auto-Pick Best Matches for My Stats
+                  </button>
+                  <button type="button" class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.8rem;" onclick="Onboarding.addCollegeBundle('tx')">
+                    + Texas Schools
+                  </button>
+                  <button type="button" class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.8rem;" onclick="Onboarding.addCollegeBundle('public')">
+                    + Top Public Flagships
+                  </button>
+                  <button type="button" class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.8rem;" onclick="Onboarding.addCollegeBundle('stem')">
+                    + Top CS & Engineering
+                  </button>
+                  ${savedColleges.length > 0 ? `
+                    <button type="button" class="btn-secondary" style="font-size: 0.78rem; padding: 0.45rem 0.75rem; color: #FCA5A5;" onclick="Onboarding.addCollegeBundle('clear')">
+                      Clear
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+              <!-- Quick Filter Input -->
+              <div style="margin-bottom: 1rem;">
+                <input type="text" id="ob-college-search" class="input-control" value="${this.collegeSearchQuery || ''}" placeholder="🔍 Quick filter universities by name or state (e.g. Texas, California, MIT, Florida)..." oninput="Onboarding.filterCollegesGrid(this.value)">
+              </div>
+
+              <!-- Spacious 3-Column Clickable College Cards -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; max-height: 420px; overflow-y: auto; padding: 0.25rem;">
+                ${filteredColleges.map(c => {
+                  const isChecked = savedColleges.includes(c.id);
+                  return `
+                    <button type="button" class="ob-choice-card ${isChecked ? 'selected' : ''}" style="padding: 0.85rem 1rem;" onclick="Onboarding.toggleCollege('${c.id}')">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; width: 100%;">
+                        <div>
+                          <div style="font-size: 0.96rem; font-weight: 800; color: #FFFFFF;">${c.short_name}</div>
+                          <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.1rem;">${c.name}</div>
+                        </div>
+                        <span style="font-size: 0.7rem; font-weight: 800; padding: 0.18rem 0.5rem; border-radius: 6px; background: ${isChecked ? '#2563EB' : 'rgba(255,255,255,0.07)'}; color: #FFFFFF; flex-shrink: 0;">
+                          ${isChecked ? '✓ Selected' : c.state}
+                        </span>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 0.74rem; color: #93C5FD; margin-top: 0.35rem; padding-top: 0.35rem; border-top: 1px solid rgba(255,255,255,0.06);">
+                        <span>SAT: ${c.sat_total_25}–${c.sat_total_75}</span>
+                        <span>Admit: ${(c.admit_rate * 100).toFixed(0)}%</span>
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
               </div>
             </div>
           </div>
         `;
         break;
+      }
     }
 
     container.innerHTML = html;
@@ -554,6 +817,58 @@ const Onboarding = {
     this.harvestCurrentStepData();
     this.wizardData.grade_level = grade;
     this.renderStep(1);
+    const gradeEl = document.getElementById("ob-grade");
+    if (gradeEl) gradeEl.value = String(grade);
+  },
+
+  selectMajor(major) {
+    this.harvestCurrentStepData();
+    this.wizardData.intended_major = major;
+    this.renderStep(1);
+    const majorEl = document.getElementById("ob-major");
+    if (majorEl) majorEl.value = major;
+  },
+
+  selectResidency(stateCode) {
+    this.harvestCurrentStepData();
+    this.wizardData.residency = stateCode;
+    this.renderStep(1);
+    const resEl = document.getElementById("ob-residency");
+    if (resEl) resEl.value = stateCode;
+  },
+
+  selectEcTier(tier) {
+    this.harvestCurrentStepData();
+    this.wizardData.extracurricular_tier = tier;
+    this.renderStep(4);
+    const ecEl = document.getElementById("ob-ec");
+    if (ecEl) ecEl.value = tier;
+  },
+
+  selectPrimaryGoal(goal) {
+    this.harvestCurrentStepData();
+    this.wizardData.primary_goal = goal;
+    this.renderStep(4);
+    const goalEl = document.getElementById("ob-goal");
+    if (goalEl) goalEl.value = goal;
+  },
+
+  setScienceYears(yrs) {
+    this.harvestCurrentStepData();
+    this.wizardData.science_years = yrs;
+    this.renderStep(4);
+    const sciEl = document.getElementById("ob-sci");
+    if (sciEl) sciEl.value = yrs;
+  },
+
+  checkAllCoursework() {
+    this.harvestCurrentStepData();
+    this.wizardData.math_years_algebra2 = true;
+    this.wizardData.has_endorsement = true;
+    this.wizardData.fl_prep_complete = true;
+    this.wizardData.science_years = 4;
+    this.renderStep(4);
+    App.showToast("All core college-prep prerequisites checked!", "success");
   },
 
   setGpaPreset(uw, w, rank, size) {
@@ -598,6 +913,7 @@ const Onboarding = {
       const el = document.getElementById(id);
       if (el) el.disabled = isNoTest;
     });
+    this.renderStep(3);
   },
 
   updatePercentileLive() {
@@ -620,6 +936,80 @@ const Onboarding = {
     if (label) {
       label.innerText = (rw + m > 0) ? (rw + m) : "N/A";
     }
+  },
+
+  toggleExamCard(id, name, ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    if (!this.wizardData.ap_exams) this.wizardData.ap_exams = [];
+    const idx = this.wizardData.ap_exams.findIndex(e => e.id === id);
+    if (idx > -1) {
+      this.wizardData.ap_exams.splice(idx, 1);
+    } else {
+      const isPlanned = (this.wizardData.grade_level || 12) < 11;
+      this.wizardData.ap_exams.push({
+        id,
+        name,
+        score: isPlanned ? 0 : 5,
+        status: isPlanned ? "planned" : "completed"
+      });
+    }
+    this.renderStep(5);
+  },
+
+  setExamScoreInline(id, scoreVal) {
+    if (!this.wizardData.ap_exams) return;
+    const exam = this.wizardData.ap_exams.find(e => e.id === id);
+    if (exam) {
+      exam.score = scoreVal === 0 ? 0 : scoreVal;
+      exam.status = scoreVal === 0 ? "planned" : "completed";
+      this.renderStep(5);
+    }
+  },
+
+  addMajorRecommendedAps() {
+    const major = this.wizardData.intended_major || "STEM & Engineering";
+    const map = {
+      "STEM & Engineering": ["calc_bc", "phys_c_mech", "chem", "eng_lang"],
+      "Computer Science & Data": ["csa", "calc_bc", "stats", "phys_c_mech"],
+      "Business, Finance & Economics": ["stats", "calc_ab", "eng_lang", "ushist"],
+      "Pre-Med, Biology & Health": ["bio", "chem", "stats", "psych"],
+      "Humanities, Law & Social Sciences": ["eng_lang", "eng_lit", "ushist", "psych"],
+      "Undecided / Exploring": ["eng_lang", "calc_ab", "ushist", "stats"]
+    };
+    this.addExamIdsList(map[major] || map["STEM & Engineering"]);
+    App.showToast(`Added top recommended AP exams for ${major}!`, "success");
+  },
+
+  addApBundle(bundleType) {
+    const ids = bundleType === "stem"
+      ? ["calc_bc", "csa", "phys_c_mech", "chem"]
+      : ["eng_lang", "ushist", "calc_ab"];
+    this.addExamIdsList(ids);
+    App.showToast("AP Bundle added! Tap any score pill to adjust your score.", "success");
+  },
+
+  addExamIdsList(ids) {
+    if (!this.wizardData.ap_exams) this.wizardData.ap_exams = [];
+    const catalog = CreditsEngine.AVAILABLE_EXAMS || [];
+    ids.forEach(id => {
+      if (!this.wizardData.ap_exams.some(e => e.id === id)) {
+        const found = catalog.find(a => a.id === id);
+        if (found) {
+          this.wizardData.ap_exams.push({
+            id: found.id,
+            name: found.name,
+            score: 5,
+            status: "completed"
+          });
+        }
+      }
+    });
+    this.renderStep(5);
+  },
+
+  clearAllExams() {
+    this.wizardData.ap_exams = [];
+    this.renderStep(5);
   },
 
   addExam() {
@@ -663,6 +1053,47 @@ const Onboarding = {
       this.wizardData.saved_colleges.push(collegeId);
     }
     this.renderStep(5);
+  },
+
+  addCollegeBundle(bundleType) {
+    const all = CollegesEngine.getAll();
+    if (bundleType === "clear") {
+      this.wizardData.saved_colleges = [];
+      this.renderStep(5);
+      return;
+    }
+    let ids = [];
+    if (bundleType === "tx") {
+      ids = all.filter(c => c.state === "TX").map(c => c.id);
+    } else if (bundleType === "public") {
+      ids = ["ut-austin", "tamu", "uf", "uga", "umich", "uc-berkeley", "ucla", "unc", "uva", "uw"];
+    } else if (bundleType === "stem") {
+      ids = ["ut-austin", "gt", "purdue", "uiuc", "uc-berkeley", "umich", "mit", "cmu"];
+    } else if (bundleType === "smart") {
+      const sat = (this.wizardData.sat_rw && this.wizardData.sat_m) ? (this.wizardData.sat_rw + this.wizardData.sat_m) : 1410;
+      ids = all
+        .filter(c => sat >= c.sat_total_25 - 70 && sat <= c.sat_total_75 + 100)
+        .slice(0, 6)
+        .map(c => c.id);
+      if (ids.length < 3) ids = ["ut-austin", "tamu", "uf", "purdue", "uga"];
+    }
+    const set = new Set([...(this.wizardData.saved_colleges || []), ...ids]);
+    this.wizardData.saved_colleges = Array.from(set);
+    this.renderStep(5);
+    App.showToast(`Updated target college list (${this.wizardData.saved_colleges.length} selected)!`, "success");
+  },
+
+  filterCollegesGrid(query) {
+    this.collegeSearchQuery = query || "";
+    this.renderStep(5);
+    const input = document.getElementById("ob-college-search");
+    if (input && input.focus) {
+      input.focus();
+      if (input.setSelectionRange) {
+        const len = input.value.length;
+        input.setSelectionRange(len, len);
+      }
+    }
   },
 
   finish() {

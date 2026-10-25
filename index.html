@@ -422,13 +422,18 @@
               </svg>
             </div>
             <div>
-              <h2 style="font-size: 1.08rem; color: #FFFFFF; font-weight: 700;">Your Academic Stats &amp; Goals Survey</h2>
-              <span id="onboarding-step-label" style="font-size: 0.72rem; color: #93C5FD; font-weight: 600;">Step 1 of 5 · Feeds directly into your AI Breakdown</span>
+              <h2 style="font-size: 1.35rem; color: #FFFFFF; font-weight: 800; letter-spacing: -0.02em;">Your Academic Stats &amp; Goals Survey</h2>
+              <span id="onboarding-step-label" style="font-size: 0.85rem; color: #93C5FD; font-weight: 600;">Question Set 1 of 5 · Click any option below or jump to any step</span>
             </div>
           </div>
-          <button class="btn-secondary" style="font-size: 0.72rem;" onclick="App.handleLogout()">
-            Sign Out
-          </button>
+          <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+            <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.5rem 0.9rem; border-color: rgba(96, 165, 250, 0.35); color: #93C5FD;" onclick="Onboarding.finish()">
+              ⚡ Finish &amp; View AI Breakdown Now
+            </button>
+            <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.5rem 0.9rem;" onclick="App.handleLogout()">
+              Sign Out
+            </button>
+          </div>
         </div>
 
         <!-- Progress Bar -->
@@ -440,9 +445,9 @@
           <!-- Injected dynamically by Onboarding.renderStep() -->
         </div>
 
-        <div class="modal-footer" style="display: flex; justify-content: space-between;">
-          <button type="button" class="btn-secondary" id="ob-prev-btn" onclick="Onboarding.prevStep()">Previous</button>
-          <button type="button" class="btn-primary" id="ob-next-btn" onclick="Onboarding.nextStep()">Next Step →</button>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+          <button type="button" class="btn-secondary" id="ob-prev-btn" style="padding: 0.75rem 1.4rem; font-size: 0.95rem; font-weight: 600;" onclick="Onboarding.prevStep()">← Previous</button>
+          <button type="button" class="btn-primary" id="ob-next-btn" style="padding: 0.8rem 1.75rem; font-size: 1rem; font-weight: 700; border-radius: 10px;" onclick="Onboarding.nextStep()">Next Step →</button>
         </div>
       </div>
     </div>
@@ -736,9 +741,9 @@
 
   <!-- Modal: Student Profile Editor -->
   <div class="modal-overlay" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-profile">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width: 880px;">
       <div class="modal-header">
-        <h2 id="modal-title-profile">Edit Academic Stats</h2>
+        <h2 id="modal-title-profile">Quick Adjust Academic Stats &amp; AP Exams</h2>
         <button class="modal-close" onclick="App.closeAllModals()" aria-label="Close modal">&times;</button>
       </div>
 
@@ -1108,15 +1113,15 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts -->
-  <script src="js/auth.js?v=4.1"></script>
-  <script src="js/onboarding.js?v=4.1"></script>
-  <script src="js/profile.js?v=4.1"></script>
-  <script src="js/status.js?v=4.1"></script>
-  <script src="js/colleges.js?v=4.1"></script>
-  <script src="js/credits.js?v=4.1"></script>
-  <script src="js/roadmap.js?v=4.1"></script>
-  <script src="js/export.js?v=4.1"></script>
-  <script src="js/ai.js?v=4.1"></script>
-  <script src="js/app.js?v=4.1"></script>
+  <script src="js/auth.js?v=4.2"></script>
+  <script src="js/onboarding.js?v=4.2"></script>
+  <script src="js/profile.js?v=4.2"></script>
+  <script src="js/status.js?v=4.2"></script>
+  <script src="js/colleges.js?v=4.2"></script>
+  <script src="js/credits.js?v=4.2"></script>
+  <script src="js/roadmap.js?v=4.2"></script>
+  <script src="js/export.js?v=4.2"></script>
+  <script src="js/ai.js?v=4.2"></script>
+  <script src="js/app.js?v=4.2"></script>
 </body>
 </html>

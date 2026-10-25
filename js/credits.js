@@ -158,12 +158,44 @@ const CreditsEngine = {
         </div>
       </div>
 
+      <!-- 1-Click Quick-Add / Toggle AP Exams Bar -->
+      <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.9rem;">
+          <div>
+            <h3 style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF; margin: 0;">⚡ 1-Click AP Exam Quick-Toggle (${(profile.ap_exams || []).length} active)</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Tap any AP exam below to add/remove it and watch your college credits &amp; tuition savings update live!</span>
+          </div>
+          <button class="btn-secondary" onclick="App.openProfileModal()" style="font-size: 0.8rem;">
+            Open Full Profile Editor
+          </button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.65rem;">
+          ${this.AVAILABLE_EXAMS.map(ae => {
+            const ex = (profile.ap_exams || []).find(e => e.id === ae.id);
+            const active = !!ex;
+            const sc = ex ? (ex.status === 'planned' ? 0 : ex.score) : 5;
+            return `
+              <div class="ob-choice-card ${active ? 'selected' : ''}" style="padding: 0.75rem 0.9rem;" onclick="CreditsEngine.quickToggleAp('${ae.id}', '${ae.name.replace(/'/g, "\\'")}', event)">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
+                  <strong style="font-size: 0.88rem; color: #FFFFFF;">${ae.name}</strong>
+                  <span style="font-size: 0.72rem; font-weight: 800; color: ${active ? '#34D399' : 'var(--text-muted)'};">${active ? (sc === 0 ? 'Planned' : `Score ${sc}`) : '+ Tap'}</span>
+                </div>
+                ${active ? `
+                  <div style="display: flex; gap: 0.3rem; margin-top: 0.45rem;" onclick="event.stopPropagation();">
+                    ${[5, 4, 3, 0].map(s => `
+                      <button type="button" class="ob-score-pill ${sc === s ? 'active' : ''}" style="padding: 0.18rem 0.45rem; font-size: 0.7rem;" onclick="CreditsEngine.quickSetScore('${ae.id}', ${s})">${s === 0 ? 'Plan' : s}</button>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
       <!-- Completed Exams Equivalency Table -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1.1rem; font-weight: 700; color: #FFFFFF;">Completed Exam Equivalencies</h3>
-        <button class="btn-secondary" onclick="App.openProfileModal()" style="font-size: 0.78rem;">
-          + Add / Edit AP Scores
-        </button>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: #FFFFFF;">Completed Exam Equivalencies at ${college.short_name}</h3>
       </div>
 
       <div class="credit-table-container">
@@ -307,6 +339,30 @@ const CreditsEngine = {
       if (crEl) App.animateNumber(crEl, 0, totalCreditsEarned, 300);
       if (semEl) App.animateNumber(semEl, 0, parseFloat(semestersSaved) || 0, 300);
       if (tuiEl) App.animateNumber(tuiEl, 0, totalTuitionSaved, 400, "$");
+    }
+  },
+
+  quickToggleAp(id, name, ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    const profile = ProfileManager.get();
+    if (!profile.ap_exams) profile.ap_exams = [];
+    const idx = profile.ap_exams.findIndex(e => e.id === id);
+    if (idx > -1) {
+      profile.ap_exams.splice(idx, 1);
+    } else {
+      profile.ap_exams.push({ id, name, score: 5, status: "completed" });
+    }
+    ProfileManager.save(profile);
+  },
+
+  quickSetScore(id, scoreVal) {
+    const profile = ProfileManager.get();
+    if (!profile.ap_exams) return;
+    const ex = profile.ap_exams.find(e => e.id === id);
+    if (ex) {
+      ex.score = scoreVal === 0 ? 0 : scoreVal;
+      ex.status = scoreVal === 0 ? "planned" : "completed";
+      ProfileManager.save(profile);
     }
   }
 };

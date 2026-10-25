@@ -904,35 +904,44 @@ const App = {
     const currentExams = profile.ap_exams || [];
 
     container.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
-        ${currentExams.length === 0 ? `
-          <div style="font-size: 0.8rem; color: var(--text-dim); padding: 0.5rem; background: rgba(255,255,255,0.02); border-radius: 6px;">
-            No AP exams added. Select an exam below and click '+ Add Exam'.
-          </div>
-        ` : currentExams.map((exam, idx) => `
-          <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.82rem;">
-            <span><strong>${exam.name}</strong> (${exam.status === 'completed' ? `Score: ${exam.score}` : 'Planned'})</span>
-            <div style="display: flex; gap: 0.4rem; align-items: center;">
-              <select class="select-control" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; width: auto;" onchange="App.updateModalExamScore(${idx}, this.value)">
-                <option value="5" ${exam.score === 5 ? 'selected' : ''}>Score: 5</option>
-                <option value="4" ${exam.score === 4 ? 'selected' : ''}>Score: 4</option>
-                <option value="3" ${exam.score === 3 ? 'selected' : ''}>Score: 3</option>
-                <option value="0" ${exam.status === 'planned' ? 'selected' : ''}>Planned (Future)</option>
-              </select>
-              <button type="button" class="btn-secondary" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; color: #F87171;" onclick="App.removeModalExam(${idx})">✕</button>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.65rem; margin-top: 0.75rem;">
+        ${availableExams.map(ae => {
+          const idx = currentExams.findIndex(e => e.id === ae.id);
+          const exam = idx > -1 ? currentExams[idx] : null;
+          const isAdded = !!exam;
+          const curScore = exam ? (exam.status === 'planned' ? 0 : exam.score) : 5;
+          return `
+            <div class="ob-choice-card ${isAdded ? 'selected' : ''}" style="padding: 0.75rem 0.9rem;" onclick="App.toggleModalExamCard('${ae.id}', '${ae.name.replace(/'/g, "\\'")}', event)">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
+                <strong style="font-size: 0.88rem; color: #FFFFFF;">${ae.name}</strong>
+                <span style="font-size: 0.74rem; font-weight: 800; color: ${isAdded ? '#34D399' : 'var(--text-muted)'};">${isAdded ? '✓ Added' : '+ Tap'}</span>
+              </div>
+              ${isAdded ? `
+                <div style="display: flex; gap: 0.3rem; margin-top: 0.45rem;" onclick="event.stopPropagation();">
+                  ${[5, 4, 3, 0].map(sc => `
+                    <button type="button" class="ob-score-pill ${curScore === sc ? 'active' : ''}" style="padding: 0.2rem 0.45rem; font-size: 0.72rem;" onclick="App.updateModalExamScore(${idx}, ${sc})">${sc === 0 ? 'Planned' : sc}</button>
+                  `).join('')}
+                </div>
+              ` : ''}
             </div>
-          </div>
-        `).join('')}
-
-        <!-- Add new exam dropdown -->
-        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-          <select id="new-exam-select" class="select-control" style="font-size: 0.8rem;">
-            ${availableExams.map(ae => `<option value="${ae.id}|${ae.name}">${ae.name}</option>`).join('')}
-          </select>
-          <button type="button" class="btn-secondary" style="font-size: 0.8rem; white-space: nowrap;" onclick="App.addModalExam()">+ Add Exam</button>
-        </div>
+          `;
+        }).join('')}
       </div>
     `;
+  },
+
+  toggleModalExamCard(id, name, ev) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    const profile = ProfileManager.get();
+    if (!profile.ap_exams) profile.ap_exams = [];
+    const idx = profile.ap_exams.findIndex(e => e.id === id);
+    if (idx > -1) {
+      profile.ap_exams.splice(idx, 1);
+    } else {
+      profile.ap_exams.push({ id, name, score: 5, status: "completed" });
+    }
+    ProfileManager.save(profile);
+    this.renderModalApList();
   },
 
   updateModalExamScore(index, val) {

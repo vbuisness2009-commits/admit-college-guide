@@ -1701,26 +1701,168 @@
 
 /* Dedicated Full-Screen Onboarding Layout */
 .onboarding-screen-wrapper {
-  max-width: 720px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  max-width: 1080px;
+  margin: 1.5rem auto 3rem auto;
+  padding: 0 1.5rem;
 }
 
 .onboarding-screen-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(37, 99, 235, 0.12);
   overflow: hidden;
 }
 
 .onboarding-screen-header {
-  padding: 1.5rem;
+  padding: 1.5rem 2.25rem;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+#view-onboarding .modal-body {
+  padding: 2rem 2.25rem;
+}
+
+#view-onboarding .modal-footer {
+  padding: 1.25rem 2.25rem;
+}
+
+#view-onboarding .step-title-group h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+#view-onboarding .step-title-group p {
+  font-size: 0.96rem;
+  color: #94A3B8;
+  margin-top: 0.35rem;
+}
+
+#view-onboarding .input-control,
+#view-onboarding .select-control {
+  font-size: 1rem;
+  padding: 0.8rem 1rem;
+  min-height: 48px;
+  border-radius: 10px;
+}
+
+#view-onboarding .form-group label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #E2E8F0;
+  margin-bottom: 0.45rem;
+}
+
+/* Interactive 1-Click Survey Cards & Grids */
+.ob-step-nav {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 768px) {
+  .ob-step-nav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ob-step-pill {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.ob-step-pill:hover {
+  border-color: rgba(96, 165, 250, 0.45);
+  color: #FFFFFF;
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.ob-step-pill.active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.24), rgba(79, 70, 229, 0.18));
+  border-color: #3B82F6;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+}
+
+.ob-step-pill.completed {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #D1FAE5;
+}
+
+.ob-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.85rem;
+}
+
+.ob-choice-card {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-main);
+  transition: all 0.16s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ob-choice-card:hover {
+  border-color: rgba(96, 165, 250, 0.55);
+  background: rgba(23, 35, 58, 0.9);
+  transform: translateY(-1px);
+}
+
+.ob-choice-card.selected {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(30, 58, 138, 0.28) 100%);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4), 0 8px 22px rgba(37, 99, 235, 0.2);
+}
+
+.ob-score-pill {
+  padding: 0.32rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ob-score-pill:hover {
+  border-color: #60A5FA;
+  color: #FFFFFF;
+}
+
+.ob-score-pill.active {
+  background: #2563EB;
+  border-color: #60A5FA;
+  color: #FFFFFF;
 }
 
 /* Counselor & Parent Advisory Dossier & Print Architecture */
