@@ -17,6 +17,8 @@ const App = {
     this.setupEventListeners();
     this.updateAppView();
     this.initGoogleIdentityServices();
+    this.initParticleCanvas();
+    this.setupCardTilt();
   },
 
   setupEventListeners() {
@@ -121,6 +123,169 @@ const App = {
         nextBtn.style.borderColor = "";
       }
     }
+
+    this.animateSlideVisuals(this.introCurrentSlide);
+  },
+
+  particleAnimFrame: null,
+
+  initParticleCanvas() {
+    if (typeof window === "undefined" || !document.getElementById) return;
+    const canvas = document.getElementById("intro-particles-canvas");
+    if (!canvas || !canvas.getContext) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = (canvas.width = canvas.offsetWidth || window.innerWidth || 800);
+    let height = (canvas.height = canvas.offsetHeight || 500);
+
+    const onResize = () => {
+      width = canvas.width = canvas.offsetWidth || window.innerWidth || 800;
+      height = canvas.height = canvas.offsetHeight || 500;
+    };
+    window.addEventListener("resize", onResize);
+
+    const particleCount = Math.min(42, Math.floor(width / 26));
+    const particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 1.8 + 0.8,
+        color: i % 3 === 0 ? "rgba(96, 165, 250, " : (i % 3 === 1 ? "rgba(168, 85, 247, " : "rgba(52, 211, 153, ")
+      });
+    }
+
+    let mouseX = -9999;
+    let mouseY = -9999;
+    if (canvas.parentElement) {
+      canvas.parentElement.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+      });
+      canvas.parentElement.addEventListener("mouseleave", () => {
+        mouseX = -9999;
+        mouseY = -9999;
+      });
+    }
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + "0.65)";
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(147, 197, 253, ${0.15 * (1 - dist / 100)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+
+        const dmx = p.x - mouseX;
+        const dmy = p.y - mouseY;
+        const mouseDist = Math.sqrt(dmx * dmx + dmy * dmy);
+        if (mouseDist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouseX, mouseY);
+          ctx.strokeStyle = `rgba(96, 165, 250, ${0.35 * (1 - mouseDist / 120)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+
+      this.particleAnimFrame = requestAnimationFrame(render);
+    };
+
+    if (this.particleAnimFrame) cancelAnimationFrame(this.particleAnimFrame);
+    render();
+  },
+
+  animateSlideVisuals(slideIndex) {
+    if (typeof document === "undefined") return;
+
+    if (slideIndex === 0) {
+      const el = document.getElementById("intro-scramble-chance");
+      if (el) {
+        let iterations = 0;
+        const target = 74.3;
+        const interval = setInterval(() => {
+          iterations++;
+          const randomVal = (Math.random() * 85 + 10).toFixed(1);
+          el.textContent = randomVal + "%";
+          if (iterations >= 8) {
+            clearInterval(interval);
+            el.textContent = target.toFixed(1) + "%";
+          }
+        }, 55);
+      }
+    } else if (slideIndex === 3) {
+      const el = document.getElementById("tuition-count-display");
+      if (el) {
+        const end = 7275;
+        const duration = 1000;
+        const startTime = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
+        const step = (now) => {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(easeOut * end);
+          el.textContent = "$" + current.toLocaleString() + " Saved";
+          if (progress < 1 && typeof requestAnimationFrame !== "undefined") {
+            requestAnimationFrame(step);
+          }
+        };
+        if (typeof requestAnimationFrame !== "undefined") {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = "$7,275 Saved";
+        }
+      }
+    }
+  },
+
+  setupCardTilt() {
+    if (typeof document === "undefined" || !document.querySelectorAll) return;
+    const cards = document.querySelectorAll(".intro-visual-card");
+    cards.forEach((card) => {
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -6;
+        const rotateY = ((x - centerX) / centerX) * 6;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
+      });
+    });
   },
 
   nextIntroSlide() {
