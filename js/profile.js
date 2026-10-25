@@ -1,7 +1,21 @@
 /**
- * Profile State Management for Admit
- * Syncs seamlessly with the active student account.
+ * Profile State Management for ShipMates
+ * Syncs with the active student account.
  */
+
+const VALID_COLLEGE_IDS = new Set([
+  "ut-austin", "tamu", "uh", "rice", "uc-berkeley", "ucla", "stanford",
+  "mit", "harvard", "umich", "uf", "gatech", "uiuc", "purdue", "uw",
+  "unc", "uva", "nyu", "cmu", "osu"
+]);
+
+function normalizeSavedColleges(list) {
+  if (!Array.isArray(list)) return ["ut-austin", "tamu", "uf"];
+  const mapped = list
+    .map(id => (id === "gt" || id === "uga") ? "gatech" : id)
+    .filter(id => VALID_COLLEGE_IDS.has(id));
+  return Array.from(new Set(mapped));
+}
 
 const ProfileManager = {
   getBlankProfile() {
@@ -47,6 +61,7 @@ const ProfileManager = {
   get() {
     const user = Auth.getCurrentUser();
     if (user && user.profile) {
+      user.profile.saved_colleges = normalizeSavedColleges(user.profile.saved_colleges);
       return user.profile;
     }
     return this.getBlankProfile();
@@ -55,6 +70,7 @@ const ProfileManager = {
   save(updatedProfile) {
     const current = this.get();
     const merged = { ...current, ...updatedProfile };
+    merged.saved_colleges = normalizeSavedColleges(merged.saved_colleges);
 
     if (merged.sat_rw !== null && merged.sat_m !== null && merged.sat_rw !== "" && merged.sat_m !== "") {
       merged.sat_total = parseInt(merged.sat_rw, 10) + parseInt(merged.sat_m, 10);

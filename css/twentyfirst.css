@@ -1,6 +1,6 @@
 /**
- * 21st.dev Component Registry Package Integration
- * Retrieved via 21st.dev MCP API:
+ * UIComponent Registry Package Integration
+ * Retrieved via UI:
  * - [833] & [10380] Shimmer Button (dillionverma / Shatlyk1011)
  * - [774] Stepper (originui/stepper)
  * - [4237] & [4245] Statistics Cards (sean0205/statistics-card-2 & 10)
@@ -43,7 +43,7 @@
 }
 
 /* ============================================================================
-   1. 21st.dev [833] & [10380] Shimmer Button Package
+   1. UI& [10380] Shimmer Button Package
    ============================================================================ */
 .btn-primary,
 .tf-shimmer-btn {
@@ -124,7 +124,7 @@
 }
 
 /* ============================================================================
-   2. 21st.dev [4517] & [9758] Bento Grid & Frosted Spotlight Cards
+   2. UI& [9758] Bento Grid & Frosted Spotlight Cards
    ============================================================================ */
 .card,
 .tf-bento-card,
@@ -197,7 +197,7 @@
 }
 
 /* ============================================================================
-   3. 21st.dev [4237] & [4245] Statistics Card Package (Left-Side KPI Cards)
+   3. UI& [4245] Statistics Card Package (Left-Side KPI Cards)
    ============================================================================ */
 .tf-stat-card {
   position: relative;
@@ -253,7 +253,7 @@
 }
 
 /* ============================================================================
-   4. 21st.dev [23549] Specular Progress Bar Package (College Acceptance Bars)
+   4. UISpecular Progress Bar Package (College Acceptance Bars)
    ============================================================================ */
 .tf-progress-card {
   position: relative;
@@ -280,7 +280,7 @@
     0 14px 32px -6px rgba(37, 99, 235, 0.26);
 }
 
-/* Outer recessed well from 21st.dev [23549] ddoemonn/progress-bar */
+/* Outer recessed well from UIddoemonn/progress-bar */
 .tf-progress-shell {
   width: 100%;
   height: 28px;
@@ -316,7 +316,7 @@
   z-index: 1;
 }
 
-/* Inner specular fill bar from 21st.dev [23549] */
+/* Inner specular fill bar from UI*/
 .tf-progress-fill {
   height: 100%;
   border-radius: 999px;
@@ -335,7 +335,7 @@
 }
 
 /* ============================================================================
-   5. 21st.dev [774] OriginUI Stepper Package (5-Step Stats Survey Navigation)
+   5. UIOriginUI Stepper Package (5-Step Stats Survey Navigation)
    ============================================================================ */
 .ob-step-nav {
   display: flex;
@@ -373,7 +373,7 @@
   border-color: rgba(52, 211, 153, 0.38) !important;
 }
 
-/* 21st.dev Interactive Choice Cards in Survey & Modals */
+/* UIInteractive Choice Cards in Survey & Modals */
 .ob-choice-card {
   position: relative;
   overflow: hidden;
@@ -418,7 +418,7 @@
 }
 
 /* ============================================================================
-   6. 21st.dev [1603] Supabase-Inspired Sidebar & [28186] Joyco Chat Polish
+   6. UISupabase-Inspired Sidebar & [28186] Joyco Chat Polish
    ============================================================================ */
 #sidebar {
   background: linear-gradient(
@@ -458,7 +458,7 @@
     0 6px 16px -4px rgba(37, 99, 235, 0.35);
 }
 
-/* Collapsed rail overrides for 21st.dev [1603] Sidebar */
+/* Collapsed rail overrides for UISidebar */
 #sidebar.collapsed .nav-links {
   padding: 14px 0 !important;
   align-items: center !important;
@@ -506,7 +506,7 @@
   border-radius: 12px !important;
 }
 
-/* 21st.dev [28186] Joyco Chat Input Group & Message Bubbles */
+/* UIJoyco Chat Input Group & Message Bubbles */
 .tf-chat-viewport {
   background: rgba(7, 12, 24, 0.85) !important;
   border: 1px solid rgba(148, 163, 184, 0.16) !important;
@@ -550,7 +550,7 @@
   outline: none !important;
 }
 
-/* 21st.dev [19152] DeltaComponents Auth Status Badge */
+/* UIDeltaComponents Auth Status Badge */
 .tf-status-badge {
   display: inline-flex;
   align-items: center;

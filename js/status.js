@@ -114,7 +114,8 @@ const StatusEngine = {
       return {
         ...sch,
         isQualified,
-        missing
+        missing,
+        gapText: missing.join(" · ")
       };
     });
   },
@@ -224,7 +225,7 @@ const StatusEngine = {
             ${isSenior ? 'View Priority Deadlines →' : 'Open My 4-Year High School Guide →'}
           </button>
           <button class="btn-primary" style="font-size: 0.78rem; padding: 0.45rem 0.85rem;" onclick="App.switchTab('ai')">
-            Ask AI Scholarship Advisor →
+            Open Scholarship Advisor →
           </button>
         </div>
       </div>
@@ -239,7 +240,7 @@ const StatusEngine = {
             </div>
             <div style="display: flex; gap: 0.4rem; align-items: center;">
               <button class="btn-primary" onclick="App.openExportModal()" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;">
-                Export Dossier
+                Export Summary
               </button>
               <button class="btn-secondary" onclick="App.openProfileModal()" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;">
                 Edit

@@ -71,7 +71,7 @@ body {
   flex-direction: column;
 }
 
-/* Accessible High-Contrast Focus Indicators (WCAG 2.4.7 + Anti-Slop Rule 10) */
+/* Focus Indicators */
 :focus-visible {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
@@ -546,7 +546,7 @@ select:focus-visible,
     border-radius: 0;
     border: none;
   }
-  /* Mobile touch target minimum 44x44px (Anti-Slop Rule 8) */
+  /* Mobile touch target sizing */
   .btn-primary,
   .btn-secondary,
   .tab-btn,
@@ -570,7 +570,7 @@ select:focus-visible,
   }
 }
 
-/* Accessibility: Honor User Motion Preferences (Anti-Slop Rule 3 & 10) */
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

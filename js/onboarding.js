@@ -1,6 +1,6 @@
 /**
- * Interactive Onboarding Wizard for Admit
- * Guides new students through a clean 5-step stats input experience.
+ * Interactive Onboarding Wizard for ShipMates
+ * Guides new students through a 5-step stats input experience.
  */
 
 const Onboarding = {
@@ -65,12 +65,12 @@ const Onboarding = {
         science_years: 4,
         has_endorsement: true,
         fl_prep_complete: true,
-        saved_colleges: ["ut-austin", "tamu", "uf", "uga", "purdue"],
+        saved_colleges: ["ut-austin", "tamu", "uf", "gatech", "purdue"],
         college_statuses: {
           "ut-austin": "working",
           "tamu": "working",
           "uf": "working",
-          "uga": "working",
+          "gatech": "working",
           "purdue": "working"
         },
         ap_exams: [
@@ -368,7 +368,7 @@ const Onboarding = {
             <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
               <div class="form-group">
                 <label for="ob-name">Your Name</label>
-                <input type="text" id="ob-name" class="input-control" value="${this.wizardData.name || ''}" placeholder="e.g. Alex Rivera" required>
+                <input type="text" id="ob-name" class="input-control" value="${this.wizardData.name || ''}" placeholder="e.g. Jordan Taylor" required>
               </div>
 
               <div class="form-group">
@@ -1511,16 +1511,16 @@ const Onboarding = {
     if (bundleType === "tx") {
       ids = all.filter(c => c.state === "TX").map(c => c.id);
     } else if (bundleType === "public") {
-      ids = ["ut-austin", "tamu", "uf", "uga", "umich", "uc-berkeley", "ucla", "unc", "uva", "uw"];
+      ids = ["ut-austin", "tamu", "uf", "gatech", "umich", "uc-berkeley", "ucla", "unc", "uva", "uw"];
     } else if (bundleType === "stem") {
-      ids = ["ut-austin", "gt", "purdue", "uiuc", "uc-berkeley", "umich", "mit", "cmu"];
+      ids = ["ut-austin", "gatech", "purdue", "uiuc", "uc-berkeley", "umich", "mit", "cmu"];
     } else if (bundleType === "smart") {
       const sat = (this.wizardData.sat_rw && this.wizardData.sat_m) ? (this.wizardData.sat_rw + this.wizardData.sat_m) : 1410;
       ids = all
         .filter(c => sat >= c.sat_total_25 - 70 && sat <= c.sat_total_75 + 100)
         .slice(0, 6)
         .map(c => c.id);
-      if (ids.length < 3) ids = ["ut-austin", "tamu", "uf", "purdue", "uga"];
+      if (ids.length < 3) ids = ["ut-austin", "tamu", "uf", "purdue", "gatech"];
     }
     const set = new Set([...(this.wizardData.saved_colleges || []), ...ids]);
     this.wizardData.saved_colleges = Array.from(set);
@@ -1553,6 +1553,6 @@ const Onboarding = {
     App.activeTab = "ai";
     App.updateAppView();
     App.switchTab("ai");
-    App.showToast("✨ Survey analyzed! Here is your custom AI Breakdown & Suggestions.", "success");
+    App.showToast("Profile updated! Here is your updated breakdown and scholarship plan.", "success");
   }
 };

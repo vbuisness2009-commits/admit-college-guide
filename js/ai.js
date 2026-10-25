@@ -1,6 +1,6 @@
 /**
- * Admit AI: Comprehensive Diagnostic Engine & Interactive Admissions Advisor
- * Performs deterministic multi-vector analysis across student stats, statutory admission laws,
+ * ShipMates: Profile Checkup & Admissions Advisor
+ * Evaluates student stats against state admission rules,
  * College Scorecard percentile bands, and university AP credit policies.
  */
 
@@ -112,7 +112,7 @@ const AdmitAI = {
         insight: "Top CS programs look for discrete math/calculus rigor and verifiable software or algorithm projects outside the classroom."
       },
       "Business, Finance & Economics": {
-        recommendedAps: ["macro", "micro", "stats", "calc_ab"],
+        recommendedAps: ["macro_econ", "micro_econ", "stats", "calc_ab"],
         apNames: "AP Macroeconomics, AP Microeconomics, AP Statistics, and AP Calculus",
         opportunities: "DECA, FBLA, Wharton Global High School Investment Competition, Diamond Challenge entrepreneurship pitch, or founding a local micro-business.",
         insight: "Flagship business schools (like McCombs, Ross, and Warrington) value quantitative calculus/statistics preparation paired with leadership impact."
@@ -124,7 +124,7 @@ const AdmitAI = {
         insight: "Pre-med tracks require strong lab science foundations; earning AP credit in Statistics and Psychology frees up schedule space for Organic Chemistry."
       },
       "Humanities, Law & Social Sciences": {
-        recommendedAps: ["eng_lang", "ushist", "gov", "eng_lit"],
+        recommendedAps: ["eng_lang", "ushist", "us_gov", "eng_lit"],
         apNames: "AP English Language, AP U.S. History, and AP U.S. Government",
         opportunities: "Mock Trial, Speech & Debate (NSDA), Model UN, Scholastic Writing Awards, Senate Page programs, or publishing in The Concord Review.",
         insight: "Selective liberal arts and pre-law programs prioritize analytical writing awards, debate leadership, and civic engagement."
@@ -193,9 +193,9 @@ const AdmitAI = {
           ? `You Qualify for ${scholarshipsUnlocked.length} Automatic Merit Programs`
           : `Unlock Automatic GPA & SAT Merit Scholarship Tiers`,
         body: scholarshipsUnlocked.length > 0
-          ? `Your stats currently unlock **${scholarshipsUnlocked.map(s => `${s.name} (${s.award})`).slice(0, 2).join(" & ")}**. ${scholarshipsStretch.length > 0 ? `Next stretch target: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText}.` : 'Submit applications before priority merit deadlines!'}`
+          ? `Your stats currently unlock **${scholarshipsUnlocked.map(s => `${s.name} (${s.award})`).slice(0, 2).join(" & ")}**. ${scholarshipsStretch.length > 0 ? `Next stretch target: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText || (scholarshipsStretch[0].missing || []).join(" · ")}.` : 'Submit applications before priority merit deadlines!'}`
           : scholarshipsStretch.length > 0
-            ? `Closest merit tier: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText}.`
+            ? `Closest merit tier: **${scholarshipsStretch[0].name} (${scholarshipsStretch[0].award})** — ${scholarshipsStretch[0].gapText || (scholarshipsStretch[0].missing || []).join(" · ")}.`
             : `Log both GPA and SAT/ACT scores in your survey to unlock automatic institutional scholarship tiers.`,
         actionLabel: `View All Scholarships & Cutoffs →`,
         actionOnClick: `App.switchTab('status')`
@@ -324,7 +324,7 @@ const AdmitAI = {
 
     // 3. PSAT / National Merit Scholarship Bonus at this college ($/yr)
     let psatMeritPerYr = 0;
-    const nmsSponsorIds = ["tamu", "uf", "purdue", "ut-austin", "uga", "gt"];
+    const nmsSponsorIds = ["tamu", "uf", "purdue", "ut-austin", "gatech", "uga", "gt"];
     if (nmStatus === "semifinalist" || psat >= 1470) {
       psatMeritPerYr = nmsSponsorIds.includes(college.id) ? 10500 : 2500;
     } else if (nmStatus === "commended" || psat >= 1400) {
@@ -340,6 +340,7 @@ const AdmitAI = {
       "ut-austin": "Texas Exes Forty Acres & Presidential Achievement Awards",
       "tamu": "President's Endowed, Brown Foundation & National Merit Package",
       "uf": "UF Presidential, Lombardi & Bright Futures Honors Package",
+      "gatech": "Stamps President's Scholars & Provost Leadership Award",
       "uga": "UGA Charter, Foundation Fellowship & Zell Miller Merit",
       "purdue": "Purdue Trustees, Presidential & Engineering Leadership Grant",
       "gt": "Stamps President's Scholars & Provost Leadership Award",
@@ -623,9 +624,9 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
         <div>
           <div style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #60A5FA; background: rgba(37, 99, 235, 0.14); border: 1px solid rgba(59, 130, 246, 0.32); padding: 0.28rem 0.7rem; border-radius: 999px; margin-bottom: 0.45rem;">
-            ✨ AI Survey Evaluation · ${audit.major} · ${gpaUw} / ${gpaW} GPA · ${eff.score ? eff.label : 'Test-Optional'} · ${audit.psatScore ? `${audit.psatScore} PSAT` : 'PSAT Ready'} · ${pctText}
+            📊 Profile Evaluation · ${audit.major} · ${gpaUw} / ${gpaW} GPA · ${eff.score ? eff.label : 'Test-Optional'} · ${audit.psatScore ? `${audit.psatScore} PSAT` : 'PSAT Ready'} · ${pctText}
           </div>
-          <h2>${userName}'s AI Stats Breakdown &amp; Personalized Suggestions</h2>
+          <h2>${userName}'s Stats Breakdown &amp; Personalized Suggestions</h2>
           <p>See how much scholarship money your GPA/SAT, PSAT, Extracurriculars, and Awards can earn you at every selected college — and mark each college as <strong>Working On It</strong> or <strong>Submitted</strong>.</p>
         </div>
         <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
@@ -639,10 +640,10 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
       </div>
     </div>
 
-    <!-- MAIN 2-COLUMN VISUAL HUB: LEFT SIDE (User Scholarship, EC/Award Earnings, App Tracker) | RIGHT SIDE (College Acceptance & Scholarship Bars) -->
+    <!-- MAIN 2-COLUMN VISUAL HUB: LEFT SIDE (User Scholarship, EC/Award Earnings, App Tracker) | RIGHT SIDE (College Standing & Scholarship Bars) -->
     <div class="ai-layout-grid" style="display: grid; grid-template-columns: 345px 1fr; gap: 1.35rem; align-items: start; margin-bottom: 1.6rem;">
       
-      <!-- LEFT SIDE COLUMN: 21st.dev [4237] User-Focused Scholarship & EC Earnings Cards -->
+      <!-- LEFT SIDE COLUMN: User-Focused Scholarship & EC Earnings Cards -->
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         
         <!-- 1. __ Scholarships & Total 4-Yr Package Potential Card -->
@@ -759,15 +760,15 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
       </div>
 
-      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as Acceptance Chance + Scholarship Dollar Bars -->
+      <!-- RIGHT SIDE MAIN COLUMN: Selected Colleges Shown as Admission Standing + Scholarship Dollar Bars -->
       <div class="card tf-bento-card" style="padding: 1.55rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
           <div>
             <h3 style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; margin: 0;">
-              🏛️ Your Selected Colleges — AI Acceptance Chance Bars &amp; Scholarship Value
+              🏛️ Your Selected Colleges — Admission Standing &amp; Scholarship Value
             </h3>
             <p style="font-size: 0.86rem; color: var(--text-muted); margin-top: 0.25rem;">
-              Every selected college shows your AI acceptance probability, how much scholarship money your <strong>GPA/SAT, ECs, Awards &amp; PSAT</strong> can earn you there, and lets you mark it as <strong>Working On It</strong> or <strong>Submitted</strong>.
+              Every selected college shows your admission match standing, how much scholarship money your <strong>GPA/SAT, ECs, Awards &amp; PSAT</strong> can earn you there, and lets you mark it as <strong>Working On It</strong> or <strong>Submitted</strong>.
             </p>
           </div>
           <button type="button" class="btn-secondary" style="font-size: 0.82rem; padding: 0.48rem 0.95rem;" onclick="Onboarding.open(); Onboarding.goToStep(5);">
@@ -791,7 +792,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           </span>
         </div>
 
-        <!-- College Acceptance Chance Horizontal Bars List (21st.dev [23549] Specular Progress Bar Package) -->
+        <!-- College Admission Standing Horizontal Bars List -->
         <div id="ai-college-bars-list" style="display: flex; flex-direction: column; gap: 1.1rem;">
           ${audit.evaluatedColleges.map(item => `
             <div class="tf-progress-card">
@@ -816,12 +817,12 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
                   <div style="display: flex; align-items: baseline; gap: 0.3rem;">
                     <span style="font-size: 1.4rem; font-weight: 900; color: ${item.badgeColor};">${item.chancePct}%</span>
-                    <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">AI Chance</span>
+                    <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Match Score</span>
                   </div>
                 </div>
               </div>
 
-              <!-- 21st.dev [23549] Recessed Specular Progress Bar -->
+              <!-- Specular Progress Bar -->
               <div class="tf-progress-shell" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${item.chancePct}">
                 <div class="tf-progress-fill" style="width: ${item.chancePct}%; background: ${item.barGradient};">
                   <span style="font-size: 0.74rem; font-weight: 900; color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,0.65);">${item.chancePct}%</span>
@@ -883,14 +884,14 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
 
     </div>
 
-    <!-- CLEAN 2-COLUMN BOTTOM SECTION: AI Personalized Suggestions | Quick AI Advisor Chat -->
+    <!-- CLEAN 2-COLUMN BOTTOM SECTION: Personalized Suggestions | Quick Advisor Chat -->
     <div class="ai-layout-grid" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.35rem; align-items: start;">
       
-      <!-- AI Personalized Suggestions & Opportunities Grid -->
+      <!-- Personalized Suggestions & Opportunities Grid -->
       <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
         <div style="margin-bottom: 1rem;">
           <h3 style="font-size: 1.12rem; color: #FFFFFF; font-weight: 800;">
-            🚀 AI Personalized Suggestions, Opportunities & Next Steps
+            🚀 Personalized Suggestions, Opportunities &amp; Next Steps
           </h3>
           <span style="font-size: 0.8rem; color: var(--text-muted);">
             Tailored to your <strong>${audit.major}</strong> major, activities, and priority goal
@@ -918,14 +919,14 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         </div>
       </div>
 
-      <!-- Interactive AI Advisor Chat Interface (21st.dev [28186] Joyco Composable Chat Package) -->
+      <!-- Interactive Advisor Chat Interface -->
       <div class="card tf-bento-card" style="display: flex; flex-direction: column; height: 485px; padding: 1.25rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.65rem; margin-bottom: 0.65rem;">
           <div>
             <h3 style="font-size: 1.04rem; font-weight: 800; color: #FFFFFF;">
-              💬 Ask Your AI Admissions Advisor
+              💬 Ask Your Admissions Advisor
             </h3>
-            <span style="font-size: 0.74rem; color: var(--text-muted);">Ask anything about your bars, scholarships, or APs</span>
+            <span style="font-size: 0.74rem; color: var(--text-muted);">Ask anything about your standing, scholarships, or APs</span>
           </div>
           <button class="btn-secondary" style="font-size: 0.7rem; padding: 0.22rem 0.55rem;" onclick="AdmitAI.clearChat()">
             Clear
@@ -940,21 +941,21 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
             "What scholarships do I unlock?"
           </button>
           <button class="pill-btn" style="font-size: 0.72rem; padding: 0.24rem 0.55rem;" onclick="AdmitAI.askQuickQuestion('What is my single biggest fix to qualify for more schools?')">
-            "How do I boost my chances?"
+            "How do I boost my standing?"
           </button>
         </div>
 
         <div id="ai-chat-messages" class="tf-chat-viewport" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem;">
           <div style="background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: 14px; padding: 0.85rem; font-size: 0.83rem; line-height: 1.48; color: var(--text-main);">
-            <strong style="color: #60A5FA; display: block; margin-bottom: 0.2rem;">ShipMates AI Advisor:</strong>
-            Hello ${userName}! I've calculated your acceptance chance bars for <strong>${audit.evaluatedColleges.length} universities</strong>. Ask me how to boost your acceptance percentage or unlock more scholarships!
+            <strong style="color: #60A5FA; display: block; margin-bottom: 0.2rem;">ShipMates Advisor:</strong>
+            Hello ${userName}! I've evaluated your admission standing and scholarship value for <strong>${audit.evaluatedColleges.length} universities</strong>. Ask me how to strengthen your match standing or unlock more scholarships!
           </div>
         </div>
 
         <form id="ai-chat-form" class="tf-chat-input-group" onsubmit="event.preventDefault(); AdmitAI.handleChatSubmit();">
-          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask how to boost your acceptance bar..." style="font-size: 0.85rem;" autocomplete="off" required>
+          <input type="text" id="ai-chat-input" class="input-control" placeholder="Ask about your colleges, scholarships, or AP credits..." style="font-size: 0.85rem;" autocomplete="off" required>
           <button type="submit" class="btn-primary tf-shimmer-btn" style="padding: 0.48rem 1rem; font-size: 0.82rem; border-radius: 999px; white-space: nowrap;">
-            Ask AI ↑
+            Ask ↑
           </button>
         </form>
       </div>
@@ -1075,7 +1076,7 @@ AdmitAI.postUserMessage = function(text) {
     .replace(/\n\n/g, '<div style="margin-bottom: 0.6rem;"></div>');
 
   botBubble.innerHTML = `
-    <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">ShipMates AI Advisor:</strong>
+    <strong style="color: #60A5FA; display: block; margin-bottom: 0.35rem;">ShipMates Advisor:</strong>
     <div>${formattedHtml}</div>
   `;
 
@@ -1090,8 +1091,10 @@ AdmitAI.clearChat = function() {
   const userName = user ? user.name.split(" ")[0] : "Student";
   container.innerHTML = `
     <div style="background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.84rem; line-height: 1.45; color: var(--text-main);">
-      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">ShipMates AI Advisor:</strong>
+      <strong style="color: #60A5FA; display: block; margin-bottom: 0.25rem;">ShipMates Advisor:</strong>
       Chat cleared. Ask me any question about your statutory admission standing, score percentiles, or AP credit conversions.
     </div>
   `;
 };
+
+window.CheckupEngine = AdmitAI;

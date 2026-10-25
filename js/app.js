@@ -1,7 +1,7 @@
 /**
- * Main Application Orchestrator for Admit
+ * Main Application Orchestrator for ShipMates
  * Coordinates landing page authentication, first-time student onboarding,
- * dashboard tab routing, and reactive profile state updates.
+ * dashboard tab routing, and profile state updates.
  */
 
 const App = {
@@ -75,8 +75,8 @@ const App = {
     const promptBanner = document.getElementById("landing-auth-prompt");
     if (promptBanner) {
       promptBanner.innerHTML = this.selectedTrack === "hs"
-        ? "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second High School Stats Survey so ShipMates can generate your custom 4-Year Guide &amp; Scholarship Targets."
-        : "<strong>✨ Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second Academic Stats Survey so ShipMates can generate your personalized Scholarship, Auto-Admit &amp; College Breakdown.";
+        ? "<strong>Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second High School Stats Survey to build your custom 4-Year Guide &amp; Scholarship Targets."
+        : "<strong>Step 1 of 2: Create Your Free Account</strong><br>Once registered, you'll take our 60-second Academic Stats Survey to generate your personalized Scholarship, Auto-Admit &amp; College Breakdown.";
       promptBanner.style.display = "block";
     }
     const cardAnchor = document.getElementById("landing-auth-card-anchor");
@@ -89,7 +89,7 @@ const App = {
     if (nameInput && nameInput.focus) {
       setTimeout(() => nameInput.focus(), 200);
     }
-    this.showToast("Create your free account to enter your stats & unlock your AI breakdown!", "info");
+    this.showToast("Create a free account to enter your stats and view your breakdown.", "info");
   },
 
   continueAsGuest(mode = "senior") {
@@ -243,6 +243,27 @@ const App = {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         this.closeAllModals();
+        const searchDropdown = document.getElementById("search-results");
+        if (searchDropdown) searchDropdown.classList.add("hidden");
+        const userMenu = document.getElementById("user-dropdown-menu");
+        if (userMenu) userMenu.style.display = "none";
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      const searchDropdown = document.getElementById("search-results");
+      if (searchDropdown && !searchDropdown.classList.contains("hidden")) {
+        const searchContainer = e.target.closest && e.target.closest(".search-container");
+        if (!searchContainer) {
+          searchDropdown.classList.add("hidden");
+        }
+      }
+      const userMenu = document.getElementById("user-dropdown-menu");
+      if (userMenu && userMenu.style.display === "block") {
+        const userWidget = e.target.closest && e.target.closest("#header-user-widget");
+        if (!userWidget) {
+          userMenu.style.display = "none";
+        }
       }
     });
 
@@ -450,10 +471,6 @@ const App = {
   },
 
   handleGoogleButtonClick() {
-    if (typeof window !== "undefined" && window.google && window.google.accounts && window.google.accounts.oauth2) {
-      this.launchGoogleOAuthPopup();
-      return;
-    }
     this.openGoogleAuthModal();
   },
 

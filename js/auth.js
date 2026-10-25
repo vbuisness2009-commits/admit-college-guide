@@ -1,6 +1,6 @@
 /**
- * Authentication & Account Management for Admit
- * Provides secure client-side user accounts, registration, credential validation,
+ * Authentication & Account Management for ShipMates
+ * Client-side user accounts, registration, credential validation,
  * and persistent session state.
  */
 
@@ -173,12 +173,12 @@ const Auth = {
     };
 
     const users = this.getUsers();
-    let guestUser = users.find(u => u.email === "guest@admitai.org");
+    let guestUser = users.find(u => u.email === "guest@shipmates.app" || u.email === "guest@admitai.org");
     if (!guestUser) {
       guestUser = {
         id: "usr_guest_" + Date.now(),
         name: isHs ? "Guest Student (10th Grade)" : "Guest Student (Senior)",
-        email: "guest@admitai.org",
+        email: "guest@shipmates.app",
         password: "guest_session_token",
         provider: "guest",
         created_at: new Date().toISOString(),
