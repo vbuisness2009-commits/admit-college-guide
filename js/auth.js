@@ -18,8 +18,8 @@ window.escapeHTML = escapeHTML;
 const Auth = {
   USERS_KEY: "admit_registered_users_v2",
   SESSION_KEY: "admit_active_session_v2",
-  GOOGLE_CLIENT_ID_KEY: "admit_google_client_id_v2",
-  DEFAULT_GOOGLE_CLIENT_ID: "566176172856-obadi71f69sju9v9q0gjvhov2o12a3ah.apps.googleusercontent.com",
+  GOOGLE_CLIENT_ID_KEY: "admit_google_client_id_v3",
+  DEFAULT_GOOGLE_CLIENT_ID: "566176172856-bch2p9i6rj5jq5ovfm23b6dp8e3lnd3j.apps.googleusercontent.com",
 
   getGoogleClientId() {
     try {
