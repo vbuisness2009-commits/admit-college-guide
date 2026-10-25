@@ -1,6 +1,3 @@
+.vercel
 .DS_Store
-archive/
-node_modules/
-.env
-.deslop/
-.vercel/
+node_modules
