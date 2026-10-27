@@ -33,8 +33,6 @@
 
   <!-- Splash Screen (Prime Prep Blueprint) -->
   <div id="splash-screen">
-    <div class="splash-glow-ring"></div>
-    <div class="splash-particles" id="splash-particles"></div>
     <div class="splash-content">
       <div class="splash-logo-mark" aria-label="AdmitAI Logo">
         <svg class="admit-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -92,11 +90,7 @@
 
     <!-- Main Landing & Authentication View -->
     <section id="auth-stage" class="auth-stage-container">
-      <div class="auth-bg">
-        <div class="auth-bg-orb auth-orb-1"></div>
-        <div class="auth-bg-orb auth-orb-2"></div>
-        <div class="auth-bg-orb auth-orb-3"></div>
-      </div>
+      <div class="auth-bg"></div>
 
       <!-- High-Impact Pitch Hero Header -->
       <div class="intro-hero-masthead">
@@ -120,10 +114,10 @@
           </button>
         </div>
         <div class="hero-trust-bar">
-          <span class="hero-trust-item">💰 $5k–$28k/yr Merit Scholarships</span>
-          <span class="hero-trust-item">⚖️ 15+ State Auto-Admit Guarantees</span>
-          <span class="hero-trust-item">💵 $7,200+ Avg AP Tuition Saved</span>
-          <span class="hero-trust-item">🗺️ Custom 9th–12th Grade Guides</span>
+          <span class="hero-trust-item"><i class="fas fa-award text-accent" style="margin-right: 6px;"></i>$5k–$28k/yr Merit Scholarships</span>
+          <span class="hero-trust-item"><i class="fas fa-university text-accent" style="margin-right: 6px;"></i>15+ State Auto-Admit Guarantees</span>
+          <span class="hero-trust-item"><i class="fas fa-coins text-accent" style="margin-right: 6px;"></i>$7,200+ Avg AP Tuition Saved</span>
+          <span class="hero-trust-item"><i class="fas fa-map-signs text-accent" style="margin-right: 6px;"></i>Custom 9th–12th Grade Guides</span>
         </div>
       </div>
 
@@ -148,35 +142,35 @@
           <div class="track-showcase-card" id="track-card-senior">
             <div class="track-header-row">
               <div class="track-header-title">
-                <span>🎓</span>
+                <i class="fas fa-graduation-cap" style="color: #60a5fa; font-size: 1.15rem;"></i>
                 <span>For Seniors &amp; Grads: See What Your Stats Qualify You For Today</span>
               </div>
               <span class="track-header-badge">Instant Qualification Check</span>
             </div>
             <div class="track-grid">
               <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
-                <div class="track-feature-icon">💰</div>
+                <div class="track-feature-icon"><i class="fas fa-award"></i></div>
                 <div class="track-feature-text">
                   <h4>Automatic Merit Scholarships ($5k–$28k/yr)</h4>
                   <p>Match your GPA &amp; SAT/ACT against institutional scholarship tiers that award up to $112,000 over 4 years with zero extra essays.</p>
                 </div>
               </div>
               <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
-                <div class="track-feature-icon">⚖️</div>
+                <div class="track-feature-icon"><i class="fas fa-university"></i></div>
                 <div class="track-feature-text">
                   <h4>Guaranteed College Acceptance</h4>
                   <p>Instantly verify state laws that legally guarantee your admission into flagship universities based on your class rank or GPA.</p>
                 </div>
               </div>
               <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
-                <div class="track-feature-icon">💵</div>
+                <div class="track-feature-icon"><i class="fas fa-coins"></i></div>
                 <div class="track-feature-text">
                   <h4>Cash In Your AP &amp; IB Credits</h4>
                   <p>See exact university course codes waived and thousands in tuition saved ($7,200+ avg) from exams you already passed.</p>
                 </div>
               </div>
               <div class="track-feature-item" onclick="App.promptEnterStats('senior')">
-                <div class="track-feature-icon">⚡</div>
+                <div class="track-feature-icon"><i class="fas fa-bolt"></i></div>
                 <div class="track-feature-text">
                   <h4>AI Breakdown &amp; Next Steps</h4>
                   <p>Get a full AI breakdown of your stats with scholarship cutoffs, honors college deadlines, and personalized suggestions.</p>
@@ -197,35 +191,35 @@
           <div class="track-showcase-card" id="track-card-hs" style="display: none;">
             <div class="track-header-row">
               <div class="track-header-title">
-                <span>🗺️</span>
+                <i class="fas fa-route" style="color: #38bdf8; font-size: 1.15rem;"></i>
                 <span>For 9th–11th Graders: Your Personalized High School Game Plan</span>
               </div>
               <span class="track-header-badge" style="background: rgba(59, 130, 246, 0.18); color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">Step-by-Step 4-Year Guide</span>
             </div>
             <div class="track-grid">
               <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
-                <div class="track-feature-icon">🧭</div>
+                <div class="track-feature-icon"><i class="fas fa-compass"></i></div>
                 <div class="track-feature-text">
                   <h4>Custom Grade-by-Grade Roadmap</h4>
                   <p>Know exactly what courses, extracurriculars, and summer milestones to hit in 9th, 10th, and 11th grade for top universities.</p>
                 </div>
               </div>
               <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
-                <div class="track-feature-icon">🎯</div>
+                <div class="track-feature-icon"><i class="fas fa-bullseye"></i></div>
                 <div class="track-feature-text">
                   <h4>Scholarship &amp; Auto-Admit Targets</h4>
                   <p>See the exact GPA, class rank percentile, and SAT/ACT score you need to lock in guaranteed admissions and full-tuition merit aid.</p>
                 </div>
               </div>
               <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
-                <div class="track-feature-icon">📚</div>
+                <div class="track-feature-icon"><i class="fas fa-book-open"></i></div>
                 <div class="track-feature-text">
                   <h4>High-ROI AP Course Selection</h4>
                   <p>Don't guess which AP classes to take. Discover which exams waive actual degree requirements and save the most money at your target schools.</p>
                 </div>
               </div>
               <div class="track-feature-item" onclick="App.promptEnterStats('hs')">
-                <div class="track-feature-icon">⏰</div>
+                <div class="track-feature-icon"><i class="fas fa-calendar-check"></i></div>
                 <div class="track-feature-text">
                   <h4>AI Testing &amp; Prep Suggestions</h4>
                   <p>Get a tailored AI schedule for PSAT/NMSQT National Merit qualification, SAT/ACT target windows, and major-specific prep.</p>
@@ -364,25 +358,25 @@
         </div>
         <div class="landing-bento-grid">
           <div class="bento-card" onclick="App.promptEnterStats('senior')">
-            <div class="bento-icon-box">💰</div>
+            <div class="bento-icon-box"><i class="fas fa-award"></i></div>
             <h4>Merit Scholarships &amp; Aid</h4>
             <p>See automatic $5,000–$28,000/yr university scholarships and state tuition grants your GPA and SAT/ACT unlock right now.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
           <div class="bento-card" onclick="App.promptEnterStats('senior')">
-            <div class="bento-icon-box">⚖️</div>
+            <div class="bento-icon-box"><i class="fas fa-university"></i></div>
             <h4>Guaranteed Admissions</h4>
             <p>Check 15+ state laws that legally guarantee university acceptance when you meet class rank or GPA thresholds.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
           <div class="bento-card" onclick="App.promptEnterStats('senior')">
-            <div class="bento-icon-box">💵</div>
+            <div class="bento-icon-box"><i class="fas fa-coins"></i></div>
             <h4>AP &amp; Exam Tuition Cash</h4>
             <p>Convert your AP/IB scores into exact college course waivers and thousands in saved tuition across flagship universities.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
           </div>
           <div class="bento-card" onclick="App.promptEnterStats('hs')">
-            <div class="bento-icon-box">🗺️</div>
+            <div class="bento-icon-box"><i class="fas fa-route"></i></div>
             <h4>9th–12th Grade AI Guide</h4>
             <p>Underclassmen get a custom year-by-year guide for courses, testing, and GPA targets; seniors get priority application deadlines.</p>
             <span class="bento-meta-tag">Enter Stats to Unlock →</span>
@@ -571,7 +565,7 @@
         <div id="overview-pathway-banner" class="tf-pathway-banner">
           <div class="tf-banner-left">
             <div class="tf-banner-icon">
-              🎓
+              <i class="fas fa-graduation-cap"></i>
             </div>
             <div>
               <div class="tf-banner-title" id="overview-pathway-title">
@@ -584,10 +578,10 @@
           </div>
           <div class="tf-banner-actions">
             <button type="button" class="btn-secondary" style="font-size: 0.76rem; padding: 0.4rem 0.8rem;" onclick="App.quickSetGradeMode('senior')">
-              🎓 Senior / Grad View
+              <i class="fas fa-graduation-cap" style="margin-right: 5px;"></i>Senior / Grad View
             </button>
             <button type="button" class="btn-secondary" style="font-size: 0.76rem; padding: 0.4rem 0.8rem;" onclick="App.quickSetGradeMode('hs')">
-              🎒 High School (9th–11th) Guide
+              <i class="fas fa-school" style="margin-right: 5px;"></i>High School (9th–11th) Guide
             </button>
             <button type="button" class="btn-primary" style="font-size: 0.76rem; padding: 0.4rem 0.85rem;" onclick="App.openProfileModal()">
               Edit My Stats
@@ -648,14 +642,6 @@
                 </svg>
               </div>
               <p class="hero-logo-tagline">— stats to scholarships &amp; roadmaps</p>
-            </div>
-            <div class="floating-equations">
-              <span class="float-eq eq-1">💰</span>
-              <span class="float-eq eq-2">🎓</span>
-              <span class="float-eq eq-3">🧭</span>
-              <span class="float-eq eq-4">⚖️</span>
-              <span class="float-eq eq-5">💵</span>
-              <span class="float-eq eq-6">🚀</span>
             </div>
           </div>
         </div>

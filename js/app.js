@@ -26,19 +26,6 @@ const App = {
     if (typeof document === "undefined") return;
     const splash = document.getElementById("splash-screen");
     if (!splash) return;
-    const pc = document.getElementById("splash-particles");
-    if (pc) {
-      for (let i = 0; i < 25; i++) {
-        const p = document.createElement("div");
-        p.className = "splash-particle";
-        p.style.left = Math.random() * 100 + "%";
-        p.style.top = 40 + Math.random() * 50 + "%";
-        p.style.animationDelay = Math.random() * 2 + "s";
-        p.style.animationDuration = 2 + Math.random() * 2 + "s";
-        p.style.width = p.style.height = (2 + Math.random() * 3) + "px";
-        pc.appendChild(p);
-      }
-    }
     const dismiss = () => {
       splash.classList.add("splash-exit");
       setTimeout(() => { splash.classList.add("hidden"); }, 600);

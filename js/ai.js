@@ -653,7 +653,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
             <circle cx="205" cy="155" r="45" fill="#818CF8" fill-opacity="0.08" />
           </svg>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <span class="tf-stat-badge" style="background: rgba(37, 99, 235, 0.2); color: #93C5FD;">💰 Merit Scholarships</span>
+            <span class="tf-stat-badge" style="background: rgba(37, 99, 235, 0.2); color: #93C5FD;"><i class="fas fa-award" style="margin-right: 5px;"></i>Merit Scholarships</span>
             <span style="font-size: 0.74rem; color: #93C5FD; font-weight: 700;">View All →</span>
           </div>
           <div class="tf-kpi-title">
@@ -681,7 +681,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
             <circle cx="270" cy="140" r="50" fill="#FBBF24" fill-opacity="0.12" />
           </svg>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.2); color: #FDE68A;">🏅 Your ECs, Awards &amp; PSAT Value</span>
+            <span class="tf-stat-badge" style="background: rgba(245, 158, 11, 0.2); color: #FDE68A;"><i class="fas fa-trophy" style="margin-right: 5px;"></i>Your ECs, Awards &amp; PSAT Value</span>
             <button type="button" class="ob-score-pill" style="font-size: 0.7rem; padding: 0.2rem 0.55rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">+ Add More</button>
           </div>
           <div class="tf-kpi-title" style="color: #FCD34D;">
@@ -699,7 +699,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
             <circle cx="265" cy="60" r="45" fill="#34D399" fill-opacity="0.12" />
           </svg>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.18); color: #6EE7B7;">📋 Guarantees, APs &amp; App Status</span>
+            <span class="tf-stat-badge" style="background: rgba(16, 185, 129, 0.18); color: #6EE7B7;"><i class="fas fa-check-double" style="margin-right: 5px;"></i>Guarantees, APs &amp; App Status</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-top: 0.2rem;">
             <div style="font-size: 1.7rem; font-weight: 900; color: #FFFFFF; line-height: 1.1;">
@@ -714,10 +714,10 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
           </div>
           <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08);">
             <span class="tf-badge tf-badge-blue" style="flex: 1; justify-content: center; padding: 0.4rem;">
-              🛠️ ${audit.workingCount} Working On It
+              <i class="fas fa-hammer" style="margin-right: 5px;"></i>${audit.workingCount} Working On It
             </span>
             <span class="tf-badge tf-badge-emerald" style="flex: 1; justify-content: center; padding: 0.4rem;">
-              ✅ ${audit.submittedCount} Submitted
+              <i class="fas fa-check-circle" style="margin-right: 5px;"></i>${audit.submittedCount} Submitted
             </span>
           </div>
         </div>
@@ -725,7 +725,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         <!-- 4. Interactive User ECs, Awards & PSAT Live Portfolio Card -->
         <div class="card tf-stat-card" style="border-left: 4px solid #818CF8 !important;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
-            <span class="tf-stat-badge" style="background: rgba(129, 140, 248, 0.2); color: #C7D2FE;">✍️ Your Personal ECs, Awards &amp; PSAT</span>
+            <span class="tf-stat-badge" style="background: rgba(129, 140, 248, 0.2); color: #C7D2FE;"><i class="fas fa-pen-nib" style="margin-right: 5px;"></i>Your Personal ECs, Awards &amp; PSAT</span>
             <button type="button" class="ob-score-pill" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;" onclick="Onboarding.open(); Onboarding.goToStep(4);">Full Editor</button>
           </div>
           <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.5; margin-bottom: 0.45rem;">
@@ -764,7 +764,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
           <div>
             <h3 style="font-size: 1.35rem; font-weight: 800; color: #FFFFFF; margin: 0;">
-              🏛️ Your Selected Colleges — AI Acceptance Chance Bars &amp; Scholarship Value
+              <i class="fas fa-university" style="color: #60a5fa; margin-right: 8px;"></i>Your Selected Colleges — AI Acceptance Chance Bars &amp; Scholarship Value
             </h3>
             <p style="font-size: 0.88rem; color: var(--muted-foreground); margin-top: 0.35rem; line-height: 1.5;">
               Every selected college shows your AI acceptance probability, how much scholarship money your <strong>GPA/SAT, ECs, Awards &amp; PSAT</strong> can earn you there, and lets you mark it as <strong>Working On It</strong> or <strong>Submitted</strong>.
@@ -778,16 +778,16 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
         <!-- Legend Pills -->
         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.35rem;">
           <span class="tf-badge tf-badge-emerald">
-            🟢 72%–97% Likely / Auto-Admit
+            <span class="tf-dot tf-dot-emerald"></span> 72%–97% Likely / Auto-Admit
           </span>
           <span class="tf-badge tf-badge-blue">
-            🔵 48%–71% Target Match
+            <span class="tf-dot tf-dot-blue"></span> 48%–71% Target Match
           </span>
           <span class="tf-badge tf-badge-amber">
-            🟡 28%–47% Competitive Reach
+            <span class="tf-dot tf-dot-amber"></span> 28%–47% Competitive Reach
           </span>
           <span class="tf-badge tf-badge-rose">
-            🔴 &lt;28% High Reach
+            <span class="tf-dot tf-dot-rose"></span> &lt;28% High Reach
           </span>
         </div>
 
@@ -807,10 +807,10 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
                 <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
                   <div style="display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(7, 13, 25, 0.88); border: 1px solid rgba(148, 163, 184, 0.2); padding: 0.25rem; border-radius: var(--radius-full);">
                     <button type="button" class="ob-score-pill ${item.appStatus === 'working' ? 'active' : ''}" style="border-radius: var(--radius-full); font-size: 0.74rem; padding: 0.25rem 0.75rem; border: none;" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'working')">
-                      🛠️ Working On It
+                      <i class="fas fa-hammer" style="margin-right: 4px;"></i>Working On It
                     </button>
                     <button type="button" class="ob-score-pill ${item.appStatus === 'submitted' ? 'active' : ''}" style="border-radius: var(--radius-full); font-size: 0.74rem; padding: 0.25rem 0.75rem; border: none; ${item.appStatus === 'submitted' ? 'background: #059669; color: #FFFFFF;' : ''}" onclick="AdmitAI.setCollegeStatus('${item.college.id}', 'submitted')">
-                      ✅ Submitted
+                      <i class="fas fa-check-circle" style="margin-right: 4px;"></i>Submitted
                     </button>
                   </div>
 
@@ -832,7 +832,7 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
               <div class="tf-col-financials-panel">
                 <div class="tf-col-financials-header">
                   <span style="font-size: 0.88rem; font-weight: 800; color: #34D399;">
-                    💰 Est. Scholarship &amp; Aid at ${item.college.short_name}: $${item.scholarship.totalPerYr.toLocaleString()}/yr ($${item.scholarship.total4YrValue.toLocaleString()} 4-Yr Total)
+                    <i class="fas fa-award" style="color: #34d399; margin-right: 5px;"></i>Est. Scholarship &amp; Aid at ${item.college.short_name}: $${item.scholarship.totalPerYr.toLocaleString()}/yr ($${item.scholarship.total4YrValue.toLocaleString()} 4-Yr Total)
                   </span>
                   <span style="font-size: 0.76rem; font-weight: 700; color: #93C5FD;">
                     Merit Cutoff: ${item.college.scholarship_deadline || item.college.early_deadline || 'Nov 1'}
@@ -840,19 +840,19 @@ AdmitAI.render = function(containerId, profile, collegesData, rulesData, apData)
                 </div>
                 <div class="tf-col-financials-badges">
                   <span class="tf-badge tf-badge-amber">
-                    🏅 Your ECs &amp; Awards Earn: +$${item.scholarship.ecAwardsPerYr.toLocaleString()}/yr ($${(item.scholarship.ecAwardsPerYr * 4).toLocaleString()} 4-Yr)
+                    <i class="fas fa-trophy" style="color: #f59e0b; margin-right: 4px;"></i>Your ECs &amp; Awards Earn: +$${item.scholarship.ecAwardsPerYr.toLocaleString()}/yr ($${(item.scholarship.ecAwardsPerYr * 4).toLocaleString()} 4-Yr)
                   </span>
                   <span class="tf-badge tf-badge-blue">
-                    📊 GPA/SAT Merit: $${item.scholarship.statsMeritPerYr.toLocaleString()}/yr
+                    <i class="fas fa-chart-line" style="color: #60a5fa; margin-right: 4px;"></i>GPA/SAT Merit: $${item.scholarship.statsMeritPerYr.toLocaleString()}/yr
                   </span>
                   ${item.scholarship.psatMeritPerYr > 0 ? `
                     <span class="tf-badge" style="background: rgba(56, 189, 248, 0.16); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.3);">
-                      🎓 PSAT / Natl Merit: +$${item.scholarship.psatMeritPerYr.toLocaleString()}/yr
+                      <i class="fas fa-graduation-cap" style="color: #38bdf8; margin-right: 4px;"></i>PSAT / Natl Merit: +$${item.scholarship.psatMeritPerYr.toLocaleString()}/yr
                     </span>
                   ` : ''}
                   ${item.savings.tuitionSaved > 0 ? `
                     <span class="tf-badge tf-badge-emerald">
-                      💵 AP Credits: +$${item.savings.tuitionSaved.toLocaleString()} Waived
+                      <i class="fas fa-coins" style="color: #10b981; margin-right: 4px;"></i>AP Credits: +$${item.savings.tuitionSaved.toLocaleString()} Waived
                     </span>
                   ` : ''}
                 </div>

@@ -95,27 +95,30 @@ body {
 }
 
 /* ============================================================================
-   2. Micro-Animations & Keyframes
+   2. Micro-Animations & Status Indicators
    ============================================================================ */
-@keyframes tf-shimmer2 {
-  0% { background-position: 200% 0%; }
-  100% { background-position: -200% 0%; }
-}
-
 @keyframes tf-bar-grow {
   0% { transform: scaleX(0); opacity: 0.6; }
   100% { transform: scaleX(1); opacity: 1; }
-}
-
-@keyframes tf-glow-pulse {
-  0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4)); }
-  50% { opacity: 0.9; filter: drop-shadow(0 0 16px rgba(96, 165, 250, 0.7)); }
 }
 
 @keyframes tf-fade-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.tf-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.tf-dot-emerald { background: #10B981; }
+.tf-dot-blue { background: #3B82F6; }
+.tf-dot-amber { background: #F59E0B; }
+.tf-dot-rose { background: #EF4444; }
 
 /* ============================================================================
    3. 21st.dev [833] / [10380] / [18504] Buttons & Micro-Interactions
@@ -130,49 +133,43 @@ body {
   justify-content: center;
   gap: 0.5rem;
   font-family: var(--font-sans);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.88rem;
   padding: 0.62rem 1.25rem;
   border-radius: var(--radius-md);
   color: #ffffff !important;
-  background: linear-gradient(
-    110deg,
-    #1d4ed8 0%,
-    #2563eb 38%,
-    #60a5fa 50%,
-    #3b82f6 62%,
-    #4f46e5 100%
-  ) !important;
-  background-size: 220% 100% !important;
-  animation: tf-shimmer2 5s infinite linear;
-  border: 1px solid rgba(147, 197, 253, 0.4) !important;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -6px 8px rgba(255, 255, 255, 0.1),
-    0 8px 24px -4px rgba(37, 99, 235, 0.5) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 1px 2px rgba(0, 0, 0, 0.35) !important;
   cursor: pointer;
   transform: translateZ(0);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.2s ease,
-              border-color 0.2s ease !important;
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.14s ease,
+              box-shadow 0.14s ease,
+              border-color 0.14s ease !important;
 }
 
 .btn-primary:hover,
 .tf-btn-primary:hover,
 .tf-shimmer-btn:hover {
-  transform: translateY(-2px);
-  border-color: rgba(191, 219, 254, 0.75) !important;
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 14px 32px -4px rgba(59, 130, 246, 0.65) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 4px 12px rgba(37, 99, 235, 0.35) !important;
+  transform: translateY(-1px);
 }
 
 .btn-primary:active,
 .tf-btn-primary:active,
 .tf-shimmer-btn:active {
-  transform: translateY(1px);
+  transform: scale(0.98);
   box-shadow:
-    inset 0 -4px 6px rgba(255, 255, 255, 0.2),
+    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
     0 4px 14px rgba(37, 99, 235, 0.4) !important;
 }
 
@@ -368,16 +365,10 @@ select.tf-select {
   content: "";
   position: absolute;
   top: 0;
-  left: 10%;
-  right: 10%;
+  left: 0;
+  right: 0;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(96, 165, 250, 0.65),
-    rgba(129, 140, 248, 0.65),
-    transparent
-  );
+  background: rgba(255, 255, 255, 0.08);
   pointer-events: none;
   z-index: 2;
 }
