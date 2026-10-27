@@ -41,17 +41,17 @@
   --popover-foreground: #f8fafc;
 
   /* Brand Accents */
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-glow: rgba(59, 130, 246, 0.45);
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-glow: rgba(37, 99, 235, 0.15);
   --primary-foreground: #ffffff;
   --secondary: #1e293b;
   --secondary-hover: #334155;
   --secondary-foreground: #e2e8f0;
   --muted: #1e293b;
   --muted-foreground: #94a3b8;
-  --accent: #1e3a8a;
-  --accent-foreground: #93c5fd;
+  --accent: #d97706;
+  --accent-foreground: #fef3c7;
 
   /* Semantic Alerts & Badges */
   --destructive: #ef4444;
@@ -60,17 +60,17 @@
   --success-foreground: #d1fae5;
   --warning: #f59e0b;
   --warning-foreground: #fef3c7;
-  --info: #38bdf8;
+  --info: #0284c7;
   --info-foreground: #e0f2fe;
 
   /* Surface & Border System */
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(148, 163, 184, 0.22);
-  --border-hover: rgba(96, 165, 250, 0.45);
+  --border-hover: rgba(148, 163, 184, 0.4);
   --border-subtle: rgba(255, 255, 255, 0.05);
   --input: rgba(13, 21, 38, 0.85);
   --input-border: rgba(148, 163, 184, 0.22);
-  --ring: #3b82f6;
+  --ring: #2563eb;
 
   /* Geometry Tokens */
   --radius-sm: 8px;
@@ -79,11 +79,11 @@
   --radius-xl: 20px;
   --radius-full: 9999px;
 
-  /* Shadows */
+  /* Shadows (Natural Elevation - No AI Neon Glow) */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 8px 24px -4px rgba(2, 6, 23, 0.5);
   --shadow-lg: 0 18px 40px -12px rgba(2, 6, 23, 0.65);
-  --shadow-glow: 0 0 28px -6px rgba(59, 130, 246, 0.35);
+  --shadow-glow: 0 8px 24px -4px rgba(2, 6, 23, 0.5);
 }
 
 /* Base Body Surface Polish */
@@ -245,10 +245,10 @@ body {
 }
 
 .ob-score-pill.active {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.35) 0%, rgba(79, 70, 229, 0.3) 100%) !important;
+  background: #172554 !important;
   color: #ffffff !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
+  border-color: #2563eb !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 /* ============================================================================
@@ -913,9 +913,10 @@ select.tf-select {
 }
 
 .tf-step-icon-active {
-  background: #2563eb;
+  background: #172554;
   color: #ffffff;
-  box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+  border: 1px solid #2563eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 .tf-step-icon-completed {
@@ -1178,8 +1179,8 @@ select.tf-select {
 
 /* Universal Pathway Banner */
 .tf-pathway-banner {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(79, 70, 229, 0.12) 100%);
-  border: 1px solid rgba(96, 165, 250, 0.35);
+  background: #0f172a;
+  border: 1px solid rgba(217, 119, 6, 0.35);
   border-radius: var(--radius-lg);
   padding: 1.15rem 1.4rem;
   margin-bottom: 1.5rem;
@@ -1324,8 +1325,8 @@ select.tf-select {
 .college-card:hover,
 .tf-college-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(96, 165, 250, 0.45) !important;
-  box-shadow: 0 12px 32px -8px rgba(2, 6, 23, 0.7), 0 0 20px -4px rgba(59, 130, 246, 0.25) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  box-shadow: 0 12px 32px -8px rgba(2, 6, 23, 0.7) !important;
 }
 
 .college-card-header {
@@ -1843,8 +1844,8 @@ select.tf-select {
 .landing-auth-card {
   position: relative;
   z-index: 2;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 40px rgba(37, 99, 235, 0.22);
-  border: 1px solid rgba(59, 130, 246, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.16);
 }
 
 .landing-bento-section {
@@ -1859,8 +1860,8 @@ select.tf-select {
 
 /* Auth Card & Steps Polish */
 .landing-auth-prompt {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.22), rgba(79, 70, 229, 0.16));
-  border: 1px solid rgba(96, 165, 250, 0.45);
+  background: #172554;
+  border: 1px solid rgba(59, 130, 246, 0.35);
   color: #dbeafe;
   padding: 0.7rem 0.9rem;
   border-radius: var(--radius-md);
@@ -1915,35 +1916,47 @@ select.tf-select {
   margin-bottom: 0.75rem !important;
 }
 
-/* Feature Card Glowing Icon Accents */
+/* Feature Card Icon Accents (Academic Heritage Tones) */
 .tf-feat-icon-1 {
-  background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35) !important;
+  background: #1e3a8a !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  box-shadow: none !important;
 }
 
 .tf-feat-icon-2 {
-  background: linear-gradient(135deg, #3b82f6, #6366f1) !important;
-  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35) !important;
+  background: rgba(217, 119, 6, 0.16) !important;
+  color: #fcd34d !important;
+  border: 1px solid rgba(217, 119, 6, 0.3) !important;
+  box-shadow: none !important;
 }
 
 .tf-feat-icon-3 {
-  background: linear-gradient(135deg, #0284c7, #2563eb) !important;
-  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35) !important;
+  background: rgba(5, 150, 105, 0.16) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(5, 150, 105, 0.3) !important;
+  box-shadow: none !important;
 }
 
 .tf-feat-icon-4 {
-  background: linear-gradient(135deg, #0ea5e9, #3b82f6) !important;
-  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35) !important;
+  background: #1e3a8a !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  box-shadow: none !important;
 }
 
 .tf-feat-icon-5 {
-  background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
-  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35) !important;
+  background: rgba(217, 119, 6, 0.16) !important;
+  color: #fcd34d !important;
+  border: 1px solid rgba(217, 119, 6, 0.3) !important;
+  box-shadow: none !important;
 }
 
 .tf-feat-icon-6 {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
-  box-shadow: 0 6px 18px rgba(29, 78, 216, 0.35) !important;
+  background: #1e3a8a !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  box-shadow: none !important;
 }
 
 /* Modal Dialog Polish */
