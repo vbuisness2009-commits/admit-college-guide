@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/components.css?v=5.0">
   <link rel="stylesheet" href="css/twentyfirst.css?v=5.0">
   <!-- Official Google Identity Services SDK -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer onload="window.App && window.App.initGoogleIdentityServices && window.App.initGoogleIdentityServices()"></script>
 </head>
 <body>
   <!-- Shared Brand SVG Defs -->

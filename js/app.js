@@ -428,18 +428,6 @@ const App = {
 
   initGoogleIdentityServices() {
     if (typeof window === "undefined") return;
-    let hasCustomClientId = false;
-    try {
-      const stored = localStorage.getItem(Auth.GOOGLE_CLIENT_ID_KEY);
-      hasCustomClientId = !!(stored && stored.trim() && stored.trim() !== Auth.DEFAULT_GOOGLE_CLIENT_ID);
-    } catch (e) {
-      console.warn("Could not read custom Google Client ID:", e);
-    }
-
-    if (!hasCustomClientId) {
-      return;
-    }
-
     const clientId = Auth.getGoogleClientId();
     if (window.google && window.google.accounts && window.google.accounts.id) {
       if (clientId) {
@@ -458,6 +446,10 @@ const App = {
   },
 
   handleGoogleButtonClick() {
+    if (typeof window !== "undefined" && window.google && window.google.accounts && window.google.accounts.oauth2) {
+      this.launchGoogleOAuthPopup();
+      return;
+    }
     this.openGoogleAuthModal();
   },
 
@@ -547,25 +539,30 @@ const App = {
               } catch (fetchErr) {
                 console.warn("Could not fetch userinfo from Google:", fetchErr);
                 this.showToast("Google token received, but profile fetch was blocked. Enter email below.", "warning");
+                this.openGoogleAuthModal();
               }
             } else if (tokenResponse && tokenResponse.error) {
               this.showToast(`Google OAuth Notice: ${tokenResponse.error}. You can enter your email directly below.`, "warning");
+              this.openGoogleAuthModal();
             }
           },
           error_callback: (err) => {
             console.warn("Google OAuth error callback:", err);
             this.showToast("Google popup closed. You can connect your Google email directly below.", "info");
+            this.openGoogleAuthModal();
           }
         });
 
-        tokenClient.requestAccessToken();
+        tokenClient.requestAccessToken({ prompt: "select_account" });
         return;
       } catch (err) {
         console.warn("OAuth TokenClient failed:", err);
         this.showToast("Browser blocked Google popup. Please enter your Google email directly below.", "info");
+        this.openGoogleAuthModal();
       }
     } else {
       this.showToast("Google Identity Services loading. Enter your Google email directly below.", "info");
+      this.openGoogleAuthModal();
     }
   },
 
